@@ -1,0 +1,31 @@
+/* Specific styles for the admin login page */
+
+body {
+    background-color: #550c64; /* Light grey background */
+}
+
+.card {
+    max-width: 400px;
+    width: 100%;
+    border-radius: 10px;
+  
+}
+
+h3 {
+    margin-bottom: 20px;
+    font-weight: 700;
+}
+
+.form-group label {
+    font-weight: 600;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}

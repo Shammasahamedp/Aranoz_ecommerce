@@ -1,0 +1,262 @@
+<% include('../partials/header.ejs') %>
+<!-- Include SweetAlert2 CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+<link rel="stylesheet" href="/css/admindashboard.css">
+<style>
+  input#categoryName::placeholder {
+    color: rgb(147, 145, 145);
+  }
+
+  textarea#categoryDescription::placeholder {
+    color: rgb(147, 145, 145);
+  }
+
+  html,
+  body {
+    overflow-y: hidden;
+  }
+  .btn a{
+    color: aliceblue;
+  }
+  .form-container {
+    max-width: 600px; /* Adjust this value to change the width */
+    margin: 0 auto; /* Center the form */
+    padding: 20px; /* Add some padding for better aesthetics */
+    background-color: #f9f9f9; /* Optional: add a background color for the form container */
+    border-radius: 8px; /* Optional: add rounded corners */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Optional: add a subtle shadow */
+  }
+</style>
+
+<div class="container-scroller">
+  <!-- partial:partials/_navbar.html -->
+  <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row" style="background-color: #6a008a;">
+    <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center"
+      style="background-color: #6a008a;">
+      <div style="background-color: #6a008a;">Purple</div>
+    </div>
+    <div class="navbar-menu-wrapper d-flex align-items-stretch">
+      <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button"
+        data-toggle="offcanvas">
+        <span class="mdi mdi-menu"></span>
+      </button>
+    </div>
+  </nav>
+  <!-- partial -->
+  <div class="container-fluid page-body-wrapper">
+    <div class="row row-offcanvas row-offcanvas-right">
+      <!-- partial:partials/_sidebar.html -->
+      <nav class="sidebar sidebar-offcanvas" id="sidebar">
+        <ul class="nav">
+          <li class="nav-item">
+            <a class="nav-link" href="index.html">
+              <span class="menu-title">Dashboard</span>
+              <span class="menu-sub-title">( 2 new updates )</span>
+              <i class="mdi mdi-home menu-icon"></i>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false"
+              aria-controls="ui-basic">
+              <span class="menu-title">Users</span>
+              <i class="menu-arrow"></i>
+              <i class="mdi mdi-crosshairs-gps menu-icon"></i>
+            </a>
+            <div class="collapse" id="ui-basic">
+              <ul class="nav flex-column sub-menu">
+                <li class="nav-item"> <a class="nav-link" href="pages/ui-features/buttons.html">Buttons</a></li>
+                <li class="nav-item"> <a class="nav-link"
+                    href="pages/ui-features/typography.html">Typography</a></li>
+              </ul>
+            </div>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/products">
+              <span class="menu-title">Products</span>
+              <i class="mdi mdi-contacts menu-icon"></i>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="pages/forms/basic_elements.html">
+              <span class="menu-title">Categories</span>
+              <i class="mdi mdi-format-list-bulleted menu-icon"></i>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="pages/charts/chartjs.html">
+              <span class="menu-title">Orders</span>
+              <i class="mdi mdi-chart-bar menu-icon"></i>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="pages/tables/bootstrap-table.html">
+              <span class="menu-title">Coupons</span>
+              <i class="mdi mdi-table-large menu-icon"></i>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="pages/tables/bootstrap-table.html">
+              <span class="menu-title">Banners</span>
+              <i class="mdi mdi-table-large menu-icon"></i>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-toggle="collapse" href="/admin/logout" aria-expanded="false" aria-controls="auth">
+              <span class="menu-title">Logout</span>
+              <i class="menu-arrow"></i>
+              <i class="mdi mdi-lock menu-icon"></i>
+            </a>
+            <div class="collapse" id="auth">
+              <ul class="nav flex-column sub-menu">
+                <li class="nav-item"> <a class="nav-link"
+                    href="pages/samples/blank-page.html"> Blank Page </a></li>
+                <li class="nav-item"> <a class="nav-link"
+                    href="pages/samples/login.html"> Login </a></li>
+                <li class="nav-item"> <a class="nav-link"
+                    href="pages/samples/register.html"> Register </a></li>
+                <li class="nav-item"> <a class="nav-link"
+                    href="pages/samples/error-404.html"> 404 </a></li>
+                <li class="nav-item"> <a class="nav-link"
+                    href="pages/samples/error-500.html"> 500 </a></li>
+              </ul>
+            </div>
+          </li>
+        </ul>
+      </nav>
+      <!-- partial -->
+      <div class="content-wrapper">
+        <!-- Add the form for editing name and description -->
+        <!-- <div class="card"> -->
+          <div class="card-body">
+            <div class="form-container">
+              <h4 class="card-title">Add Category</h4>
+
+              <form action="/admin/categories/add" method="POST" id="categoryAddForm">
+                <!-- Edit Name Field -->
+                <div class="form-group">
+                  <label for="categoryName">Name</label>
+                  <input type="text" id="categoryName" name="name" class="form-control"
+                    placeholder="Enter name"  required>
+                    <div id="validateName" class="text-danger"></div>
+                </div>
+                <!-- Edit Description Field -->
+                <div class="form-group">
+                  <label for="categoryDescription">Description</label>
+                  <textarea id="categoryDescription" name="description" class="form-control"
+                    placeholder="Enter description" rows="4" required></textarea>
+                    <div id="validateDescription" class="text-danger"></div>
+                </div>
+                <!-- Save Button -->
+                <button type="submit" class="btn btn-primary">Add</button>
+                <button class="btn btn-primary"><a href="/admin/categories">Back</a></button>
+  
+              </form>
+            </div>
+          </div>
+        <!-- </div> -->
+      </div>
+      <!-- content-wrapper ends -->
+      <!-- partial:partials/_footer.html -->
+      <!-- partial -->
+    </div>
+    <!-- row-offcanvas ends -->
+  </div>
+  <!-- page-body-wrapper ends -->
+</div>
+<!-- container-scroller -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('categoryAddForm');
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+    
+      const name = document.getElementById('categoryName').value;
+      const description = document.getElementById('categoryDescription').value;
+
+      try {
+        const validName=/^(?=.*\S)(?=\D*$).*$/.test(name)
+        const validDescription=/^(?=.*\S)(?=\D*$).*$/.test(description)
+        if(!validName){
+            document.getElementById('validateName').innerText='Name is not valid '
+            return
+        }else{
+             document.getElementById('validateName').innerText=''
+        }
+        if(!validDescription){
+            document.getElementById('validateDescription').innerText='Description not valid'
+            return 
+        }else{
+          document.getElementById('validateDescription').innerText=''
+
+        }
+        const response=await fetch('/admin/categories/add',{
+            method:'POST',
+            headers:{
+              'Content-Type':'application/json'
+            },
+            body:JSON.stringify({name,description})
+        })
+        console.log(response.status)
+        if(!response.ok){
+          const errorData=await response.json()
+          if(response.status==409){
+            Swal.fire({
+            title:'Failed',
+            text:errorData.message,
+            icon:'failed',
+            confirmButtonText:'OK'
+          })
+          }else{
+            throw new Error('Failed to add category')
+          }
+        }else{
+          Swal.fire({
+            title:'Success',
+            text:'Added successfully',
+            icon:'success',
+            confirmButtonText:'OK'
+          }).then(()=>{
+            window.location.reload()
+          })
+        }
+
+        
+
+      } catch (error) {
+       Swal.fire({
+        title:'Failed',
+        text:error.message,
+        icon:'error',
+        confirmButtonText:'OK'
+       })
+        
+      }
+    }); 
+  });
+</script>
+<!-- plugins:js -->
+<script src="node_modules/jquery/dist/jquery.min.js"></script>
+<script src="node_modules/popper.js/dist/umd/popper.min.js"></script>
+<script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="node_modules/perfect-scrollbar/dist/js/perfect-scrollbar.jquery.min.js"></script>
+<!-- endinject -->
+<!-- Plugin js for this page-->
+<script src="node_modules/chart.js/dist/Chart.min.js"></script>
+<!-- End plugin js for this page-->
+<!-- inject:js -->
+<script src="js/off-canvas.js"></script>
+<script src="js/misc.js"></script>
+<!-- endinject -->
+<!-- Custom js for this page-->
+<script src="js/dashboard.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
+</script>
+<!-- End custom js for this page-->
+<!-- Include SweetAlert2 JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+
+<% include('../partials/footer.ejs') %>
