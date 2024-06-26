@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const Category = require('../../models/categoriesModel');
 const { find } = require('../../models/adminModel');
+const { options } = require('../../routes/adminrouter/adminAuthRouter');
 const getCategories = async (req, res) => {
 
 // console.log('hello')
@@ -51,6 +52,15 @@ const postCategoryEdit = async (req, res) => {
   try {
       if(!name||!description){
         res.status(400).json({message:'should include both name and description'})
+      }
+      const exists = await Category.findOne({
+        name: { $regex: `^${name}$`, $options: 'i' }, 
+        _id: { $ne: categoryId }  
+      });
+            console.log(exists)
+      if(exists){
+        res.status(409).json({message:'category already exists'})
+        return 
       }
       const updatedData = await Category.findByIdAndUpdate(categoryId, { name, description }, { new: true })
       console.log(updatedData)

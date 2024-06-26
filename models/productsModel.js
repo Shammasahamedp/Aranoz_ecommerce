@@ -9,9 +9,15 @@ const Schema=new mongoose.Schema({
         required:true
     },
     category:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:'Category',
-        required:true
+        id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Category',
+            required: true
+        },
+        name: {
+            type: String,
+            required: true
+        },
     },
     price:{
         type:Number,
@@ -20,6 +26,10 @@ const Schema=new mongoose.Schema({
     stock:{
         type:Number,
         required:true
+    },
+    isListed:{
+        type:Boolean,
+        default:true
     }
 })
 

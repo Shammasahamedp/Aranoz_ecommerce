@@ -9,4 +9,8 @@ const path=require('path')
 adminProductRouter.get('/',adminMiddleware.isAuthenticated,adminProductController.getProducts)
 adminProductRouter.get('/addproduct',adminMiddleware.isAuthenticated,adminProductController.getAddProduct)
 adminProductRouter.post('/addproduct',adminMiddleware.isAuthenticated,adminProductController.postAddProduct)
+adminProductRouter.get('/search',adminMiddleware.isAuthenticated,adminProductController.getSearch)
+adminProductRouter.get('/edit/:id',adminMiddleware.isAuthenticated,adminProductController.getEditProduct)
+adminProductRouter.post('/edit/:id',adminMiddleware.isAuthenticated,adminProductController.postEditProduct)
+adminProductRouter.post('/toggle/:id',adminMiddleware.isAuthenticated,adminProductController.toggleProduct)
 module.exports= adminProductRouter

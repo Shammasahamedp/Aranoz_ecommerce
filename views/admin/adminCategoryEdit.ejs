@@ -207,7 +207,7 @@
         console.log(response.status)
         if (!response.ok) {
           const errorData = await response.json();
-          if(response.status==='409'){
+          if(response.status===409){
             Swal.fire({
               title:'Failed',
               text:errorData.message,
@@ -216,7 +216,7 @@
             })
 
           }
-          else if(response.status==='500'){
+          else if(response.status===500){
             Swal.fire({
               title:'Failed',
               text:errorData.message,

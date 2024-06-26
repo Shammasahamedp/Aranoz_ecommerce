@@ -45,7 +45,7 @@ app.use('/admin/categories',adminCategoriesRouter)
 app.use('/admin/users',adminUserRouter)
 app.use('/user',userAuthRouter)
 app.use('/',userHomeRouter)
-app.get('*', (req, res) => {
-    res.render('404/404error')
-})
+// app.get('*', (req, res) => {
+//     res.render('404/404error')
+// })
 app.listen(port, () => { console.log('The server has started at http://localhost:3000') })
