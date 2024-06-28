@@ -172,10 +172,11 @@
                               <%= product.name %>
                             </td>
                             <td>
-                              <img src="/images/productsImage/<%=product.imageUrl %>"
+                              <img src="<%= product.imageUrl[0] %>"
                                 style="width: 100px; height: 100px; object-fit: cover;">
 
                             </td>
+                          
                             <td>
                               <%= product.category.name %>
                             </td>
@@ -190,7 +191,7 @@
                             <td>
                               <button type="button" class="btn btn-icons btn-rounded btn-success"><a
                                   href="/admin/Products/edit/<%=product._id%>">Edit</a> </button>
-                              <button type="button" class="btn btn-icons btn-rounded btn-warning toggleButton" data-id="<%=product._id%>">Unlist</button>
+                              <button type="button" class="btn btn-icons btn-rounded <%=product.isListed?'btn-warning':'btn-danger'%> toggleButton" data-id="<%=product._id%>"><%=product.isListed?'unlist':'list'%></button>
                             </td>
 
 

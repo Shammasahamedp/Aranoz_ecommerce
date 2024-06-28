@@ -84,6 +84,8 @@ const getAddCategory = async (req, res) => {
 }
 const postAddCategory=async (req,res)=>{
   const {name,description}=req.body
+  console.log(name)
+  console.log(description)
   const document={
     name:name,
     description:description

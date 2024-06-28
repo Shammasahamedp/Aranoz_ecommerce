@@ -1,162 +1,158 @@
-
 <% include('../partials/header.ejs') %>
-<!-- Include SweetAlert2 CSS -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 
-<link rel="stylesheet" href="/css/admindashboard.css">
-<style> 
-  input::placeholder, textarea::placeholder {
-    color: rgb(147, 145, 145);
-  }
+  <!-- Include Bootstrap CSS -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 
-  html, body {
-    overflow-y: hidden;
-  }
+  <!-- Include SweetAlert2 CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 
-  .btn a {
-    color: aliceblue;
-    text-decoration: none;
-  }
+  <!-- Include Cropper.js CSS -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" rel="stylesheet">
 
-  /* Center the form and adjust the width */
-  .form-container {
-    max-width: 600px; /* Adjust this value to change the width */
-    margin: 0 auto; /* Center the form */
-    padding: 20px; /* Add some padding for better aesthetics */
-    background-color: #f9f9f9; /* Optional: add a background color for the form container */
-    border-radius: 8px; /* Optional: add rounded corners */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Optional: add a subtle shadow */
-  }
-</style>
+  <!-- Your custom CSS -->
+  <link rel="stylesheet" href="/css/admindashboard.css">
 
-<div class="container-scroller">
-  <!-- partial:partials/_navbar.html -->
-  <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row" style="background-color: #6a008a;">
-    <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center"
-      style="background-color: #6a008a;">
-      <div style="background-color: #6a008a;">Purple</div>
-    </div>
-    <div class="navbar-menu-wrapper d-flex align-items-stretch">
-      <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button"
-        data-toggle="offcanvas">
-        <span class="mdi mdi-menu"></span>
-      </button>
-    </div>
-  </nav>
-  <!-- partial -->
-  <div class="container-fluid page-body-wrapper">
-    <div class="row row-offcanvas row-offcanvas-right">
-      <!-- partial:partials/_sidebar.html -->
-      <nav class="sidebar sidebar-offcanvas" id="sidebar">
-        <ul class="nav">
-          <li class="nav-item">
-            <a class="nav-link" href="index.html">
-              <span class="menu-title">Dashboard</span>
-              <span class="menu-sub-title">( 2 new updates )</span>
-              <i class="mdi mdi-home menu-icon"></i>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false"
-              aria-controls="ui-basic">
-              <span class="menu-title">Users</span>
-              <i class="menu-arrow"></i>
-              <i class="mdi mdi-crosshairs-gps menu-icon"></i>
-            </a>
-            <div class="collapse" id="ui-basic">
-              <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="pages/ui-features/buttons.html">Buttons</a></li>
-                <li class="nav-item"> <a class="nav-link"
-                    href="pages/ui-features/typography.html">Typography</a></li>
-              </ul>
-            </div>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/admin/products">
-              <span class="menu-title">Products</span>
-              <i class="mdi mdi-contacts menu-icon"></i>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/admin/categories">
-              <span class="menu-title">Categories</span>
-              <i class="mdi mdi-format-list-bulleted menu-icon"></i>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/admin/orders">
-              <span class="menu-title">Orders</span>
-              <i class="mdi mdi-chart-bar menu-icon"></i>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/admin/coupons">
-              <span class="menu-title">Coupons</span>
-              <i class="mdi mdi-table-large menu-icon"></i>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/admin/banners">
-              <span class="menu-title">Banners</span>
-              <i class="mdi mdi-table-large menu-icon"></i>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="/admin/logout" aria-expanded="false" aria-controls="auth">
-              <span class="menu-title">Logout</span>
-              <i class="menu-arrow"></i>
-              <i class="mdi mdi-lock menu-icon"></i>
-            </a>
-            <div class="collapse" id="auth">
-              <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link"
-                    href="pages/samples/blank-page.html"> Blank Page </a></li>
-                <li class="nav-item"> <a class="nav-link"
-                    href="pages/samples/login.html"> Login </a></li>
-                <li class="nav-item"> <a class="nav-link"
-                    href="pages/samples/register.html"> Register </a></li>
-                <li class="nav-item"> <a class="nav-link"
-                    href="pages/samples/error-404.html"> 404 </a></li>
-                <li class="nav-item"> <a class="nav-link"
-                    href="pages/samples/error-500.html"> 500 </a></li>
-              </ul>
-            </div>
-          </li>
-        </ul>
-      </nav>
-      <!-- partial -->
-      <div class="content-wrapper">
-        <!-- Add the form for adding a new product -->
+  <style>
+    input::placeholder,
+    textarea::placeholder {
+      color: rgb(147, 145, 145);
+    }
+
+    /* Center the form and adjust the width */
+    .form-container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f9f9f9;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+
+  <div class="container-scroller">
+    <!-- partial:partials/_navbar.html -->
+    <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row" style="background-color: #6a008a;">
+      <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center"
+        style="background-color: #6a008a;">
+        <div style="background-color: #6a008a;">Purple</div>
+      </div>
+      <div class="navbar-menu-wrapper d-flex align-items-stretch">
+        <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button"
+          data-toggle="offcanvas">
+          <span class="mdi mdi-menu"></span>
+        </button>
+      </div>
+    </nav>
+    <!-- partial -->
+    <div class="container-fluid page-body-wrapper">
+      <div class="row row-offcanvas row-offcanvas-right">
+        <!-- partial:partials/_sidebar.html -->
+        <nav class="sidebar sidebar-offcanvas" id="sidebar">
+          <ul class="nav">
+            <li class="nav-item">
+              <a class="nav-link" href="index.html">
+                <span class="menu-title">Dashboard</span>
+                <span class="menu-sub-title">(2 new updates)</span>
+                <i class="mdi mdi-home menu-icon"></i>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false"
+                aria-controls="ui-basic">
+                <span class="menu-title">Users</span>
+                <i class="menu-arrow"></i>
+                <i class="mdi mdi-crosshairs-gps menu-icon"></i>
+              </a>
+              <div class="collapse" id="ui-basic">
+                <ul class="nav flex-column sub-menu">
+                  <li class="nav-item"> <a class="nav-link" href="pages/ui-features/buttons.html">Buttons</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="pages/ui-features/typography.html">Typography</a></li>
+                </ul>
+              </div>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/admin/products">
+                <span class="menu-title">Products</span>
+                <i class="mdi mdi-contacts menu-icon"></i>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/admin/categories">
+                <span class="menu-title">Categories</span>
+                <i class="mdi mdi-format-list-bulleted menu-icon"></i>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/admin/orders">
+                <span class="menu-title">Orders</span>
+                <i class="mdi mdi-chart-bar menu-icon"></i>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/admin/coupons">
+                <span class="menu-title">Coupons</span>
+                <i class="mdi mdi-table-large menu-icon"></i>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" data-toggle="collapse" href="/admin/logout" aria-expanded="false"
+                aria-controls="auth">
+                <span class="menu-title">Logout</span>
+                <i class="menu-arrow"></i>
+                <i class="mdi mdi-lock menu-icon"></i>
+              </a>
+              <div class="collapse" id="auth">
+                <ul class="nav flex-column sub-menu">
+                  <li class="nav-item"> <a class="nav-link" href="pages/samples/blank-page.html">Blank Page</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="pages/samples/login.html">Login</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="pages/samples/register.html">Register</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="pages/samples/error-404.html">404</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="pages/samples/error-500.html">500</a></li>
+                </ul>
+              </div>
+            </li>
+          </ul>
+        </nav>
+        <!-- partial -->
+        <div class="content-wrapper">
+          <!-- Add the form for adding a new product -->
           <div class="card-body">
             <div class="form-container">
               <h4 class="card-title">Add Product</h4>
-              <form action="" method="POST" id="productAddForm" enctype="multipart/form-data">
+              <form id="productAddForm" enctype="multipart/form-data">
                 <!-- Name Field -->
                 <div class="form-group">
                   <label for="productName">Name</label>
-                  <input type="text" id="productName" name="name" class="form-control"
-                    placeholder="Enter product name" required>
+                  <input type="text" id="productName" name="name" class="form-control" placeholder="Enter product name"
+                    required>
                   <div id="validateName" class="text-danger"></div>
                 </div>
+                <!-- Upload Button -->
                 <div class="form-group">
-                  <label for="productName">Image</label>
-                  <input type="file" id="productImage" name="image"  class="form-control"
-                    placeholder="Upload the image" required>
-                  <div id="image" class="text-danger"></div>
-                  <span></span>
+                  <label for="uploadButton">Images</label>
+                  <input type="file" id="productImage" name="images" class="form-control" multiple
+                    style="display: none;" placeholder="Upload product images">
+                  <button type="button" id="uploadButton" class="btn btn-primary">Upload Images</button>
+                  <div id="validateImage" class="text-danger"></div>
                 </div>
+                <!-- Display Cropped Images -->
+                <div id="croppedImageDisplay" style="border: 1px solid #ccc; display: none;">
+                  <img id="croppedImagePreview" src="" alt="Cropped Image"
+                    style="width: 100px; height: 100px; object-fit: cover; max-width: 100%; max-height: 100%; display: none;">
+                </div>
+
 
                 <!-- Category Field -->
                 <div class="form-group">
                   <label for="productCategory">Category</label>
-                  <!-- <input type="text" id="productCategory" name="category" class="form-control"
-                    placeholder="Enter product category" required> -->
-                    <select name="category" id="productCategory" class="form-control" required>
-                      <option value="">Select category</option>
+                  <select name="category" id="productCategory" class="form-control" required>
+                    <option value="">Select category</option>
                     <% categories.forEach(function(category) { %>
-                        <option value="<%= category._id %>"><%= category.name %></option>
-                    <% }); %>
-                    </select>
+                      <option value="<%= category._id %>">
+                        <%= category.name %>
+                      </option>
+                      <% }); %>
+                  </select>
                   <div id="validateCategory" class="text-danger"></div>
                 </div>
                 <!-- Price Field -->
@@ -168,101 +164,201 @@
                 </div>
                 <!-- Quantity Field -->
                 <div class="form-group">
-                  <label for="productQuantity">stock</label>
+                  <label for="productQuantity">Stock</label>
                   <input type="number" id="productQuantity" name="stock" class="form-control"
-                    placeholder="Enter product quantity" required>
-                  <div id="validateQuantity" class="text-danger"></div>
+                    placeholder="Enter product stock" required>
+                  <div id="validateStock" class="text-danger"></div>
                 </div>
                 <!-- Save Button -->
-                <button type="submit" class="btn btn-primary" id="formbutton">Add Product</button>
-                <button class="btn btn-primary">
-                  <a href="/admin/products">Back</a>
-                </button>
+                <div class="col-12 text-center">
+                  <button type="submit" class="btn btn-primary">Add Product</button>
+                  <button class="btn btn-primary">
+                    <a href="/admin/products" style="color: white;">Back</a>
+                  </button>
+                </div>
               </form>
             </div>
           </div>
+        </div>
+        <!-- content-wrapper ends -->
+        <!-- partial:partials/_footer.html -->
+        <!-- partial -->
       </div>
-      <!-- content-wrapper ends -->
-      <!-- partial:partials/_footer.html -->
-      <!-- partial -->
+      <!-- row-offcanvas ends -->
     </div>
-    <!-- row-offcanvas ends -->
+    <!-- page-body-wrapper ends -->
   </div>
-  <!-- page-body-wrapper ends -->
-</div>
-<!-- container-scroller -->
-<script>
-  document.addEventListener('DOMContentLoaded',()=>{
-    // event.preventDefault()
-    const form=document.getElementById('productAddForm')
-    form.addEventListener('submit',async(event)=>{
-      event.preventDefault()
-      
-      const name=document.getElementById('productName').value
-      const image=document.getElementById('productImage').files[0]
-      const category=document.getElementById('productCategory').value
-      const price =document.getElementById('productPrice').value
-      const stock=document.getElementById('productQuantity').value
-      const validName=/^(?=.*\S)(?=\D*$).*$/.test(name)
 
-       document.getElementById('validateName').innerText=''
-      if(!validName){
-          document.getElementById('validateName').innerText='name is not valid'
-          return 
+  <!-- Modal for Cropping -->
+  <div class="modal fade" id="cropModal" tabindex="-1" role="dialog" aria-labelledby="cropModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="cropModalLabel">Crop Image</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <img id="imageToCrop" src="" alt="Image to crop" style="max-width: 100%;">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" id="cropAndSave" class="btn btn-primary">Crop & Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Include jQuery -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+  <!-- Include Bootstrap JS -->
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Include SweetAlert2 JS -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <!-- Include Cropper.js JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      let cropper;
+      let croppedBlobs = [];
+      const resetModal = (url) => {
+        $('#cropModal').modal('show');
+
+      };
+
+
+      const initializeCropper = () => {
+        const image = document.getElementById('imageToCrop');
+        cropper = new Cropper(image, {
+          aspectRatio: 1,
+          viewMode: 1,
+        });
+      };
+
+
+      document.getElementById('uploadButton').addEventListener('click', () => {
+        document.getElementById('productImage').click();
+      });
+
+
+      document.getElementById('productImage').addEventListener('change', function (event) {
+        const files = event.target.files;
+
+        if (files && files.length >= 0) {
+          [...files].forEach(file => {
+            const reader = new FileReader();
+            reader.onload = () => {
+              $('#imageToCrop').attr('src', reader.result);
+              $('#cropModal').modal('show');
+            };
+            reader.readAsDataURL(file);
+          });
         }
-      const formData=new FormData()
-      formData.append('name',name)
-      formData.append('image',image)
-      formData.append('category',category)
-      formData.append('price',price)
-      formData.append('stock',stock)
-   
-      try{
-       
+      });
 
 
-      const response=await fetch('/admin/products/addproduct',{
-        method:'POST',
-        body:formData
-      })
-      if(!response.ok){
-        const errorData=await response.json()
-        if(response.status===409){
+      $('#cropModal').on('shown.bs.modal', function () {
+        initializeCropper();
+      }).on('hidden.bs.modal', function () {
+        cropper.destroy();
+        cropper = null;
+      });
+
+      document.getElementById('cropAndSave').addEventListener('click', function () {
+        const canvas = cropper.getCroppedCanvas({
+          width: 500,
+          height: 500,
+        });
+
+        canvas.toBlob((blob) => {
+          croppedBlobs.push(blob);
+          $('#cropModal').modal('hide');
           Swal.fire({
-          title:'Failed',
-          text:errorData.message,
-          icon:'failed',
-          confirmButtonText:'OK'
-        })
-        
-        }else{
-          throw new Error('Failed to create product')
+            icon: 'success',
+            title: 'Image cropped successfully!',
+            showConfirmButton: false,
+            timer: 1500
+          });
+
+          const url = URL.createObjectURL(blob)
+          const imagePreview = document.createElement('img');
+          imagePreview.src = url;
+          imagePreview.style.maxWidth = '100px';
+          imagePreview.style.maxHeight = '100px';
+          imagePreview.style.objectFit = 'cover';
+
+          const displayDiv = document.getElementById('croppedImageDisplay');
+          displayDiv.style.display = 'inline'
+          displayDiv.appendChild(imagePreview);
+
+        });
+      });
+
+      document.getElementById('productAddForm').addEventListener('submit', async function (event) {
+        event.preventDefault();
+        const name = document.getElementById('productName').value.trim();
+        const category = document.getElementById('productCategory').value.trim();
+        const price = document.getElementById('productPrice').value;
+        const stock = document.getElementById('productQuantity').value;
+        const validName = /^(?=.*\S)(?=\D*$).*$/.test(name);
+
+        document.getElementById('validateName').innerText = '';
+        if (!validName) {
+          document.getElementById('validateName').innerText = 'Name is not valid';
+          return;
         }
-      }else{
-         const successData=await response.json()
-         Swal.fire({
-          title:'Success',
-          text:successData.message,
-          icon:'success',
-          cofirmButtonText:'OK'
-         }).then(()=>{
-          window.location.reload()
-         })
-      }
-      }catch(err){
-        console.log('something')
 
-        Swal.fire({
-          title:'Failed',
-          text:err.message,
-          icon:'error',
-          confirmButtonText:'OK'
-        })
-      }
-    })
-  })
-</script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+        const formData = new FormData();
+        formData.append('name', name);
+        formData.append('category', category);
+        formData.append('price', price);
+        formData.append('stock', stock);
 
-<% include('../partials/footer.ejs') %>
+        croppedBlobs.forEach((blob, index) => {
+          console.log(blob)
+          formData.append(`croppedImage${index}`, blob, `croppedImage_${index}.jpg`);
+        });
 
+        // console.log(Object.fromEntries(formData));
+
+        try {
+          const response = await fetch('/admin/products/addproduct', {
+            method: 'POST',
+            body: formData,
+          });
+
+          if (response.ok) {
+            Swal.fire({
+              icon: 'success',
+              title: 'Product added successfully!',
+              showConfirmButton: false,
+              timer: 1500
+            }).then(() => {
+              window.location.href = '/admin/products';
+            });
+          } else {
+            const errorText = await response.text();
+            Swal.fire({
+              icon: 'error',
+              title: errorText.message,
+              text: errorText || 'Please try again later.',
+            });
+          }
+        } catch (error) {
+          Swal.fire({
+            icon: 'error',
+            title: error.message,
+            text: 'Please try again later.',
+          });
+        }
+      });
+    });
+  </script>
+
+  <% include('../partials/footer.ejs') %>

@@ -12,6 +12,10 @@ const Schema=new mongoose.Schema({
         type:Number,
         requried:true
     },
+    password:{
+        type:String,
+        required:true
+    },
     isBlocked:{
         type:Boolean,
         default:false

@@ -15,8 +15,6 @@ const userAuthRouter=require('./routes/userrouter/userAuthRouter')
 const userHomeRouter=require('./routes/userrouter/userHomeRouter')
 const Admin=require('./models/adminModel')
 const Category=require('./models/categoriesModel')
-const upload=require('./middlewares/uploadImageMiddleware')
-// Category.find({}).then((categories)=>{console.log(categories)})
 connectDB().then(async()=>{
     await Admin.createAdmin('shammasahamedp123@gmail.com','admin123')
 
@@ -37,9 +35,8 @@ app.use(session({
     resave: false,
     saveUninitialized: true
 }))
-// app.use('/users',)
 app.use('/admin',adminAuthRouter)
-app.use('/admin/products',upload.single('image'),adminProductsRouter)
+app.use('/admin/products',adminProductsRouter)
 
 app.use('/admin/categories',adminCategoriesRouter)
 app.use('/admin/users',adminUserRouter)

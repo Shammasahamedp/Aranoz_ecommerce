@@ -1,68 +1,480 @@
-<%include('../partials/header')%>
-<link rel="stylesheet" href="/css/css/style.css">
-<!-- endinject -->
-<link rel="shortcut icon" href="../../images/favicon.png" />
-<style>
-    body{
-        background-color: #6a008a;
+<%include ('../usersidepartials/header')%>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+ 
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" rel="stylesheet">
+  <link rel="icon" href="/img/favicon.png">
+
+  <link rel="stylesheet" href="/css/usercss/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/usercss/animate.css">
+
+
+  <link rel="stylesheet" href="/css/usercss/all.css">
+ 
+  <link rel="stylesheet" href="/css/usercss/style.css">
+  <style>
+    .otp-modal .modal-content {
+      background-color: #ff005a; /* Background color */
+      color: white; /* Text color */
+      border-radius: 8px; /* Rounded corners */
     }
-</style>
-<div class="container-scroller">
-    <div class="container-fluid page-body-wrapper">
-      <div class="row">
-        <div class="content-wrapper full-page-wrapper d-flex align-items-center auth-pages">
-          <div class="card col-lg-4 mx-auto">
-            <div class="card-body px-5 py-5">
-              <h3 class="card-title text-left mb-3">Login</h3>
-              <form>
-                <div class="form-group">
-                  <label>Username or email *</label>
-                  <input type="text" class="form-control p_input">
-                </div>
-                <div class="form-group">
-                  <label>Password *</label>
-                  <input type="text" class="form-control p_input">
-                </div>
-                <div class="form-group d-flex align-items-center justify-content-between">
-                  <div class="form-check">
-                      <label class="form-check-label">
-                        <input type="checkbox" class="form-check-input">
-                        Remember me
-                      </label>
+    .otp-input {
+      width: 40px;
+      height: 40px;
+      margin: 0 5px;
+      font-size: 24px;
+      text-align: center;
+      border: none;
+      border-radius: 4px;
+      outline: none;
+      background-color: #ffffff;
+      color: #ff005a;
+    }
+    .otp-input:focus {
+      box-shadow: 0 0 5px #ffffff;
+    }
+  </style>
+  <header class="main_menu home_menu">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-lg-12">
+          <nav class="navbar navbar-expand-lg navbar-light">
+            <a class="navbar-brand" href="index.html"> <img src="img/logo.png" alt="logo"> </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+              aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="menu_icon"><i class="fas fa-bars"></i></span>
+            </button>
+
+            <div class="collapse navbar-collapse main-menu-item" id="navbarSupportedContent">
+              <ul class="navbar-nav">
+                <li class="nav-item">
+                  <a class="nav-link" href="/">Home</a>
+                </li>
+               
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="blog.html" id="navbarDropdown_2" role="button"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    blog
+                  </a>
+                  <div class="dropdown-menu" aria-labelledby="navbarDropdown_2">
+                    <a class="dropdown-item" href="blog.html"> blog</a>
+                    <a class="dropdown-item" href="single-blog.html">Single blog</a>
                   </div>
-                  <a href="#" class="forgot-pass">Forgot password</a>
+                </li>
+
+                <li class="nav-item">
+                  <a class="nav-link" href="contact.html">Contact</a>
+                </li>
+              </ul>
+            </div>
+            <div class="hearer_icon d-flex">
+              <a id="search_1" href="javascript:void(0)"><i class="ti-search"></i></a>
+              <a href=""><i class="ti-heart"></i></a>
+              <div class="dropdown cart">
+                <a class="dropdown-toggle" href="#" id="navbarDropdown3" role="button" data-toggle="dropdown"
+                  aria-haspopup="true" aria-expanded="false">
+                  <i class="fas fa-cart-plus"></i>
+                </a>
+              </div>
+            </div>
+          </nav>
+        </div>
+      </div>
+    </div>
+
+  </header>
+  <!-- Header part end-->
+
+
+  <!-- breadcrumb start-->
+  <section class="breadcrumb breadcrumb_bg">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <div class="breadcrumb_iner">
+            <div class="breadcrumb_iner_item">
+              <h2>User SignUp</h2>
+              <!-- <p>Home <span>-</span> Login in</p> -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- breadcrumb start-->
+
+  <!--================login_part Area =================-->
+  <section class="login_part padding_top">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-lg-6 col-md-6">
+          <div class="login_part_text text-center">
+            <div class="login_part_text_iner">
+              <h2>Already have an account?</h2>
+              <!-- <p>There are advances being made in science and technology
+                                everyday, and a good example of this is the</p> -->
+              <a href="/user/login" class="btn_3">Login</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6 col-md-6">
+          <div class="login_part_form">
+            <div class="login_part_form_iner">
+              <h3>Welcome ! <br>
+                Please register now</h3>
+              <form class="row contact_form" action="/user/login" method="post" id="registerform"
+                >
+                <div class="col-md-12 form-group p_star">
+                  <input type="text" class="form-control" id="name" name="name" placeholder="Username" required>
                 </div>
-                <div class="text-center">
-                  <button type="submit" class="btn btn-primary btn-block enter-btn">Login</button>
+                    
+                  <div id="validateName" class="text-danger col-md-12 form-group p_star" style="display: none;">Name is not valid</div>
+
+                <div class="col-md-12 form-group p_star">
+                  <input type="email" class="form-control" id="email" name="email" placeholder="Email" required>
                 </div>
-                <div class="d-flex">
-                  <button class="btn btn-facebook mr-2 col">
-                      <i class="mdi mdi-facebook"></i> Facebook
+                <div id="validateEmail" class="text-danger col-md-12 form-group p_star" style="display: none;">Email is not valid</div>
+                <div class="col-md-12 form-group p_star">
+                  <input type="text" class="form-control" id="phonenumber" name="phonenumber"
+                    placeholder="Phone number" required>
+                </div>
+                <div id="validatePhone" class="text-danger col-md-12 form-group p_star" style="display: none;">Phone number is not valid</div>
+
+                <div class="col-md-12 form-group p_star">
+                  <input type="password" class="form-control" id="password" name="password" 
+                    placeholder="Password" required>
+                </div>
+                <div id="validatePassword" class="text-danger col-md-12 form-group p_star" style="display: none;">password is not valid</div>
+
+                <div class="col-md-12 form-group p_star">
+                  <input type="password" class="form-control" id="confirmpassword" name="confirmpassword"
+                    placeholder="Confirm Password" required>
+                </div>
+                <div>
+                  <p id="errorpassword" class="text-danger col-md-12 form-group p_star" style="display: none;">password doesn't match</p>
+                </div>
+                <div class="col-md-12 form-group">
+                  <!-- <div class="creat_account d-flex align-items-center">
+                                        <input type="checkbox" id="f-option" name="selector">
+                                        <label for="f-option">Remember me</label>
+                                    </div> -->
+                  <button type="submit" value="submit" class="btn_3">
+                    Sign up
                   </button>
-                  <button class="btn btn-google col">
-                      <i class="mdi mdi-google-plus"></i> Google plus
-                  </button>
+                  <!-- <a class="lost_pass" href="#">forget password?</a> -->
                 </div>
-                <p class="sign-up">Don't have an Account?<a href="#"> Sign Up</a></p>
               </form>
             </div>
           </div>
         </div>
-        <!-- content-wrapper ends -->
       </div>
-      <!-- row ends -->
     </div>
-    <!-- page-body-wrapper ends -->
+  </section>
+  <!--================login_part end =================-->
+
+  <!--::footer_part start::-->
+  <footer class="footer_part">
+    <div class="container">
+      <div class="row justify-content-around">
+        <div class="col-sm-6 col-lg-2">
+          <div class="single_footer_part">
+            <h4>Top Products</h4>
+            <ul class="list-unstyled">
+              <li><a href="">Managed Website</a></li>
+              <li><a href="">Manage Reputation</a></li>
+              <li><a href="">Power Tools</a></li>
+              <li><a href="">Marketing Service</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-sm-6 col-lg-2">
+          <div class="single_footer_part">
+            <h4>Quick Links</h4>
+            <ul class="list-unstyled">
+              <li><a href="">Jobs</a></li>
+              <li><a href="">Brand Assets</a></li>
+              <li><a href="">Investor Relations</a></li>
+              <li><a href="">Terms of Service</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-sm-6 col-lg-2">
+          <div class="single_footer_part">
+            <h4>Features</h4>
+            <ul class="list-unstyled">
+              <li><a href="">Jobs</a></li>
+              <li><a href="">Brand Assets</a></li>
+              <li><a href="">Investor Relations</a></li>
+              <li><a href="">Terms of Service</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-sm-6 col-lg-2">
+          <div class="single_footer_part">
+            <h4>Resources</h4>
+            <ul class="list-unstyled">
+              <li><a href="">Guides</a></li>
+              <li><a href="">Research</a></li>
+              <li><a href="">Experts</a></li>
+              <li><a href="">Agencies</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-sm-6 col-lg-4">
+          <div class="single_footer_part">
+            <h4>Newsletter</h4>
+            <p>Heaven fruitful doesn't over lesser in days. Appear creeping
+            </p>
+            <div id="mc_embed_signup">
+              <form target="_blank"
+                action="https://spondonit.us12.list-manage.com/subscribe/post?u=1462626880ade1ac87bd9c93a&amp;id=92a4423d01"
+                method="get" class="subscribe_form relative mail_part">
+                <input type="email" name="email" id="newsletter-form-email" placeholder="Email Address"
+                  class="placeholder hide-on-focus" onfocus="this.placeholder = ''"
+                  onblur="this.placeholder = ' Email Address '">
+                <button type="submit" name="submit" id="newsletter-submit"
+                  class="email_icon newsletter-submit button-contactForm">subscribe</button>
+                <div class="mt-10 info"></div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="copyright_part">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8">
+            <div class="copyright_text">
+              
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="footer_icon social_icon">
+              <ul class="list-unstyled">
+                <li><a href="#" class="single_social_icon"><i class="fab fa-facebook-f"></i></a></li>
+                <li><a href="#" class="single_social_icon"><i class="fab fa-twitter"></i></a></li>
+                <li><a href="#" class="single_social_icon"><i class="fas fa-globe"></i></a></li>
+                <li><a href="#" class="single_social_icon"><i class="fab fa-behance"></i></a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <!-- modal -->
+  <div class="modal fade otp-modal" id="otpModal" tabindex="-1" role="dialog" aria-labelledby="otpModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header border-0">
+          <h5 class="modal-title text-white" id="otpModalLabel">Verify OTP</h5>
+          <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p class="text-center text-white">Enter the OTP sent to your email/phone.</p>
+          <div class="d-flex justify-content-center">
+            <!-- OTP Input Fields -->
+            <input type="text" class="otp-input" maxlength="1" id="otp1" required>
+            <input type="text" class="otp-input" maxlength="1" id="otp2" required>
+            <input type="text" class="otp-input" maxlength="1" id="otp3" required>
+            <input type="text" class="otp-input" maxlength="1" id="otp4" required>
+            <input type="text" class="otp-input" maxlength="1" id="otp5" required>
+            <input type="text" class="otp-input" maxlength="1" id="otp6" required>
+          </div>
+          <div id="otpErrorMessage" class="text-danger text-center mt-3 text-white" style="display: none;"></div>
+
+        </div>
+        <div class="modal-footer border-0">
+          <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-light" id="verifyOtpButton">Verify</button>
+        </div>
+      </div>
+    </div>
   </div>
-  <!-- container-scroller -->
-  <!-- plugins:js -->
-  <script src="../../node_modules/jquery/dist/jquery.min.js"></script>
-  <script src="../../node_modules/popper.js/dist/umd/popper.min.js"></script>
-  <script src="../../node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
-  <script src="../../node_modules/perfect-scrollbar/dist/js/perfect-scrollbar.jquery.min.js"></script>
-  <!-- endinject -->
-  <!-- inject:js -->
-  <script src="../../js/off-canvas.js"></script>
-  <script src="../../js/misc.js"></script>
-  <!-- endinject -->
-<%include('../partials/header')%>
+  
+  <!-- Bootstrap JS, Popper.js, and jQuery -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script>
+    // Focus the next input on keyup
+    document.querySelectorAll('.otp-input').forEach((input, index, inputs) => {
+      input.addEventListener('keyup', (e) => {
+        if (e.target.value.length === 1 && index < inputs.length - 1) {
+          inputs[index + 1].focus();
+        }
+      });
+    });
+    document.getElementById('verifyOtpButton').addEventListener('click',async(event)=>{
+      event.preventDefault()
+      console.log('button clicked')
+      const otp1=document.getElementById('otp1').value
+      const otp2=document.getElementById('otp2').value
+      const otp3=document.getElementById('otp3').value
+      const otp4=document.getElementById('otp4').value
+      const otp5=document.getElementById('otp5').value
+      const otp6=document.getElementById('otp6').value
+      const email=document.getElementById('email').value.trim()
+      const otp=otp1+otp2+otp3+otp4+otp5+otp6
+     try{
+      console.log(email)
+      console.log(otp)
+        //  const formData=new FormData()
+        //  formData.append('email',email)
+        //  formData.append('otp',otp)
+      const response=await fetch('/user/verify-otp',{
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json'
+        },
+        body:JSON.stringify({
+          email:email,
+          otp:otp
+        })
+      })
+      if(response.ok){
+        const data=await response.json()
+        $('#otpModal').modal('hide');
+        Swal.fire({
+          title:'success',
+          text:data.message,
+          icon:'success',
+          confirmButtonText:'OK'
+        }).then(()=>{
+         
+          window.location.href='/user/login'
+        })
+      }else if(!response.ok){
+        const result=await response.json()
+      //   const errorMessage = result.message || 'Failed to verify OTP. Please try again.';
+      // document.getElementById('otpErrorMessage').innerText = errorMessage;
+      // document.getElementById('otpErrorMessage').style.display = 'block'
+      $('#otpModal').modal('hide');
+      Swal.fire({
+        title:'Error',
+        text:result.message,
+        icon:'error',
+        confirmButtonText:'OK'
+      })
+      }else{
+        throw new Error('An error occured in otp part')
+      }
+     }catch(err){
+      $('#otpModal').modal('hide');
+      Swal.fire({
+        title:'Error',
+        text:err.message,
+        icon:'error',
+        confirmButtonText:'OK'
+      })
+     }
+    })
+  </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('registerform')
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault()
+        
+        const name = document.getElementById('name').value.trim()
+        const email = document.getElementById('email').value.trim()
+        const phonenumber = document.getElementById('phonenumber').value.trim()
+        const password = document.getElementById('password').value.trim()
+        const confirmpassword = document.getElementById('confirmpassword').value.trim()
+        const errorpassword = document.getElementById('errorpassword')
+        console.log(name)
+        try {
+          
+          const validName = /^(?=.*\S)(?=\D*$).*$/.test(name)
+          const validEmail = /^[^\s@]+@gmail\.com$/.test(email)
+          const validPhone = /^[1-9]\d{9}$/.test(phonenumber)
+          const validPassword = /^.{6,}$/.test(password)
+          if (!validName) {
+            document.getElementById('validateName').style.display = 'inline'
+            return
+          } else {
+            document.getElementById('validateName').style.display = 'none'
+
+          } if (!validEmail) {
+            document.getElementById('validateEmail').style.display = 'inline'
+            return 
+          } else {
+            document.getElementById('validateName').style.display = 'none'
+
+          } if (!validPhone) {
+            console.log('button has clicked')
+            document.getElementById('validatePhone').style.display = 'inline'
+            return 
+          } else {
+            document.getElementById('validatePhone').style.display = 'none'
+
+          } if (!validPassword) {
+            document.getElementById('validatePassword').style.display = 'inline'
+            return 
+          } else {
+            document.getElementById('validatePassword').style.display = 'none'
+
+          }
+          if (password !== confirmpassword) {
+            errorpassword.style.display = 'inline'
+            return
+          }
+          console.log(name, email, phonenumber, password);
+
+          // const formData=new FormData()
+          // formData.append('name',name)
+          // formData.append('email',email)
+          // formData.append('phonenumber',phonenumber)
+          // formData.append('password',password)
+          // console.log(formData)
+          // console.log(Object.fromEntries(formData));
+          const response=await fetch('/user/signup',{
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({name,email,phonenumber,password})
+          })
+          if(response.ok&&response.status==200){
+            Swal.fire({
+              title:'OTP send to email',
+              text:'check your gmail',
+              icon:'success',
+              confirmButtonText:'OK'
+            }).then(()=>{
+              $('#otpModal').modal('show');
+            })
+          }else if(response.status==500){
+            Swal.fire({
+              title:'Failed',
+              text:'Error occured in OTP creation',
+              icon:'error',
+              confirmButtonText:'OK'
+            })
+          }
+
+        } catch (err) {
+          console.log(err.message)
+        }
+      })
+    })
+  </script>
+  <!--::footer_part end::-->
+
+  
+
+  <!-- Include Bootstrap JS -->
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Include SweetAlert2 JS -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <!-- Include Cropper.js JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+  
+  <%include ('../usersidepartials/footer')%>

@@ -162,7 +162,7 @@
                                
                                 <td>
                                     <button type="button" class="btn btn-icons btn-rounded btn-success"><a href="/admin/categories/edit/<%=category._id%>">Edit</a> </button>
-                                    <button type="button" class="btn btn-icons btn-rounded btn-warning categoryToggleBtn" data-id="<%=category._id%>">unlist </button>
+                                    <button type="button" class="btn btn-icons btn-rounded  <%= category.listed?'btn-warning':'btn-danger'%> categoryToggleBtn" data-id="<%=category._id%>"><%=category.listed?'unlist':'list'%> </button>
                                     <!-- <button type="button" class="btn btn-icons btn-rounded btn-danger"><a href="/admin/categories/delete/<%=category._id%>">Delete</a></button> -->
                                   </td>
                               </tr>
