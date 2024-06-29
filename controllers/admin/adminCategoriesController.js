@@ -39,9 +39,7 @@ const getCategoryEdit = async (req, res) => {
     res.status(500).send('Error fetching category')
   }
 }
-// const escapeRegex = function (string) {
-//   return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-// }
+
 const postCategoryEdit = async (req, res) => {
   // console.log(req.params.id)
   const categoryId = (req.params.id)
@@ -100,6 +98,7 @@ const postAddCategory=async (req,res)=>{
       const newCategory=new Category(document)
       console.log(newCategory)
       await newCategory.save()
+      console.log('after')
       res.status(200).json({message:'Added successfully'})
       return 
     }

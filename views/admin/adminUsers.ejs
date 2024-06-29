@@ -56,7 +56,7 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
+                <a class="nav-link" data-toggle="collapse" href="/admin/users" aria-expanded="false" aria-controls="ui-basic">
                   <span class="menu-title">Users</span>
                   <i class="menu-arrow"></i>
                   <i class="mdi mdi-crosshairs-gps menu-icon"></i>
@@ -164,9 +164,7 @@
                                     <%= user.phone %>
                                   </td>
                                 <td>
-                                    <!-- <button type="button" class="btn btn-icons btn-rounded btn-success"><a href="/admin/users/edit/<%=user._id%>">Edit</a> </button> -->
-                                    <button type="button" class="btn btn-icons btn-rounded btn-warning togglebutton" data-id="<%=user._id%>">Block</button> 
-                                    <!-- <button type="button" class="btn btn-icons btn-rounded btn-danger"><a href="/admin/categories/delete/<%=user._id%>">Delete</a></button> -->
+                                    <button type="button" class="btn btn-icons btn-rounded <%=user.isBlocked?'btn-danger':'btn-warning'%> togglebutton" data-id="<%=user._id%>"><%=user.isBlocked?'unblock':'block'%></button> 
                                   </td>
                               </tr>
                             <% }); %>
@@ -267,13 +265,13 @@
             const data=await response.json()
             
             if(data.isBlocked===true){
-              button.classList.remove('btn-danger')
-              button.classList.add('btn-warning')
-              button.textContent='Block'
-            }else {
               button.classList.remove('btn-warning')
               button.classList.add('btn-danger')
-              button.textContent='Unblock'
+              button.textContent='unblock'
+            }else {
+              button.classList.remove('btn-danger')
+              button.classList.add('btn-warning')
+              button.textContent='block'
             }
           }else{
             Swal.fire({

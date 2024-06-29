@@ -25,6 +25,6 @@ adminProductRouter.get('/addproduct',adminMiddleware.isAuthenticated,adminProduc
 adminProductRouter.post('/addproduct',adminMiddleware.isAuthenticated,upload.any(), adminProductController.postAddProduct)
 adminProductRouter.get('/search',adminMiddleware.isAuthenticated,adminProductController.getSearch)
 adminProductRouter.get('/edit/:id',adminMiddleware.isAuthenticated,adminProductController.getEditProduct)
-adminProductRouter.post('/edit/:id',adminMiddleware.isAuthenticated,adminProductController.postEditProduct)
+adminProductRouter.post('/edit/:id',adminMiddleware.isAuthenticated,upload.any(),adminProductController.postEditProduct)
 adminProductRouter.post('/toggle/:id',adminMiddleware.isAuthenticated,adminProductController.toggleProduct)
 module.exports= adminProductRouter

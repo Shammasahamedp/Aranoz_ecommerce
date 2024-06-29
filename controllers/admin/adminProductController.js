@@ -8,7 +8,7 @@ const getProducts = async (req, res) => {
     const products = await Product.find({})
       .skip((page - 1) * limit)
       .limit(limit)
-      console.log(products)
+      // console.log(products)
     const totalCount = await Product.countDocuments();
     res.render('admin/adminProducts', {
       products,
@@ -102,7 +102,7 @@ const getEditProduct = async (req, res) => {
     const productId = req.params.id
     const product = await Product.findById(productId)
     if (!product) {
-      res.status(404).send('products not found')
+      res.status(404).redirect('/admin/products')
     } else {
       res.status(200).render('admin/adminProductsEdit', {
         product, categories
@@ -115,52 +115,51 @@ const getEditProduct = async (req, res) => {
 }
 const postEditProduct = async (req, res) => {
   try {
-    const productId = req.params.id
-    const { name, productCategory, price, stock } = req.body
-    const image = req.file
-    console.log(productCategory)
-    const foundCategory = await Category.findById(productCategory)
+    const productId = req.params.id;
+    const { name, categoryId, price, stock } = req.body;
+    let images = [];
 
+    if (req.files && req.files.length > 0) {
+      images = req.files.map(file =>`/images/uploads/${file.filename}`);
+    }
+
+    const foundCategory = await Category.findById(categoryId);
     if (!foundCategory) {
-      res.status(404).json({ message: 'category not found' })
-      return
+      return res.status(404).json({ message: 'Category not found' });
     }
-    const categoryName = foundCategory.name
+
     const category = {
-      id: productCategory,
-      name: categoryName
-    }
+      id: categoryId,
+      name: foundCategory.name
+    };
+
     const exists = await Product.findOne({
       name: { $regex: `^${name}$`, $options: 'i' },
       _id: { $ne: productId }
     });
 
-    console.log(exists)
     if (exists) {
-      res.status(409).json({ message: 'product already exists' })
-      return
+      return res.status(409).json({ message: 'Product already exists' });
     }
-    if (req.file) {
-      const updatedData = await Product.findByIdAndUpdate(productId, { name, category, price, stock, imageUrl: image.filename }, { new: true })
-      console.log(updatedData)
-      if (updatedData) {
-        res.status(200).json({ message: 'product has updated' })
-      } else if (!updatedData || updatedData == null) {
-        res.status(404).json({ message: 'product not found' })
-      }
+
+    let updateObject = { name, category, price, stock };
+    if (images.length > 0) {
+      updateObject.imageUrl = images;
+    }
+
+    const updatedData = await Product.findByIdAndUpdate(productId, updateObject, { new: true });
+
+    if (updatedData) {
+      return res.status(200).json({ message: 'Product has been updated', data: updatedData });
     } else {
-      const updatedData = await Product.findByIdAndUpdate(productId, { name, category, price, stock }, { new: true })
-      if (updatedData) {
-        res.status(200).json({ message: 'product has updated' })
-      } else if (!updatedData || updatedData == null) {
-        res.status(404).json({ message: 'product not found' })
-      }
+      return res.status(404).json({ message: 'Product not found' });
     }
   } catch (err) {
-    console.log(err)
-    res.status(500).json({ message: 'error in updating product' })
+    console.error('Error in updating product:', err);
+    return res.status(500).json({ message: 'Error in updating product' });
   }
-}
+};
+
 const toggleProduct = async (req, res) => {
   try {
     const productId = req.params.id

@@ -1,5 +1,4 @@
 const User=require('../../models/usersModel')
-// const bcrypt=require('bcryptjs')
 const otpService=require('../../utils/otpServices')
 const {sendOTP}=require('../../utils/emailService')
 const bcrypt=require('bcryptjs')
@@ -22,14 +21,17 @@ const postLogin=async(req,res)=>{
     try{
         const {email,password}=req.body
         const user=await User.findOne({email})
-        if(user){
+        if(user&&!user.isBlocked){
             isMatch=await bcrypt.compare(password,user.password)
             if(user.email===email&&isMatch){
                 req.session.user=user._id
                 res.status(200).json({message:'login success'})
             }
+        }else if(user.isBlocked){
+            res.status(403).json({message:'user is blocked by admin cannot enter'})
+            return 
         }else if(!user){
-            res.status(400).json({message:'user not found'})
+            res.status(400).json({message:'user is not found'})
         }else{
             throw new Error('something went wrong')
         }

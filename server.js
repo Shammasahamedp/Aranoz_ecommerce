@@ -21,7 +21,7 @@ connectDB().then(async()=>{
 }).catch(err=>{
     console.error('Failed to connect to the database:',err)
 })
-const port = process.env.PORT||3000
+const port = process.env.PORT
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -39,6 +39,7 @@ app.use('/admin',adminAuthRouter)
 app.use('/admin/products',adminProductsRouter)
 
 app.use('/admin/categories',adminCategoriesRouter)
+
 app.use('/admin/users',adminUserRouter)
 app.use('/user',userAuthRouter)
 app.use('/',userHomeRouter)
