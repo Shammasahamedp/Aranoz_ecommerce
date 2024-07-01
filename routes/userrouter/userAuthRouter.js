@@ -11,4 +11,5 @@ userAuthRouter.post('/login',userMiddleware.isUserNotAuthenticated,userAuthContr
 userAuthRouter.get('/signup',userMiddleware.isUserNotAuthenticated,userAuthController.getSignup)
 userAuthRouter.post('/signup',userMiddleware.isUserNotAuthenticated,userAuthController.postSignup,sendOtpMiddleware)
 userAuthRouter.post('/verify-otp',userMiddleware.isUserNotAuthenticated,userAuthController.verifyOTP)
+userAuthRouter.post('/logout',userMiddleware.isUserAuthenticated,userAuthController.postLogout)
 module.exports=userAuthRouter

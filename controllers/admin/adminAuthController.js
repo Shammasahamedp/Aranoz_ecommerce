@@ -11,7 +11,7 @@ const adminLogout=function (req,res){
 
 const adminLogin= async function (req,res){
     const {password,email}=req.body
-    console.log(email,password)
+    // console.log(email,password)
     try{
         const admin=await Admin.findOne({email})
         // console.log(admin)

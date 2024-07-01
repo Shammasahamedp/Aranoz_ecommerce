@@ -20,19 +20,29 @@ const getLogin= (req,res)=>{
 const postLogin=async(req,res)=>{
     try{
         const {email,password}=req.body
+        console.log(req.body)
         const user=await User.findOne({email})
-        if(user&&!user.isBlocked){
+        // console.log(user)
+        if(!user){
+            res.status(400).json({message:'user is not found'})}
+        else if(user&&!user.isBlocked){
             isMatch=await bcrypt.compare(password,user.password)
             if(user.email===email&&isMatch){
                 req.session.user=user._id
-                res.status(200).json({message:'login success'})
+                res.status(200).json({message:'successfull'})
+
+            }else{
+                console.log('password error')
+                res.status(404).json({message:'incorrect email or password'})
             }
+            console.log(user.isBlocked)
         }else if(user.isBlocked){
+            // console.log(user.isBlocked)
+
             res.status(403).json({message:'user is blocked by admin cannot enter'})
             return 
-        }else if(!user){
-            res.status(400).json({message:'user is not found'})
-        }else{
+        } 
+        else {
             throw new Error('something went wrong')
         }
     }catch(err){
@@ -53,6 +63,7 @@ const postSignup=async(req,res,next)=>{
     const existingUser=await User.findOne({email})
     if(existingUser){
         return res.status(400).json({message:'User already exists'})
+
     }
     console.log(name)
     console.log(email)
@@ -90,10 +101,22 @@ const verifyOTP=async (req,res)=>{
         res.status(500).json({message:'Error in verify otp'})
     }
 }
+const postLogout=async (req,res)=>{
+    try{
+        console.log('thisis logout')
+        delete req.session.user
+        res.status(200).json({message:'successfully logout'})
+        
+    }catch(err){
+        console.error('Error is logout:',err)
+        res.status(500).json({message:'error in logout'})
+    }
+}
 module.exports={
     getLogin,
     getSignup,
     postSignup,
     verifyOTP,
-    postLogin
+    postLogin,
+    postLogout
 }

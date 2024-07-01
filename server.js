@@ -13,6 +13,8 @@ const adminCategoriesRouter=require('./routes/adminrouter/adminCategoriesRouter'
 const adminUserRouter=require('./routes/adminrouter/adminUserRouter')
 const userAuthRouter=require('./routes/userrouter/userAuthRouter')
 const userHomeRouter=require('./routes/userrouter/userHomeRouter')
+const unAuthUserRouter=require('./routes/userrouter/unAuthHomeRouter')
+const userProductRouter=require('./routes/userrouter/userProductRouter')
 const Admin=require('./models/adminModel')
 const Category=require('./models/categoriesModel')
 connectDB().then(async()=>{
@@ -42,7 +44,9 @@ app.use('/admin/categories',adminCategoriesRouter)
 
 app.use('/admin/users',adminUserRouter)
 app.use('/user',userAuthRouter)
-app.use('/',userHomeRouter)
+app.use('/user/dashboard',userHomeRouter)
+app.use('/user/product',userProductRouter)
+app.use('/',unAuthUserRouter)
 // app.get('*', (req, res) => {
 //     res.render('404/404error')
 // })

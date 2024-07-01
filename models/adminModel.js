@@ -18,7 +18,7 @@ Schema.statics.createAdmin=async function (email,password){
         password:hashedPassword
        }) 
        await newAdmin.save()
-       console.log('new admin created successfully')
+    //    console.log('new admin created successfully')
     }catch(error){
         console.error('error creating admin:',error)
     }
