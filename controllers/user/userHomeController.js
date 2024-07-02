@@ -25,7 +25,7 @@ const getHome= async(req,res)=>{
             }
         }
     ])
-        console.log(products)
+        
 
         res.status(200).render('users/home',{products})
     }catch(err){

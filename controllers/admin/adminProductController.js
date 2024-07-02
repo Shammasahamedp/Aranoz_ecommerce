@@ -39,10 +39,7 @@ const getAddProduct = async (req, res) => {
 const postAddProduct = async (req, res) => {
   try {
     const { name, category, price, stock } = req.body
-    console.log(name)
-    console.log(req.body)
-    console.log('this is post add product')
-    console.log(category)
+  
     const images = req.files;
     const imageUrls=images.map(image=>`/images/uploads/${image.filename}`)
     const exists=await Product.findOne({name:new RegExp(`^${name}$`, 'i')})
@@ -52,7 +49,6 @@ const postAddProduct = async (req, res) => {
     } else {
 
       const selectedCategory = await Category.findById(category)
-      console.log(selectedCategory)
       if (selectedCategory) {
         const newProduct = new Product({
           name: name,
