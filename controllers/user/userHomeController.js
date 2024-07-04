@@ -1,4 +1,5 @@
 const Product=require('../../models/productsModel')
+const User = require('../../models/usersModel')
 const redirectHome=function (req,res){
     try{
         res.status(302).redirect('/home')
@@ -56,8 +57,10 @@ const getAuthHome=async(req,res)=>{
         res.status(500).redirect('/user/error')
     }
 }
+
 module.exports={
     getHome,
     redirectHome,
-    getAuthHome
+    getAuthHome,
+   
 }

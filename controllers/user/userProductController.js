@@ -5,11 +5,15 @@ const getProduct=async (req,res)=>{
         const productId=req.params.id
         const product= await Product.findById(productId)
         const category=await Category.findById(product.category.id)
-        console.log(product.name)
-        console.log(product.category)
+        console.log(req.session.user)
         
 
-        res.status(200).render('products/product',{product,category})
+        res.status(200).render('products/product',{
+            product,
+            pageTitle:product.name,
+            category,
+            breadcrumbItems:[{name:'Dashboard',url:'/user/dashboard'},{name:'product'},{name:product.name}]
+        })
         if(!product){
             res.status(404).send('product not found')
         }

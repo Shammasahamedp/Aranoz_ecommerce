@@ -1,4 +1,5 @@
 const express = require('express')
+require('dotenv').config()
 const app = express()
 const path = require('path')
 const bodyParser = require('body-parser')
@@ -17,6 +18,9 @@ const unAuthUserRouter=require('./routes/userrouter/unAuthHomeRouter')
 const userProductRouter=require('./routes/userrouter/userProductRouter')
 const Admin=require('./models/adminModel')
 const Category=require('./models/categoriesModel')
+const User=require('./models/usersModel')
+const passport=require('passport')
+const GoogleStrategy=require('passport-google-oauth20').Strategy
 connectDB().then(async()=>{
     await Admin.createAdmin('shammasahamedp123@gmail.com','admin123')
 
@@ -37,6 +41,44 @@ app.use(session({
     resave: false,
     saveUninitialized: true
 }))
+app.use(passport.initialize())
+app.use(passport.session())
+passport.use(new GoogleStrategy({
+    clientID:process.env.GOOGLE_CLIENT_ID,
+    clientSecret:process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL:'http://localhost:3000/user/auth/google/callback',
+},async(accessToken,refreshToken,profile,done)=>{
+    try{
+        console.log('this is passport callback')
+        let user=await User.findOne({googleId:profile.id})
+        if(!user){
+            user=new User({
+                googleId:profile.id,
+                name:profile.displayName,
+                email:profile.emails[0].value
+            })
+            await user.save()
+            req.session.user=profile.id
+            console.log(user)
+            console.log('this is passport callback')
+        }
+        return done(null,user)
+    }catch(err){
+        return done(err,null)
+    }
+}))
+passport.serializeUser((user, done) => {
+    done(null, user._id); 
+});
+
+passport.deserializeUser( async (id, done) => {
+    try{
+        const user=await User.findById(id)
+        done(null,user)
+    }catch(err){
+        done(err,null)
+    }
+});
 app.use('/admin',adminAuthRouter)
 app.use('/admin/products',adminProductsRouter)
 

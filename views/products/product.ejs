@@ -30,9 +30,9 @@
     <!-- style CSS -->
     <!-- <link rel="stylesheet" href="css/style.css"> -->
     <link rel="stylesheet" href="/css/usercss/style.css">
-    </head>
+    <title>aranoz|<%=product.name%></title>
 
-    <body>
+   
         <!--::header part start::-->
         <header class="main_menu home_menu">
             <div class="container">
@@ -135,7 +135,19 @@
                         <div class="breadcrumb_iner">
                             <div class="breadcrumb_iner_item">
                                 <h2>Shop Single</h2>
-                                <p>Home <span>-</span> Shop Single</p>
+                                <h1><%=pageTitle%></h1>
+                                <p>
+                                    <% breadcrumbItems.forEach(function(item, index) { %>
+                                        <% if (item.url) { %>
+                                            <a href="<%= item.url %>"><%= item.name %></a>
+                                        <% } else { %>
+                                            <%= item.name %>
+                                        <% } %>
+                                        <% if (index < breadcrumbItems.length - 1) { %>
+                                            <span> - </span>
+                                        <% } %>
+                                    <% }) %>
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -156,8 +168,10 @@
                                     <img src="/img/product/single-product/product_1.png" />
                                 </div> -->
                                 <% product.imageUrl.forEach(function (image){%>
-                                    <div data-thumb="<%=image%>">
-                                        <img src="<%=image%>" />
+                                    <div  data-thumb="<%=image%>">
+                                        <div class="productImage">
+                                            <img class="image" src="<%=image%>" />
+                                        </div>
                                     </div>
                                     <%})%>
                                 <!-- <div data-thumb="/img/product/single-product/product_1.png">
@@ -791,7 +805,32 @@
             </div>
         </footer>
         <!--::footer_part end::-->
+        
+        <script>
+           
+    document.addEventListener('DOMContentLoaded', () => {
+        const images = document.querySelectorAll('.image');
 
+        images.forEach(image => {
+            const container = image.closest('.container'); 
+
+            image.addEventListener('mousemove', (event) => {
+                const rect = container.getBoundingClientRect(); 
+                const x = event.clientX - rect.left; 
+                const y = event.clientY - rect.top;
+
+                image.style.transformOrigin = `${x}px ${y}px`;
+                image.style.transform = "scale(2)";
+            });
+
+            image.addEventListener('mouseleave', () => {
+                image.style.transform = "scale(1)";
+            });
+        });
+    });
+</script>
+
+        </script>
         <!-- jquery plugins here-->
         <!-- jquery -->
         <!-- <script src="/js/jquery-1.12.1.min.js"></script> -->

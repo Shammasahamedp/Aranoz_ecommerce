@@ -12,7 +12,7 @@ async function hashPassword(password){
 }
 const getLogin= (req,res)=>{
     try{
-        res.status(200).render('auth/login')
+        res.status(200).render('auth/login',{errorMessage:null})
     }catch(err){
         res.status(500).send('Error got login')
     }
@@ -52,36 +52,38 @@ const postLogin=async(req,res)=>{
 }
 const getSignup=(req,res)=>{
     try{
+        console.log('hello')
         res.status(200).render('auth/signup')
     }catch(err){
         res.status(500).send('Error get signup')
     }
 }
 const postSignup=async(req,res,next)=>{
-    const {name,email,phonenumber,password}=req.body
+    try{
+        console.log('this is postsignup')
+        const {name,email,phonenumber,password}=req.body
     console.log('asdf')
     const existingUser=await User.findOne({email})
     if(existingUser){
         return res.status(400).json({message:'User already exists'})
 
     }
-    console.log(name)
-    console.log(email)
-    console.log(phonenumber)
     req.session.name=name
     req.session.email=email
-    console.log(req.session.email)
     req.session.phone=phonenumber
     req.session.password=password
     const otp=otpService.generateOtp()
     req.session.otp=otp
     next()
+    }catch(err){
+        console.error(err)
+        res.status(500).json({message:'error in singup'})
+    }
 }
 
 const verifyOTP=async (req,res)=>{
     const {email,otp}=req.body
     console.log(email,otp)
-    console.log('this is the ..........')
     console.log(req.session)
     try{
         if(req.session.email!==email){
@@ -101,22 +103,67 @@ const verifyOTP=async (req,res)=>{
         res.status(500).json({message:'Error in verify otp'})
     }
 }
+const resendOtp=async (req,res,next)=>{
+    try{
+        console.log('first otp:',req.session.otp)
+        console.log(req.session.email)
+        console.log(req.session.name)
+        console.log(req.session.password)
+        console.log('backend')
+         req.session.otp=otpService.generateOtp()
+         console.log('last otp:',req.session.otp)
+    //    res.status(200).json({message:'recieved in backend'})
+       next()
+    }catch(err){
+        res.status(200).json({message:'error in resend otp'})
+    }
+}
 const postLogout=async (req,res)=>{
     try{
         console.log('thisis logout')
         delete req.session.user
         res.status(200).json({message:'successfully logout'})
-        
     }catch(err){
         console.error('Error is logout:',err)
         res.status(500).json({message:'error in logout'})
     }
 }
+    const googleSignFail=async (req,res)=>{
+        try{
+                conosle.log('it reached in  the google sign fail')
+                res.render('auth/login',{errorMessage:'Failed to login through google'})
+        }catch(err){
+            console.error('error in login',err)
+            res.redirect('/user/login')
+        }
+    }
+    const googleAuthenticated = async (req,res)=>{
+        req.session.user=req.user._id  ;
+        console.log('reached home  and we have to store something in session');
+        try{
+           const data=  await User.findById(req.user._id)
+           console.log(data.name,data.email,data._id)
+        if(data&&data.isBlocked===false){
+           res.redirect('/user/dashboard')
+        }else if(data&&data.isBlocked===true){
+           res.status(303).redirect('/user/login')
+        }else{
+           res.status(404).redirect('user/login')
+        }
+        }catch(err){
+            console.error(err)
+            
+        }
+       
+       }
 module.exports={
     getLogin,
     getSignup,
     postSignup,
     verifyOTP,
     postLogin,
-    postLogout
+    postLogout,
+    resendOtp,
+    googleSignFail,
+    googleAuthenticated
 }

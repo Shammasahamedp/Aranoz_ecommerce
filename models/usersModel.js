@@ -10,11 +10,15 @@ const Schema=new mongoose.Schema({
     },
     phone:{
         type:Number,
-        requried:true
+        requried:false
+    },
+    googleId:{
+        type:String,
+        required:false
     },
     password:{
         type:String,
-        required:true
+        required:false
     },
     isBlocked:{
         type:Boolean,
