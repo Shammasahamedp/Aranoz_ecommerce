@@ -55,13 +55,15 @@ passport.use(new GoogleStrategy({
             user=new User({
                 googleId:profile.id,
                 name:profile.displayName,
-                email:profile.emails[0].value
+                email:profile.emails[0].value,
+                isBlocked:false
             })
             await user.save()
-            req.session.user=profile.id
+            // req.session.user=profile.id
             console.log(user)
             console.log('this is passport callback')
         }
+        
         return done(null,user)
     }catch(err){
         return done(err,null)

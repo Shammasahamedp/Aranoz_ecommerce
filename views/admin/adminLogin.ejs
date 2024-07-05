@@ -1,30 +1,49 @@
 <%- include('../partials/header.ejs')%>
-<link rel="stylesheet" href="/public/css/common.css">
-<link rel="stylesheet" href="/public/css/adminLogin.css">
-    <div class="container vh-100 d-flex justify-content-center align-items-center">
-        <div class="card p-4 shadow-sm">
-            <h3 class="text-center">Admin Login</h3>
-            <form action="/admin/login" method="post" class="mt-3" id="adminLoginForm">
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" class="form-control" id="email" name="email" required>
+    <link rel="stylesheet" href="../../public/css/admincss/materialdesignicons.min.css">
+    <link rel="stylesheet" href="../../public/css/admincss/style.css">
+    <link rel="stylesheet" href="../../public/css/admincss/vendor.bundle.base.css">
+    <div class="container-scroller">
+        <div class="container-fluid page-body-wrapper full-page-wrapper">
+          <div class="row w-100 m-0">
+            <div class="content-wrapper full-page-wrapper d-flex align-items-center auth login-bg">
+              <div class="card col-lg-4 mx-auto">
+                <div class="card-body px-5 py-5">
+                  <h3 class="card-title text-left mb-3">Login</h3>
+                  <form action="/admin/login" method="post" id="adminLoginForm">
+                    <div class="form-group">
+                      <label for="email">Username or email *</label>
+                      <input type="email"  class="form-control p_input" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                      <label for="password">Password *</label>
+                      <input type="password" class="form-control p_input" id="password" name="password" required>
+                    </div>
+                    <div class="form-group d-flex align-items-center justify-content-between">
+                      <div class="form-check">
+                        <label class="form-check-label">
+                      </div>
+                    </div>
+                    <div class="text-center">
+                      <button type="submit" class="btn btn-primary btn-block enter-btn">Login</button>
+                    </div>
+              
+                  </form>
                 </div>
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" class="form-control" id="password" name="password" required>
-                </div>
-                <div class="container-login100-form-btn text-center py-4">
-                    <button type="submit" class="btn btn-primary btn-block">Login</button>
-                </div>
-                
-            </form>
-            <div id="loginMessage" class="text-center"></div>
+              </div>
+            </div>
+            <!-- content-wrapper ends -->
+          </div>
+          <!-- row ends -->
         </div>
-    </div>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="../../public/js/adminLogin.js">
-      
-    </script>
+        <!-- page-body-wrapper ends -->
+      </div>
+
+   
+      <script src="/js/vendor.bundle.base.js"></script>
+      <script src="/js/off-canvas.js"></script>
+      <script src="/js/hoverable-collapse.js"></script>
+      <script src="/js/misc.js"></script>
+      <script src="/js/settings.js"></script>
+      <script src="/js/todolist.js"></script>
+     
     <%- include('../partials/footer.ejs')%>

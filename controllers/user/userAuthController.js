@@ -12,7 +12,7 @@ async function hashPassword(password){
 }
 const getLogin= (req,res)=>{
     try{
-        res.status(200).render('auth/login',{errorMessage:null})
+        res.status(200).render('auth/login',{errorMessage:req.query.errorMessage})
     }catch(err){
         res.status(500).send('Error got login')
     }
@@ -121,7 +121,12 @@ const resendOtp=async (req,res,next)=>{
 const postLogout=async (req,res)=>{
     try{
         console.log('thisis logout')
-        delete req.session.user
+      req.session.destroy((err)=>{
+        if(err){
+            console.error('error in logut',err)
+        }
+      })
+      res.clearCookie('connect.sid')
         res.status(200).json({message:'successfully logout'})
     }catch(err){
         console.error('Error is logout:',err)
@@ -130,8 +135,10 @@ const postLogout=async (req,res)=>{
 }
     const googleSignFail=async (req,res)=>{
         try{
-                conosle.log('it reached in  the google sign fail')
-                res.render('auth/login',{errorMessage:'Failed to login through google'})
+              
+            
+                    res.redirect('/user/login?errorMessage=User%20is%20blocked%20by%20admin')
+                
         }catch(err){
             console.error('error in login',err)
             res.redirect('/user/login')
@@ -141,14 +148,23 @@ const postLogout=async (req,res)=>{
         req.session.user=req.user._id  ;
         console.log('reached home  and we have to store something in session');
         try{
-           const data=  await User.findById(req.user._id)
-           console.log(data.name,data.email,data._id)
-        if(data&&data.isBlocked===false){
+           const user=  await User.findById(req.user._id)
+           console.log(user.name,user.email,user._id)
+        if(user&&user.isBlocked===false){
            res.redirect('/user/dashboard')
-        }else if(data&&data.isBlocked===true){
-           res.status(303).redirect('/user/login')
+        }else if(user&&user.isBlocked===true){
+        //    res.status(303).redirect('/user/login')
+        req.logout(function (err){
+            if(err){
+                console.error('error in login',err)
+                return res.status(500).redirect('/user/login')
+            }else{
+                res.redirect('/user/login?errorMessage=User%20is%20blocked%20by%20admin')
+            }
+
+        })
         }else{
-           res.status(404).redirect('user/login')
+           res.status(404).redirect('/user/login')
         }
         }catch(err){
             console.error(err)
