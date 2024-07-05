@@ -1,4 +1,6 @@
 <% include ('../usersidepartials/header')%>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/themify-icons/0.1.2/css/themify-icons.min.css"
         integrity="sha384-XXXXXX" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
@@ -49,7 +51,7 @@
                             <div class="collapse navbar-collapse main-menu-item" id="navbarSupportedContent">
                                 <ul class="navbar-nav">
                                     <li class="nav-item">
-                                        <a class="nav-link" href="index.html">Home</a>
+                                        <a class="nav-link" href="/home">Home</a>
                                     </li>
                                     <li class="nav-item dropdown">
                                         <a class="nav-link dropdown-toggle" href="blog.html" id="navbarDropdown_1"
@@ -63,21 +65,24 @@
 
                                         </div>
                                     </li>
-                                    <li class="nav-item dropdown">
-                                        <a class="nav-link dropdown-toggle" href="blog.html" id="navbarDropdown_3"
-                                            role="button" data-toggle="dropdown" aria-haspopup="true"
-                                            aria-expanded="false">
-                                            pages
-                                        </a>
-                                        <div class="dropdown-menu" aria-labelledby="navbarDropdown_2">
-                                            <a class="dropdown-item" href="login.html"> login</a>
-                                            <a class="dropdown-item" href="tracking.html">tracking</a>
-                                            <a class="dropdown-item" href="checkout.html">product checkout</a>
-                                            <a class="dropdown-item" href="cart.html">shopping cart</a>
-                                            <a class="dropdown-item" href="confirmation.html">confirmation</a>
-                                            <a class="dropdown-item" href="elements.html">elements</a>
-                                        </div>
-                                    </li>
+                                    <% if(userSession) {%>
+                                        <li class="nav-item dropdown">
+                                            <a class="nav-link dropdown-toggle" href="blog.html" id="navbarDropdown_3"
+                                                role="button" data-toggle="dropdown" aria-haspopup="true"
+                                                aria-expanded="false">
+                                                Account
+                                            </a>
+                                            <div class="dropdown-menu" aria-labelledby="navbarDropdown_2">
+                                                <a class="dropdown-item" href="/user/profile"> Profile</a>
+                                                <a class="dropdown-item" href="/user/address">Address</a>
+                                                <a class="dropdown-item" href="/user/wishlist">Wishlist </a>
+                                                <a class="dropdown-item" href="/user/wallet">Wallet</a>
+                                                <a class="dropdown-item" href="/user/orders">Orders</a>
+                                                <a class="dropdown-item" onclick="logout()">Logout</a>
+                                               
+                                            </div>
+                                        </li>
+                                    <%}%>
                                     <li class="nav-item dropdown">
                                         <a class="nav-link dropdown-toggle" href="blog.html" id="navbarDropdown_2"
                                             role="button" data-toggle="dropdown" aria-haspopup="true"
@@ -665,21 +670,21 @@
                     <div class="col-lg-12">
                         <div class="best_product_slider owl-carousel">
                             <div class="single_product_item">
-                                <img src="img/product/product_1.png" alt="">
+                                <img src="/img/product/product_1.png" alt="">
                                 <div class="single_product_text">
                                     <h4>Quartz Belt Watch</h4>
                                     <h3>$150.00</h3>
                                 </div>
                             </div>
                             <div class="single_product_item">
-                                <img src="img/product/product_2.png" alt="">
+                                <img src="/img/product/product_2.png" alt="">
                                 <div class="single_product_text">
                                     <h4>Quartz Belt Watch</h4>
                                     <h3>$150.00</h3>
                                 </div>
                             </div>
                             <div class="single_product_item">
-                                <img src="img/product/product_3.png" alt="">
+                                <img src="/img/product/product_3.png" alt="">
                                 <div class="single_product_text">
                                     <h4>Quartz Belt Watch</h4>
                                     <h3>$150.00</h3>
@@ -829,7 +834,41 @@
         });
     });
 </script>
+        <script>
+           async function logout(){
+            console.log('button has clicked')
+               try{
+                const response=await fetch('/user/logout',{
+                    method:'POST',
+                    headers:{
+                        'Content-Type':'application/json'
+                    }
+                })
 
+                if(response.ok){
+                    const result=await response.json()
+                    Swal.fire({
+                        title:'success',
+                        text:result.message,
+                        icon:'success',
+                        confirmButtonText:'OK'
+                    }).then(()=>{
+                        window.location.href='/home'
+                    })
+                }
+                else{
+                    const result=await response.json()
+                    Swal.fire({
+                        title:'failed',
+                        text:result.message
+                    })
+                }
+               }catch(err){
+                console.error('error occured in logout',err)
+
+               }
+            }
+        </script>
         </script>
         <!-- jquery plugins here-->
         <!-- jquery -->
@@ -881,5 +920,7 @@
         <script src="/js/theme.js"></script>
         <!-- <script src="js/custom.js"></script> -->
         <script src="/js/custom.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+
 
         <% include ('../usersidepartials/footer')%>

@@ -125,9 +125,10 @@ const postLogout=async (req,res)=>{
         if(err){
             console.error('error in logut',err)
         }
-      })
-      res.clearCookie('connect.sid')
+        res.clearCookie('connect.sid')
         res.status(200).json({message:'successfully logout'})
+      })
+      
     }catch(err){
         console.error('Error is logout:',err)
         res.status(500).json({message:'error in logout'})
@@ -137,7 +138,7 @@ const postLogout=async (req,res)=>{
         try{
               
             
-                    res.redirect('/user/login?errorMessage=User%20is%20blocked%20by%20admin')
+        res.redirect('/user/login?errorMessage=User%20is%20blocked%20by%20admin')
                 
         }catch(err){
             console.error('error in login',err)

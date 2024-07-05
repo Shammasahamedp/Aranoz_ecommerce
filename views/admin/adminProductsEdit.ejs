@@ -201,7 +201,8 @@
                   <label for="productQuantity">stock</label>
                   <input type="number" id="productQuantity" name="stock" class="form-control"
                     placeholder="Enter product quantity" required value="<%=product.stock%>">
-                  <div id="validateQuantity" class="text-danger"></div>
+                    <div id="validateStock" class="text-danger"></div>
+                  
                 </div>
                 <div id="samedata" class="text-danger"></div>
                 <!-- Save Button -->
@@ -314,7 +315,8 @@
     const price = document.getElementById('productPrice').value;
     const stock = document.getElementById('productQuantity').value;
     const validName = /^(?=.*\S)(?=\D*$).*$/.test(name);
-
+    const validPrice = /^(?!0+$)\d+$/.test(price.toString());
+      const validStock = /^(?!0+$)\d+$/.test(stock.toString());
     document.getElementById('validateName').innerText = '';
 
     try {
@@ -322,7 +324,16 @@
         document.getElementById('validateName').innerText = 'Name is not valid';
         return;
       }
-      
+      document.getElementById('validatePrice').innerText = '';
+      if (!validPrice) {
+        document.getElementById('validatePrice').innerText = 'Price is not valid';
+        return;
+      }
+      document.getElementById('validateStock').innerText = '';
+      if (!validStock) {
+        document.getElementById('validateStock').innerText = 'stock is not valid';
+        return;
+      }
       // Compare form values and cropped images to their initial state
       if (name === oldName && categoryId === oldCategoryId && price === oldPrice && stock === oldStock && croppedImages.every((croppedImage, index) => {
         return croppedImage === oldCroppedImages[index];

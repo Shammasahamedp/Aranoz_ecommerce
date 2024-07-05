@@ -8,12 +8,23 @@ const getProduct=async (req,res)=>{
         console.log(req.session.user)
         
 
-        res.status(200).render('products/product',{
-            product,
-            pageTitle:product.name,
-            category,
-            breadcrumbItems:[{name:'Dashboard',url:'/user/dashboard'},{name:'product'},{name:product.name}]
-        })
+        if(req.session.user){
+            res.status(200).render('products/product',{
+                product,
+                pageTitle:product.name,
+                category,
+                userSession:req.session.user,
+                breadcrumbItems:[{name:'Dashboard',url:'/user/dashboard'},{name:'product'},{name:product.name}]
+            })
+        }else if(!req.session.user){
+            res.status(200).render('products/product',{
+                product,
+                pageTitle:product.name,
+                category,
+                userSession:null,
+                breadcrumbItems:[{name:'Home',url:'/home'},{name:'product'},{name:product.name}]
+            })
+        }
         if(!product){
             res.status(404).send('product not found')
         }
