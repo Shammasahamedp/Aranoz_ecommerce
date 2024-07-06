@@ -41,7 +41,8 @@ const getCategoryEdit = async (req, res) => {
 }
 
 const postCategoryEdit = async (req, res) => {
-  // console.log(req.params.id)
+  console.log('this is category edit controller')
+  console.log(req.params.id)
   const categoryId = (req.params.id)
   console.log(categoryId)
   const { name, description } = req.body

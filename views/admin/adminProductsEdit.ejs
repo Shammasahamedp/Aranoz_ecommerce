@@ -261,7 +261,7 @@
 
   // Initialize oldCroppedImages with the current state of the images
   let oldCroppedImages = Array.from(document.querySelectorAll('#imagecontainer img')).map(img => img.src);
-
+      croppedImages=[...oldCroppedImages]
   uploadButtons.forEach((button, index) => {
     button.addEventListener('click', () => {
       uploadInputs[index].click();
@@ -316,7 +316,7 @@
     const stock = document.getElementById('productQuantity').value;
     const validName = /^(?=.*\S)(?=\D*$).*$/.test(name);
     const validPrice = /^(?!0+$)\d+$/.test(price.toString());
-      const validStock = /^(?!0+$)\d+$/.test(stock.toString());
+    const validStock = /^\d+$/.test(stock.toString());
     document.getElementById('validateName').innerText = '';
 
     try {

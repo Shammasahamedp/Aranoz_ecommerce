@@ -82,8 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const stock = document.getElementById('productQuantity').value;
       const validName = /^(?=.*\S)(?=\D*$).*$/.test(name);
       const validPrice = /^(?!0+$)\d+$/.test(price.toString());
-      const validStock = /^(?!0+$)\d+$/.test(stock.toString());
-
+      const validStock = /^\d+$/.test(stock.toString());
       document.getElementById('validateName').innerText = '';
       if (!validName) {
         document.getElementById('validateName').innerText = 'Name is not valid';
