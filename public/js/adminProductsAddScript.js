@@ -73,7 +73,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
       });
     });
-
+    let specCount = 0
+    async function addSpecification() {
+      console.log('button clicked')
+      specCount++
+      const container = document.getElementById('specificationContainer')
+      const newSpecification = document.createElement('div')
+      newSpecification.classList.add('form-group', 'row', 'specification-entry')
+      newSpecification.innerHTML = `
+      <div class="col-md-5">
+                          <input type="text" name="specifications[${specCount}][key]" class="form-control" placeholder="Specification Key" required>
+                      </div>
+                      <div class="col-md-5">
+                          <input type="text" name="specifications[${specCount}][value]" class="form-control" placeholder="Specification Value" required>
+                      </div>
+                      <div class="col-md-2 text-center">
+                <button type="button" class="btn btn-danger btn-sm remove-specification">Remove</button>
+            </div>
+    `
+      container.appendChild(newSpecification)
+    }
+    document.getElementById('specificationContainer').addEventListener('click', function(e) {
+        if (e.target.classList.contains('remove-specification')) {
+            e.target.closest('.specification-entry').remove();
+        }
+    });
     document.getElementById('productAddForm').addEventListener('submit', async function (event) {
       event.preventDefault();
       const name = document.getElementById('productName').value.trim();
@@ -83,6 +107,14 @@ document.addEventListener('DOMContentLoaded', () => {
       const validName = /^(?=.*\S)(?=\D*$).*$/.test(name);
       const validPrice = /^(?!0+$)\d+$/.test(price.toString());
       const validStock = /^\d+$/.test(stock.toString());
+      const container = document.getElementById('specificationContainer')
+      const specificationEntries=container.querySelectorAll('.specification-entry')
+      const keyValuePairs=[]
+      specificationEntries.forEach(entry=>{
+        let key=entry.querySelector('.specification Key').value
+        let value=entry.querySelector('.specification Value').value
+        keyValuePairs.push({key:key,value:value})
+      })
       document.getElementById('validateName').innerText = '';
       if (!validName) {
         document.getElementById('validateName').innerText = 'Name is not valid';
@@ -104,7 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
       formData.append('category', category);
       formData.append('price', price);
       formData.append('stock', stock);
-
+      formData.append('specification',keyValuePairs)
       croppedBlobs.forEach((blob, index) => {
         console.log(blob)
         formData.append(`croppedImage${index}`, blob, `croppedImage_${index}.jpg`);

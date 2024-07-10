@@ -27,7 +27,7 @@ const getHome= async(req,res)=>{
         }
     ])
         
-
+    console.log('this is home router')
         res.status(200).render('users/home',{products})
     }catch(err){
         console.error(err)
@@ -36,23 +36,29 @@ const getHome= async(req,res)=>{
 }
 const getAuthHome=async(req,res)=>{
     try{
-        const products=await Product.aggregate([{
-            $lookup:{
-                from:'categories',
-                localField:'category.id',
-                foreignField:'_id',
-                as:'categoryDetailes'
+       const user=await User.findById(req.session.user)
+        if(!user.isBlocked){
+            const products=await Product.aggregate([{
+                $lookup:{
+                    from:'categories',
+                    localField:'category.id',
+                    foreignField:'_id',
+                    as:'categoryDetailes'
+                }
+            },{
+                $unwind:'$categoryDetailes'
+            },{
+                $match:{
+                    'isListed':true,
+                    'categoryDetailes.listed':true
+                }
             }
-        },{
-            $unwind:'$categoryDetailes'
-        },{
-            $match:{
-                'isListed':true,
-                'categoryDetailes.listed':true
-            }
+        ])
+           return  res.render('users/dashboard',{products})
+        }else{
+            delete req.session.user
+            res.redirect('/user/login')
         }
-    ])
-       return  res.render('users/dashboard',{products})
     }catch(err){
         res.status(500).redirect('/user/error')
     }

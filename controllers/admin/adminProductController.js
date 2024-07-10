@@ -38,8 +38,15 @@ const getAddProduct = async (req, res) => {
 }
 const postAddProduct = async (req, res) => {
   try {
-    const { name, category, price, stock } = req.body
-  
+    const { name, category, price, stock, specifications } = req.body
+    console.log(specifications)
+    const spec=JSON.parse(specifications).map((spec)=>{
+      return {
+        key:spec.key.toString(),
+        value:spec.value.toString()
+      }
+    })
+    console.log(spec)
     const images = req.files;
     const imageUrls=images.map(image=>`/images/uploads/${image.filename}`)
     const exists=await Product.findOne({name:new RegExp(`^${name}$`, 'i')})
@@ -58,9 +65,11 @@ const postAddProduct = async (req, res) => {
             name: selectedCategory.name
           },
           price: price,
-          stock: stock
+          stock: stock,
+          specifications:spec
         })
         const productData = await newProduct.save()
+        console.log(productData)
       } else {
         res.status(404).json({ message: 'category not found' })
       }
@@ -112,9 +121,13 @@ const getEditProduct = async (req, res) => {
 const postEditProduct = async (req, res) => {
   try {
     const productId = req.params.id;
-    const { name, categoryId, price, stock } = req.body;
+    let { name, categoryId, price, stock,specifications } = req.body;
+    console.log(specifications)
+    // console.log(name)
     let images = [];
-
+    if(!specifications){
+      specifications=[]
+    }
     if (req.files && req.files.length > 0) {
       images = req.files.map(file =>`/images/uploads/${file.filename}`);
     }
@@ -138,7 +151,8 @@ const postEditProduct = async (req, res) => {
       return res.status(409).json({ message: 'Product already exists' });
     }
 
-    let updateObject = { name, category, price, stock };
+    let updateObject = { name, category, price, stock ,specifications};
+    console.log(updateObject)
     if (images.length > 0) {
       updateObject.imageUrl = images;
     }

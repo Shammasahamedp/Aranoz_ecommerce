@@ -46,7 +46,7 @@ const searchUser=async (req,res)=>{
        const totalCount=await User.countDocuments({name:{$regex:searchterm,$options:'i'}})
         
         console.log(searchterm)
-        const users=await User.find({name:{$regex:searchterm,$options:'i'}})
+        const users=await User.find({$or:[{name:{$regex:searchterm,$options:'i'}},{email:{$regex:searchterm,$options:'i'}}]})
         .skip((page - 1) * limit)
             .limit(limit);
         console.log(users)

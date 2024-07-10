@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
             icon:'success',
             confirmButtonText:'OK'
           }).then(()=>{
-            window.location.reload()
+            window.location.href='/admin/categories'
           })
         }
 

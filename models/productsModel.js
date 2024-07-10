@@ -32,7 +32,10 @@ const productSchema = new Schema({
     isListed: {
         type: Boolean,
         default: true
-    }
+    },
+    specifications:[
+        {key:String,value:String}
+    ]
 });
 
 const Product = mongoose.model('Product', productSchema);

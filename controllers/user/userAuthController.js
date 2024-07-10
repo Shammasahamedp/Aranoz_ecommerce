@@ -141,6 +141,7 @@ const postLogout=async (req,res)=>{
         res.redirect('/user/login?errorMessage=User%20is%20blocked%20by%20admin')
                 
         }catch(err){
+            console.log('this is the google sign failure')
             console.error('error in login',err)
             res.redirect('/user/login')
         }
@@ -152,6 +153,7 @@ const postLogout=async (req,res)=>{
            const user=  await User.findById(req.user._id)
            console.log(user.name,user.email,user._id)
         if(user&&user.isBlocked===false){
+            console.log('this is the google authentication method')
            res.redirect('/user/dashboard')
         }else if(user&&user.isBlocked===true){
         //    res.status(303).redirect('/user/login')

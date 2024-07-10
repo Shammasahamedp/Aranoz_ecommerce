@@ -204,12 +204,37 @@
                     <div id="validateStock" class="text-danger"></div>
                   
                 </div>
+                
+                <div id="specificationContainer">
+                  <label for="productSpec">Specification</label>
+                  <%product.specifications.forEach((spec,index)=>{%>
+                  <div class="form-group row specification-entry">
+                    <div class="col-md-5">
+                      <input type="text" name="spec[<%=index%>][key]" class="form-control"
+                        placeholder="Specification Key" value="<%=spec.key%>" required>
+                    </div>
+                    <div class="col-md-5">
+                      <input type="text" name="spec[<%=index%>][value]" class="form-control"
+                        placeholder="Specification Value" value="<%=spec.value%>" required>
+                    </div>
+                    <div class="col-md-2 text-center">
+                      <button type="button" class="btn btn-danger btn-sm remove-specification">Remove</button>
+                  </div>
+                  </div><%})%>
+                </div>
                 <div id="samedata" class="text-danger"></div>
+                <div class="col-12 text-center mt-3">
+                  <button type="button" class="btn btn-primary mb-3" id="addSpecificationButton">Add Another
+                    Specification</button>
+                    <!-- onclick="addSpecification() -->
+                </div>
                 <!-- Save Button -->
-                <button type="submit" class="btn btn-primary" id="formbutton">Save Product</button>
+                <div class="col-12 text-center">
+                  <button type="submit" class="btn btn-primary" id="formbutton">Save Product</button>
                 <button class="btn btn-primary">
                   <a href="/admin/products">Back</a>
                 </button>
+                </div>
               </form>
 
             </div>
@@ -243,7 +268,34 @@
 <!-- <script src="/js/adminProductEdit.js"></script> -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-  
+      const oldSpecifications = Array.from(document.querySelectorAll('.specification-entry')).map(entry => ({
+    key: entry.querySelector('input[name*="[key]"]').value,
+    value: entry.querySelector('input[name*="[value]"]').value
+  }));
+      let specCount=0
+      async function addSpecification(){
+        console.log('button clicked')
+        specCount++
+        const container=document.getElementById('specificationContainer')
+        const newSpecification=document.createElement('div')
+        newSpecification.classList.add('form-group','row','specification-entry')
+        newSpecification.innerHTML=`
+        <div class="col-md-5">
+                          <input type="text" name="specifications[${specCount}][key]" class="form-control" placeholder="Specification Key" required>
+                      </div>
+                      <div class="col-md-5">
+                          <input type="text" name="specifications[${specCount}][value]" class="form-control" placeholder="Specification Value" required>
+                      </div>
+                      <div class="col-md-2 text-center">
+                <button type="button" class="btn btn-danger btn-sm remove-specification">Remove</button>
+            </div>
+        `
+        container.appendChild(newSpecification)
+      }
+      document.getElementById('addSpecificationButton').addEventListener('click',async (event)=>{
+        event.preventDefault()
+        addSpecification()
+      })
   const oldName = document.getElementById('productName').value;
   const oldCategoryId = document.getElementById('productCategory').value;
   const oldPrice = document.getElementById('productPrice').value;
@@ -258,7 +310,7 @@
 
   let currentImage;
   let croppedImages = [];
-
+   
   // Initialize oldCroppedImages with the current state of the images
   let oldCroppedImages = Array.from(document.querySelectorAll('#imagecontainer img')).map(img => img.src);
       croppedImages=[...oldCroppedImages]
@@ -266,7 +318,7 @@
     button.addEventListener('click', () => {
       uploadInputs[index].click();
     });
-
+    
     uploadInputs[index].addEventListener('change', (event) => {
       const file = event.target.files[0];
       if (file) {
@@ -306,7 +358,13 @@
 
     modal.modal('hide');
   });
-
+  const container= document.getElementById('specificationContainer')
+  //  console.log(container)
+   container.addEventListener('click', function(e) {
+        if (e.target.classList.contains('remove-specification')) {
+            e.target.closest('.specification-entry').remove();
+        }
+    });
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
 
@@ -318,7 +376,10 @@
     const validPrice = /^(?!0+$)\d+$/.test(price.toString());
     const validStock = /^\d+$/.test(stock.toString());
     document.getElementById('validateName').innerText = '';
-
+    const specifications = Array.from(document.querySelectorAll('.specification-entry')).map(entry => ({
+    key: entry.querySelector('input[name*="[key]"]').value,
+    value: entry.querySelector('input[name*="[value]"]').value
+  })); 
     try {
       if (!validName) {
         document.getElementById('validateName').innerText = 'Name is not valid';
@@ -337,7 +398,7 @@
       // Compare form values and cropped images to their initial state
       if (name === oldName && categoryId === oldCategoryId && price === oldPrice && stock === oldStock && croppedImages.every((croppedImage, index) => {
         return croppedImage === oldCroppedImages[index];
-      })) {
+      })&&JSON.stringify(specifications)===JSON.stringify(oldSpecifications)) {
         document.getElementById('samedata').innerText = 'Cannot submit without any change';
         return;
       }
@@ -356,6 +417,11 @@
           formData.append('imageUrl', blob, `image${i + 1}.png`);
         }
       }
+      for (let i = 0; i < specifications.length; i++) {
+  formData.append(`specifications[${i}][key]`, specifications[i].key);
+  formData.append(`specifications[${i}][value]`, specifications[i].value);
+}
+
       const productId='<%= product._id%>'
       console.log(productId)
       const response = await fetch(`/admin/products/edit/${productId}`, {
@@ -383,6 +449,7 @@
         });
       }
     } catch (err) {
+      // console.log('error')
       Swal.fire({
         title: 'Failed',
         text: err.message,
