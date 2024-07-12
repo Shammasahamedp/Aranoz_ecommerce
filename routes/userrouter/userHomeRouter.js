@@ -4,4 +4,7 @@ const userHomeController=require('../../controllers/user/userHomeController')
 const userAuthController=require('../../controllers/user/userAuthController')
 const userMiddleware=require('../../middlewares/userMiddleware')
 userHomeRouter.get('/',userMiddleware.isUserAuthenticated,userHomeController.getAuthHome)
+userHomeRouter.get('/profile',userMiddleware.isUserAuthenticated,userHomeController.getUserProfile)
+userHomeRouter.post('/profile/edit',userMiddleware.isUserAuthenticated,userHomeController.postUserProfile)
+userHomeRouter.post('/addtocart/:id',userMiddleware.isUserAuthenticated,userHomeController.postToCart)
 module.exports=userHomeRouter
