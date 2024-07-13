@@ -28,7 +28,7 @@ connectDB().then(async () => {
     console.error('Failed to connect to the database:', err)
 })
 const port = process.env.PORT
-
+app.use(express.urlencoded({extended:true}))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.set('views', path.join(__dirname, 'views'))

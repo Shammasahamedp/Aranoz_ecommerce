@@ -28,7 +28,7 @@ const getHome= async(req,res)=>{
         }
     ])
         
-    console.log('this is home router')
+    // console.log('this is home router')
         res.status(200).render('users/home',{products})
     }catch(err){
         console.error(err)
@@ -67,8 +67,8 @@ const getAuthHome=async(req,res)=>{
 const getUserProfile=async (req,res)=>{
     try{
         const profileDetails=await User.findById(req.session.user)
-        console.log(profileDetails)
-        res.render('users/profile',{profileDetails})
+        const breadcrumbItems=[{name:'Dashboard',url:'/user/dashboard'},{name:'User profile'}]
+        res.render('users/profile',{profileDetails,breadcrumbItems})
     }catch(err){
         console.error(err)
         res.status(500).send('error in get user profile')
@@ -97,8 +97,7 @@ const postUserProfile=async(req,res)=>{
 }
 const postToCart=async (req,res)=>{
     try{
-    //     console.log('hello this is post to cart method')
-    //    res.status(200).json({message:'this is from post to cart method'})
+  
     const userId=req.session.user
     const productId=req.params.id
     const product=await Product.findById(productId)

@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const Category = require('../../models/categoriesModel');
+const Product=require('../../models/productsModel')
 const { find } = require('../../models/adminModel');
 const { options } = require('../../routes/adminrouter/adminAuthRouter');
 const getCategories = async (req, res) => {
@@ -115,7 +116,6 @@ const toggleCategory=async (req,res)=>{
   try{
     const categoryId=req.params.id
     const category=await Category.findById(categoryId)
-
     if(!category){
       res.status(409).json({message:'category is not found'})
     }else if(category){

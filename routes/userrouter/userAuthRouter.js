@@ -1,4 +1,5 @@
 const express=require('express')
+
 const rateLimit=require('express-rate-limit')
 const passport=require('passport')
 const userMiddleware=require('../../middlewares/userMiddleware')
@@ -21,4 +22,8 @@ userAuthRouter.post('/signup',userAuthController.postSignup,sendOtpMiddleware)
 userAuthRouter.post('/resendotp',otpRateLimit,userAuthController.resendOtp,sendOtpMiddleware)
 userAuthRouter.post('/verify-otp',userAuthController.verifyOTP)
 userAuthRouter.post('/logout',userMiddleware.isUserAuthenticated,userAuthController.postLogout)
+userAuthRouter.get('/forgotpassword',userMiddleware.isUserNotAuthenticated,userAuthController.getForgotpassword)
+userAuthRouter.post('/forgotpassword',userMiddleware.isUserNotAuthenticated,userAuthController.postForgotPassword)
+userAuthRouter.get('/resetpassword',userMiddleware.isUserNotAuthenticated,userAuthController.getResetPassword)
+userAuthRouter.post('/resetpassword',userMiddleware.isUserNotAuthenticated,userAuthController.postResetPassword)
 module.exports=userAuthRouter

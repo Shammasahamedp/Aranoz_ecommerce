@@ -1,6 +1,7 @@
 const User=require('../../models/usersModel')
 const otpService=require('../../utils/otpServices')
-const {sendOTP}=require('../../utils/emailService')
+const crypto=require('crypto')
+const {sendOTP,sendResetPasswordEmail}=require('../../utils/emailService')
 const bcrypt=require('bcryptjs')
 async function hashPassword(password){
     try{
@@ -175,6 +176,83 @@ const postLogout=async (req,res)=>{
         }
        
        }
+       const getForgotpassword=async (req,res)=>{
+        try{
+            res.status(200).render('auth/forgotpassword')
+        }catch(err){
+
+        }
+       }
+       const postForgotPassword=async(req,res)=>{
+        try{
+            const {email}=req.body
+            const user=await User.findOne({email})
+            if(!user){
+                return res.status(404).json({message:'user not found'})
+            }
+            const token=await generateToken()
+            req.session.email=email
+            req.session.token=token
+            console.log(token)
+            resetPasswordLink=`http://localhost:3000/user/resetpassword?token=${token}`
+            await sendResetPasswordEmail(email,resetPasswordLink)
+            console.log('this is post forgot method')
+          return  res.status(200).json({message:'link has send to your email address'})
+
+        }catch(err){
+            console.error(err)
+        }
+       }
+       const generateToken=()=>{
+        return new Promise((res,rej)=>{
+            crypto.randomBytes(20,(err,buffer)=>{
+                if(err){
+                    rej(err)
+                }else{
+                    res(buffer.toString('hex'))
+                }
+            })
+        })
+       }
+       const getResetPassword=async (req,res)=>{
+        try{
+            // const token=req.query.token
+            return  res.status(200).render('auth/resetpassword')
+           
+            
+        }catch(err){
+            console.error(err)
+
+        }
+       }
+       const postResetPassword=async(req,res)=>{
+        try{
+            console.log(req.session.token)
+            console.log(req.query)
+            if(req.session.token==req.query.token){
+                const password=req.body.confirmpassword
+                const email=req.session.email
+                const hashedPassword=await bcrypt.hash(password,10)
+
+                const user=await User.findOneAndUpdate(
+                    {email:email},
+                    {password:hashedPassword},
+                    {
+                        new:true
+                    }
+                )
+                if(user){
+                    return res.status(200).json({message:'password has changed successfully'})
+                }else{
+                    return res.status(500).json({message:'user not found'})
+                }
+            }else{
+                return  res.status(404).json({message:'invalid token , cannot enter'})
+            }
+        }catch(err){
+
+        }
+       }
 module.exports={
     getLogin,
     getSignup,
@@ -184,5 +262,9 @@ module.exports={
     postLogout,
     resendOtp,
     googleSignFail,
-    googleAuthenticated
+    googleAuthenticated,
+    getForgotpassword,
+    postForgotPassword,
+    getResetPassword,
+    postResetPassword
 }
