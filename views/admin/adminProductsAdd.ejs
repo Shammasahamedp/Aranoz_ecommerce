@@ -27,6 +27,21 @@
       border-radius: 8px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
+    .image-group {
+  text-align: center; /* Center the content within each group */
+  margin: 10px; /* Add some space between the groups */
+}
+
+.image-group img {
+  display: block; /* Ensure the image is a block element to take up the full width of the container */
+  margin: 0 auto; /* Center the image horizontally */
+}
+
+.image-group button {
+  margin-top: 10px; /* Add space between the image and the button */
+  display: block; /* Make the button a block element for consistent spacing */
+  width: 100%; /* Make the button take the full width of the container */
+}
   </style>
 
   <div class="container-scroller">
@@ -128,17 +143,25 @@
                   <div id="validateName" class="text-danger"></div>
                 </div>
                 <!-- Upload Button -->
-                <div class="form-group">
-                  <label for="uploadButton">Images</label>
-                  <input type="file" id="productImage" name="images" class="form-control" multiple
-                    style="display: none;" placeholder="Upload product images">
-                  <button type="button" id="uploadButton" class="btn btn-primary">Upload Images</button>
-                  <div id="validateImage" class="text-danger"></div>
-                </div>
-                <!-- Display Cropped Images -->
-                <div id="croppedImageDisplay" style="border: 1px solid #ccc; display: none;">
-                  <img id="croppedImagePreview" src="" alt="Cropped Image"
-                    style="width: 100px; height: 100px; object-fit: cover; max-width: 100%; max-height: 100%; display: none;">
+                <div id="imagecontainer" style="display: flex; justify-content: space-between;">
+                  <div class="image-group">
+                    <img src="" alt="" id="currentimage1" style="width: 100px; height: 100px; object-fit: cover;">
+                    <input type="file" id="uploadimage1" style="display: none;">
+                    <button type="button" class="btn btn-primary uploadButton mt-1" id="uploadbutton1">Upload Image 1</button>
+                  </div>
+                
+                  <div class="image-group">
+                    <img src="" alt="" id="currentimage2" style="width: 100px; height: 100px; object-fit: cover;">
+                    <input type="file" id="uploadimage2" style="display: none;">
+                    <button type="button" class="btn btn-primary uploadButton mt-1" id="uploadbutton2">Upload Image 2</button>
+                  </div>
+                
+                  <div class="image-group">
+                    <img src="" alt="" id="currentimage3" style="width: 100px; height: 100px; object-fit: cover;">
+                    <input type="file" id="uploadimage3" style="display: none;">
+                    <button type="button" class="btn btn-primary uploadButton mt-1" id="uploadbutton3">Upload Image 3</button>
+                  </div>
+                  <!-- Add more as needed -->
                 </div>
 
 
@@ -258,79 +281,61 @@
       addSpecification()
     })
     let cropper;
-    let croppedBlobs = [];
-    const resetModal = (url) => {
-      $('#cropModal').modal('show');
+  const modal = $('#cropModal');
+  const imageToCrop = document.getElementById('imageToCrop');
+  const uploadButtons = document.querySelectorAll('.uploadButton');
+  const uploadInputs = document.querySelectorAll('input[type="file"]');
 
-    };
-
-
-    const initializeCropper = () => {
-      const image = document.getElementById('imageToCrop');
-      cropper = new Cropper(image, {
-        aspectRatio: 1,
-        viewMode: 1,
-      });
-    };
-
-
-    document.getElementById('uploadButton').addEventListener('click', () => {
-      document.getElementById('productImage').click();
+  let currentImage;
+  let croppedImages = [];
+   
+  // Initialize oldCroppedImages with the current state of the images
+  let oldCroppedImages = Array.from(document.querySelectorAll('#imagecontainer img')).map(img => img.src);
+      croppedImages=[...oldCroppedImages]
+  uploadButtons.forEach((button, index) => {
+    button.addEventListener('click', () => {
+      uploadInputs[index].click();
     });
-
-
-    document.getElementById('productImage').addEventListener('change', function (event) {
-      const files = event.target.files;
-
-      if (files && files.length >= 0) {
-        [...files].forEach(file => {
-          const reader = new FileReader();
-          reader.onload = () => {
-            $('#imageToCrop').attr('src', reader.result);
-            $('#cropModal').modal('show');
-          };
-          reader.readAsDataURL(file);
-        });
+    
+    uploadInputs[index].addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          imageToCrop.src = reader.result;
+          currentImage = document.getElementById(`currentimage${index + 1}`);
+          modal.modal('show');
+        };
+        reader.readAsDataURL(file);
       }
     });
+  });
 
+  modal.on('shown.bs.modal', () => {
+    cropper = new Cropper(imageToCrop, {
+      aspectRatio: 1,
+      viewMode: 2,
+      preview: '.preview',
+    });
+  }).on('hidden.bs.modal', () => {
+    cropper.destroy();
+    cropper = null;
+  });
 
-    $('#cropModal').on('shown.bs.modal', function () {
-      initializeCropper();
-    }).on('hidden.bs.modal', function () {
-      cropper.destroy();
-      cropper = null;
+  document.getElementById('cropAndSave').addEventListener('click', () => {
+    const canvas = cropper.getCroppedCanvas({
+      width: 500,
+      height: 500,
     });
 
-    document.getElementById('cropAndSave').addEventListener('click', function () {
-      const canvas = cropper.getCroppedCanvas({
-        width: 500,
-        height: 500,
-      });
+    const croppedImageDataURL = canvas.toDataURL();
+    currentImage.src = croppedImageDataURL;
 
-      canvas.toBlob((blob) => {
-        croppedBlobs.push(blob);
-        $('#cropModal').modal('hide');
-        Swal.fire({
-          icon: 'success',
-          title: 'Image cropped successfully!',
-          showConfirmButton: false,
-          timer: 1500
-        });
+    const index = Array.from(uploadButtons).indexOf(currentImage.closest('.image-group').querySelector('.uploadButton'));
+    croppedImages[index] = croppedImageDataURL;
 
-        const url = URL.createObjectURL(blob)
-        const imagePreview = document.createElement('img');
-        imagePreview.src = url;
-        imagePreview.style.maxWidth = '100px';
-        imagePreview.style.maxHeight = '100px';
-        imagePreview.style.objectFit = 'cover';
-
-        const displayDiv = document.getElementById('croppedImageDisplay');
-        displayDiv.style.display = 'inline'
-        displayDiv.appendChild(imagePreview);
-
-      });
-    });
+    modal.modal('hide');
+  });
    
    const container= document.getElementById('specificationContainer')
   //  console.log(container)
@@ -398,10 +403,13 @@
       formData.append('price', price);
       formData.append('stock', stock);
       formData.append('specifications',specifications)
-      croppedBlobs.forEach((blob, index) => {
-        // console.log(blob)
-        formData.append(`croppedImage${index}`, blob, `croppedImage_${index}.jpg`);
-      });
+      for (let i = 0; i < croppedImages.length; i++) {
+        if (croppedImages[i]) {
+          const response = await fetch(croppedImages[i]);
+          const blob = await response.blob();
+          formData.append('imageUrl', blob, `image${i + 1}.png`);
+        }
+      }
       try {
         const response = await fetch('/admin/products/addproduct', {
           method: 'POST',
