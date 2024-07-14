@@ -1,6 +1,7 @@
 const Cart = require('../../models/cartModel')
 const Product=require('../../models/productsModel')
 const User = require('../../models/usersModel')
+const Address=require('../../models/addressModel')
 const redirectHome=function (req,res){
     try{
         res.status(302).redirect('/home')
@@ -119,11 +120,61 @@ const postToCart=async (req,res)=>{
         res.status(500).json({message:'An error occured when adding to cart'})
     }
 }
+const getAddress=async(req,res)=>{
+    try{
+        const userId=req.session.user
+        const addresses=await Address.findOne({userId})
+        if(!addresses){
+            return res.status(200).render('users/address',{addresses:''})
+
+        }else{
+            return res.status(200).render('users/address',{addresses:addresses})
+        }
+    }catch(err){
+
+    }
+}
+const getContact=async(req,res)=>{
+    try{
+        return res.status(200).render('contacs and about/contactus')
+    }catch(err){
+
+    }
+}
+const postAddAddress=async(req,res)=>{
+    try{
+        console.log('this is post add address')
+        const userId=req.session.user
+        const {name,number,email,city,district,state,pin}=req.body
+        console.log(name,email,city,district,state,pin)
+        const addressdata = await Address.findOne({userId})
+
+        if(addressdata){
+            addressdata.address.push({name,phone:number,email,city,district,state,pincode:pin})
+            await addressdata.save()
+            console.log(addressdata)
+            // console.log(address)
+            // return res.status(200).json({message:'the address added successfully'})
+        }else{
+            // return res.status(404).json({message:'Address not found'})
+            const addressdata=new Address({userId,address:[{name,phone:number,email,district,city,state,pincode:pin}]})
+            await addressdata.save()
+            console.log('address created:',addressdata)
+        }
+        res.status(200).json({message:'Address added successfully',addressdata})
+    }catch(err){
+        console.error(err)
+        res.status(200).json({message:'Server error '})
+    }
+}
 module.exports={
     getHome,
     redirectHome,
     getAuthHome,
     getUserProfile,
     postUserProfile,
-    postToCart
+    postToCart,
+    getAddress,
+    getContact,
+    postAddAddress
 }

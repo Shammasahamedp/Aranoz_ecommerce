@@ -4,5 +4,6 @@ const userMiddleware=require('../../middlewares/userMiddleware')
 const userHomeController=require('../../controllers/user/userHomeController')
 userHomeRouter.get('/',userMiddleware.isUserNotAuthenticated,userHomeController.redirectHome)
 userHomeRouter.get('/home',userMiddleware.isUserNotAuthenticated,userHomeController.getHome)
+userHomeRouter.get('/contact',userHomeController.getContact)
 
 module.exports=userHomeRouter

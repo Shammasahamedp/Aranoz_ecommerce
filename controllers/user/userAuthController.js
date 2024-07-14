@@ -34,7 +34,7 @@ const postLogin=async(req,res)=>{
 
             }else{
                 console.log('password error')
-                res.status(404).json({message:'incorrect email or password'})
+                res.status(400).json({message:'incorrect email or password'})
             }
             console.log(user.isBlocked)
         }else if(user.isBlocked){

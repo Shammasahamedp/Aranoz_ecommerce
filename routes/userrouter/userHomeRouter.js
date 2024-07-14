@@ -7,4 +7,6 @@ userHomeRouter.get('/',userMiddleware.isUserAuthenticated,userHomeController.get
 userHomeRouter.get('/profile',userMiddleware.isUserAuthenticated,userHomeController.getUserProfile)
 userHomeRouter.post('/profile/edit',userMiddleware.isUserAuthenticated,userHomeController.postUserProfile)
 userHomeRouter.post('/addtocart/:id',userMiddleware.isUserAuthenticated,userHomeController.postToCart)
+userHomeRouter.get('/profile/address',userMiddleware.isUserAuthenticated,userHomeController.getAddress)
+userHomeRouter.post('/profile/address/addaddress',userMiddleware.isUserAuthenticated,userHomeController.postAddAddress)
 module.exports=userHomeRouter
