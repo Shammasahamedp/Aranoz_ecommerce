@@ -44,9 +44,14 @@
 
                     <div class="collapse navbar-collapse main-menu-item" id="navbarSupportedContent">
                         <ul class="navbar-nav">
+                          <%if(user){%>
                             <li class="nav-item">
+                                <a class="nav-link" href="/dashboard">Dashboard</a>
+                            </li><%} else{%>
+                              <li class="nav-item">
                                 <a class="nav-link" href="/home">Home</a>
                             </li>
+                              <%}%>
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="blog.html" id="navbarDropdown_1"
                                     role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -129,7 +134,12 @@
           <div class="breadcrumb_iner">
             <div class="breadcrumb_iner_item">
               <h2>contact us</h2>
-              <p><a href="/home">Home</a> <span>-</span> contact us</p>
+              <%if(user){%>
+              <p><a href="/user/dashboard">Dashboard</a> <span>-</span> contact us</p>
+              <%} else {%>
+                <p><a href="/home">Dashboard</a> <span>-</span> contact us</p>
+
+                <%}%>
             </div>
           </div>
         </div>

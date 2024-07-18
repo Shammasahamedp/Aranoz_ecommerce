@@ -1,7 +1,10 @@
 const Cart = require('../../models/cartModel')
 const Product=require('../../models/productsModel')
+// const mongoose=require('mongoose')
 const User = require('../../models/usersModel')
 const Address=require('../../models/addressModel')
+const { default: mongoose } = require('mongoose')
+const e = require('express')
 const redirectHome=function (req,res){
     try{
         res.status(302).redirect('/home')
@@ -81,8 +84,8 @@ const postUserProfile=async(req,res)=>{
         const user=await User.findById(req.session.user)
         console.log(user)
         let data={name,phone:phonenumber}
-        console.log('this is post user profile method')
-        console.log(data)
+        // console.log('this is post user profile method')
+        // console.log(data)
         const updatedData=await User.findByIdAndUpdate(req.session.user,data,{new:true})
         // console.log(updatedData)
         if(updatedData){
@@ -136,7 +139,11 @@ const getAddress=async(req,res)=>{
 }
 const getContact=async(req,res)=>{
     try{
-        return res.status(200).render('contacs and about/contactus')
+        if(req.session.user){
+            return res.status(200).render('contacs and about/contactus',{user:true})
+
+        }
+        return res.status(200).render('contacs and about/contactus',{user:''})
     }catch(err){
 
     }
@@ -148,23 +155,85 @@ const postAddAddress=async(req,res)=>{
         const {name,number,email,city,district,state,pin}=req.body
         console.log(name,email,city,district,state,pin)
         const addressdata = await Address.findOne({userId})
-
+        console.log(addressdata)
         if(addressdata){
+            if(addressdata.address.length>=4){
+               return  res.status(403).json({message:'User cannot add more than 4 addresses'})
+            }
+            console.log('this is before push')
             addressdata.address.push({name,phone:number,email,city,district,state,pincode:pin})
             await addressdata.save()
-            console.log(addressdata)
+            // console.log(addressdata)
             // console.log(address)
-            // return res.status(200).json({message:'the address added successfully'})
+            return res.status(200).json({message:'Address added successfully',addressdata})
         }else{
             // return res.status(404).json({message:'Address not found'})
-            const addressdata=new Address({userId,address:[{name,phone:number,email,district,city,state,pincode:pin}]})
+            let addressdata=new Address({userId,address:[{name,phone:number,email,district,city,state,pincode:pin}]})
             await addressdata.save()
             console.log('address created:',addressdata)
+            res.status(200).json({message:'Address added successfully',addressdata:addressdata})
+
         }
-        res.status(200).json({message:'Address added successfully',addressdata})
     }catch(err){
         console.error(err)
         res.status(200).json({message:'Server error '})
+    }
+}
+const getEditAddress=async (req,res)=>{
+    try{
+        const userId=req.session.user
+        const addressId=new mongoose.Types.ObjectId(req.params.id)
+        // console.log(addressId)
+        const addressData=await Address.aggregate([{$unwind:'$address'},{$match:{'address._id':addressId}}])
+        // console.log(addressData)
+        res.status(200).render('users/addressEdit',{addressData})
+    }catch(err){
+        console.error(err)
+    }
+}
+const postEditAddress=async (req,res)=>{
+    try{
+        console.log('this is posteditaddress method')
+        const userId=req.session.user;
+        const addressId=req.params.id
+        const {name,phone,email,district,city,state,pincode}=req.body
+        const updatedAddress=await Address.findOneAndUpdate(
+            {'address._id':new mongoose.Types.ObjectId(addressId)},
+            {
+                $set:{
+                    'address.$.name':name,
+                    'address.$.phone':phone,
+                    'address.$.email':email,
+                    'address.$.district':district,
+                    'address.$.city':city,
+                    'address.$.state':state,
+                    'address.$.pincode':pincode
+                }
+            },
+            {new:true}
+        )
+        if(updatedAddress){
+            res.status(200).json({message:'Address edited successfully'})
+        }else{
+            res.status(404).json({message:'Address not found'})
+        }
+    }catch(err){
+        console.error(err)
+    }
+}
+const deleteAddress=async(req,res)=>{
+    try{
+        const userId=req.session.user
+        const addressId=req.params.id
+        const updatedAddress=await Address.findOneAndUpdate(
+            {userId:userId},
+            {$pull:{address:{_id:addressId}}},
+            {new:true}
+        )
+        console.log(updatedAddress)
+        res.status(200).json({message:'Address successfully deleted'})
+    }catch(err){
+        console.error(err)
     }
 }
 module.exports={
@@ -176,5 +245,8 @@ module.exports={
     postToCart,
     getAddress,
     getContact,
-    postAddAddress
+    postAddAddress,
+    getEditAddress,
+    postEditAddress,
+    deleteAddress
 }

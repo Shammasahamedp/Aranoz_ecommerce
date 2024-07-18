@@ -91,9 +91,9 @@
         <div class="col-lg-8">
           <div class="breadcrumb_iner">
             <div class="breadcrumb_iner_item">
-              <h2>User Address</h2>
+              <h2>User Address Edit</h2>
               <p><a href="/user/dashboard">Dashboard</a> <span>-</span><a
-                  href="/user/dashboard/profile">Profile</a><span>-</span>address</p>
+                  href="/user/dashboard/profile">Profile</a><span>-</span><a href="/user/dashboard/profile/address">Address</a><span>-</span>Edit address</p>
             </div>
           </div>
         </div>
@@ -109,71 +109,40 @@
       <div class="billing_details">
         <div class="row">
           <div class="col-lg-8">
-            <h3>Current Addresses</h3>
-            <div class="row" id="addresslist">
-              <% if(addresses){ %>
-
-
-                <% addresses.address.forEach(function(address, index) { %>
-                  <div class="col-md-6">
-                    <div class="address-item mb-3">
-                      <textarea class="form-control" rows="3" style="height: 200px;" readonly>
-                        Name: <%= address.name %>, 
-                        Phone: <%= address.phone %>, 
-                        Email: <%= address.email %>, 
-                        City: <%= address.city %>, 
-                        District: <%= address.district %>, 
-                        State: <%= address.state %>, 
-                        Pincode: <%= address.pincode %>
-                      </textarea>
-                      <a class="btn_1 mt-2" style="border: 2px solid; display: inline-block;"
-                        href="/user/dashboard/profile/address/edit/<%= address._id %>">Edit</a>
-
-
-                      <form class="deleteform" method="post" style="display: inline-block;">
-                        <input type="hidden" id="hiddeninput" data-addressId="<%=address._id%>">
-
-                        <button class="btn_1 mt-2" type="submit" style="display: inline-block;">Delete</button>
-                      </form>
-                    </div>
-                  </div>
-                  <% }); %>
-                    <% } %>
-
-
-
-            </div>
-            <h3>Add Address</h3>
+           
+            <h3>Edit Address</h3>
             <form class="row contact_form" action="" method="post" id="addressform">
+              <input type="hidden" id="addressId" name="addressId" value="<%= addressData[0].address._id %>"/>
+
               <div class="col-md-6 form-group p_star">
-                <input type="text" class="form-control" id="name" name="name" placeholder="Name" />
+                <input type="text" class="form-control" id="name" name="name" placeholder="Name" value="<%=addressData[0].address.name%>"/>
                 <!-- <span class="placeholder" data-placeholder=" Name"></span> -->
               </div>
 
               <div class="col-md-6 form-group p_star">
-                <input type="text" class="form-control" id="number" name="number" placeholder="Phone" />
+                <input type="text" class="form-control" id="number" name="number" placeholder="Phone" value="<%=addressData[0].address.phone%>" />
                 <!-- <span class="placeholder" data-placeholder="Phone number"></span> -->
               </div>
               <div class="col-md-6 form-group p_star">
-                <input type="email" class="form-control" id="email" name="email" placeholder="Email" />
+                <input type="email" class="form-control" id="email" name="email" placeholder="Email" value="<%=addressData[0].address.email%>" />
                 <!-- <span class="placeholder" data-placeholder="Email Address"></span> -->
               </div>
 
               <div class="col-md-12 form-group p_star">
-                <input type="text" class="form-control" id="city" name="city" placeholder="City" />
+                <input type="text" class="form-control" id="city" name="city" placeholder="City" value="<%=addressData[0].address.city%>" />
                 <!-- <span class="placeholder" data-placeholder="Town/City"></span> -->
               </div>
               <div class="col-md-12 form-group p_star">
-                <input type="text" class="form-control" id="district" name="district" placeholder="District" />
+                <input type="text" class="form-control" id="district" name="district" placeholder="District" value="<%=addressData[0].address.district%>" />
                 <!-- <span class="placeholder" data-placeholder="District"></span> -->
               </div>
               <div class="col-md-12 form-group p_star">
-                <input type="text" class="form-control" id="state" name="state" placeholder="State" />
+                <input type="text" class="form-control" id="state" name="state" placeholder="State" value="<%=addressData[0].address.state%>" />
                 <!-- <span class="placeholder" data-placeholder="State"></span> -->
               </div>
 
               <div class="col-md-12 form-group p_star">
-                <input type="text" class="form-control" id="pincode" name="pincode" placeholder="Pincode" />
+                <input type="text" class="form-control" id="pincode" name="pincode" placeholder="Pincode"  value="<%=addressData[0].address.pincode%>"/>
                 <!-- <span class="placeholder" data-placeholder="Pincode"></span> -->
 
               </div>
@@ -181,9 +150,10 @@
 
               <!-- <a class="btn_1" id="formsubmit">Add address</a> -->
               <button class="btn_1" id="formsubmit" type="submit">
-                Add address
+                Save address
               </button>
             </form>
+            <div class="text-danger" id="cannotsubmit" style="display: none;">cannot submit without any change</div>
           </div>
 
         </div>
@@ -290,10 +260,15 @@
       </div>
     </div>
   </footer>
-  <!--::footer_part end::-->
   <script>
-    document.addEventListener('DOMContentLoaded', async () => {
-
+    document.addEventListener('DOMContentLoaded',async(event)=>{
+      const oldName = document.getElementById('name').value.trim()
+          const oldNumber = document.getElementById('number').value.trim()
+          const oldEmail = document.getElementById('email').value.trim()
+          const oldCity = document.getElementById('city').value.trim()
+          const oldDistrict = document.getElementById('district').value.trim()
+          const oldState = document.getElementById('state').value.trim()
+          const oldPin = document.getElementById('pincode').value.trim()
       function validateForm() {
         const name = document.getElementById('name').value.trim();
         const number = document.getElementById('number').value.trim();
@@ -342,72 +317,37 @@
         // Form is valid
         return true;
       }
-      const deleteForms = document.querySelectorAll('.address-item form')
-      const addressList=document.getElementById('addresslist')
-    
-        addressList.addEventListener('submit', async (event) => {
-          event.preventDefault()
-          if(event.target.classList.contains('deleteform')){
-            const deleteform=event.target
-            const addressId = event.target.querySelector('#hiddeninput').getAttribute('data-addressId')
-            console.log(addressId)
-            try {
-            const response = await fetch(`/user/dashboard/profile/address/delete/${addressId}`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json'
-              }
-            })
-            const result = await response.json()
+      form=document.getElementById('addressform')
+      form.addEventListener('submit',async(event)=>{
 
-            if (response.ok) {
-              Swal.fire({
-                title: 'success',
-                text: result.message,
-                icon: 'success',
-                confirmButtonText: 'OK'
-              }).then(() => {
-                deleteform.closest('.col-md-6').remove()
-              })
-            } else {
-              Swal.fire({
-                title: 'failed',
-                text: result.message,
-                icon: 'error',
-                confirmButtonText: 'OK'
-              })
-            }
-          } catch (err) {
-            console.error(err)
-          }
-          }
-         
-          
-        })
-    
-      form = document.getElementById('addressform')
-
-      form.addEventListener('submit', async (event) => {
         event.preventDefault()
-        if (!validateForm()) {
-          return
-        } else {
-
+        if(!validateForm()){
+          return 
+        }else{
           console.log('form clicked')
-
-          const name = document.getElementById('name').value.trim()
+        }
+        const name = document.getElementById('name').value.trim()
           const number = document.getElementById('number').value.trim()
           const email = document.getElementById('email').value.trim()
           const city = document.getElementById('city').value.trim()
           const district = document.getElementById('district').value.trim()
           const state = document.getElementById('state').value.trim()
           const pin = document.getElementById('pincode').value.trim()
+          const addressId=document.getElementById('addressId').value
+          const cannotSubmit=document.getElementById('cannotsubmit')
           formData = {
             name, number, email, city, district, state, pin
           }
-          // console.log(formData)
+          console.log(formData)
+          if(name===oldName&&number===oldNumber&&email===oldEmail&&city===oldCity&&district===oldDistrict&&state===oldState&&pin===oldPin){
+            cannotSubmit.style.display='inline'
+            return 
+          }else{
+            cannotSubmit.style.display='none'
+          }
           try {
-            const response = await fetch('/user/dashboard/profile/address/addaddress', {
+            console.log('this is inside the try block')
+            const response = await fetch(`/user/dashboard/profile/address/edit/${addressId}`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json'
@@ -422,6 +362,8 @@
                 text: result.message,
                 icon: 'success',
                 confirmButtonText: 'OK'
+              }).then(()=>{
+                window.location.href='/user/dashboard/profile/address'
               })
             } else {
               Swal.fire({
@@ -431,77 +373,12 @@
                 confirmButtonText: 'OK'
               })
             }
-           
-             const addressdata = result.addressdata
-            if (addressdata && addressdata.address && addressdata.address.length > 0) {
-              const lastAddress = addressdata.address[addressdata.address.length - 1]
-              console.log(addressdata)
-              console.log(lastAddress)
-              const addressList = document.getElementById('addresslist')
-              console.log(addressList)
-              const addressMainDiv = document.createElement('div')
-              addressMainDiv.className = 'col-md-6'
-              const addressSubDiv = document.createElement('div')
-              addressSubDiv.className = 'address-item mb-3'
-              const textArea = document.createElement('textarea')
-              textArea.className = 'form-control'
-              textArea.rows = 3
-              textArea.readOnly = true
-              textArea.innerText = `
-        Name: ${lastAddress.name}, 
-        Phone: ${lastAddress.phone}, 
-        Email: ${lastAddress.email}, 
-        City: ${lastAddress.city}, 
-        District: ${lastAddress.district}, 
-        State: ${lastAddress.state}, 
-        Pincode: ${lastAddress.pincode}
-      `
-              const editButton = document.createElement('a')
-
-              editButton.className = 'btn_1 mt-2'
-              // editButton.href = `/user/dashboard/pofile/address/editaddress/${lastAddress._id}`
-              editButton.style = "border: 2px solid; display: inline-block;"
-              editButton.innerText = 'Edit'
-
-              const deleteForm = document.createElement('form');
-              deleteForm.className = 'deleteform';
-              deleteForm.method = 'post';
-              
-              deleteForm.style = 'display: inline-block;';
-
-              const deleteButton = document.createElement('button');
-              deleteButton.className = 'btn_1 mt-2';
-              deleteButton.type = 'submit';
-              deleteButton.style = 'display: inline-block;';
-              deleteButton.innerText = 'Delete';
-
-              const hiddenInput=document.createElement('input')
-              hiddenInput.type='hidden'
-              hiddenInput.id='hiddeninput'
-              console.log(lastAddress._id)
-              hiddenInput.setAttribute('data-addressId',lastAddress._id)
-
-              deleteForm.appendChild(hiddenInput)
-              deleteForm.appendChild(deleteButton)
-              addressSubDiv.appendChild(textArea)
-              addressSubDiv.appendChild(editButton)
-              addressSubDiv.appendChild(deleteForm)
-              // addressSubDiv.appendChild(deleteButton)
-              addressMainDiv.appendChild(addressSubDiv)
-              addressList.appendChild(addressMainDiv)
-              console.log(addressList)
-              document.getElementById('addressform').reset()
-
-            }
-          } catch (err) {
+          }catch(err){
             console.error(err)
           }
-        }
       })
     })
   </script>
-  <!-- jquery plugins here-->
-  <!-- jquery -->
   <script src="js/jquery-1.12.1.min.js"></script>
   <!-- popper js -->
   <script src="js/popper.min.js"></script>

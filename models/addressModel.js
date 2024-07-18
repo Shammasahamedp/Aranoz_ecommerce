@@ -13,7 +13,6 @@ const addressSchema = new mongoose.Schema({
             email:{type:String},
             district: { type: String },
             city: { type: String },
-           
             state: { type: String },
             pincode: { type: String }
 

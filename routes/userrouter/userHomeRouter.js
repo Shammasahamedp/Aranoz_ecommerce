@@ -9,4 +9,7 @@ userHomeRouter.post('/profile/edit',userMiddleware.isUserAuthenticated,userHomeC
 userHomeRouter.post('/addtocart/:id',userMiddleware.isUserAuthenticated,userHomeController.postToCart)
 userHomeRouter.get('/profile/address',userMiddleware.isUserAuthenticated,userHomeController.getAddress)
 userHomeRouter.post('/profile/address/addaddress',userMiddleware.isUserAuthenticated,userHomeController.postAddAddress)
+userHomeRouter.get('/profile/address/edit/:id',userMiddleware.isUserAuthenticated,userHomeController.getEditAddress)
+userHomeRouter.post('/profile/address/edit/:id',userMiddleware.isUserAuthenticated,userHomeController.postEditAddress)
+userHomeRouter.post('/profile/address/delete/:id',userMiddleware.isUserAuthenticated,userHomeController.deleteAddress)
 module.exports=userHomeRouter

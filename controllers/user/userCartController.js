@@ -40,7 +40,7 @@ const getCart=async (req,res)=>{
                 cartData.totalQuantity+=item.quantity
             })
             // console.log(cartData)
-            res.status(200).render('cart/cart',{cartData})
+            res.status(200).render('cart/cart',{cartData,cart})
         }
         
     }catch(err){
