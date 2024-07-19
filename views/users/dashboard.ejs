@@ -298,10 +298,19 @@
                                                             </h4>
                                                             <h3>$<%= product.price %>
                                                             </h3>
-                                                            <a class="add_cart">+ add to cart<a href="#"
+                                                            <%if(product.stock==0){%>
+                                                                <h3 class="text-danger">out of stock</h3>
+                                                                <a class="add_cart"><a href="#"
                                                                     class="like_us d-flex justify-content-center align-items-center">
                                                                     <i class="bi bi-heart-fill"></i>
-                                                                </a>
+                                                                <%}else{%>
+                                                                    <a class="add_cart">+ add to cart<a href="#"
+                                                                        class="like_us d-flex justify-content-center align-items-center">
+                                                                        <i class="bi bi-heart-fill"></i>
+                                                                        <%}%>
+                                                                    </a>
+                                                                    
+                                                            
                                                                 <form
                                                                     action="/user/dashboard/addtocart/<%= product._id %>"
                                                                     style="display: none;" method="POST"

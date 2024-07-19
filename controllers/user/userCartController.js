@@ -34,7 +34,8 @@ const getCart=async (req,res)=>{
                     productName:item.productId.name,
                     quantity:item.quantity,
                     price:item.productId.price,
-                    totalPrice:itemTotalPrice
+                    totalPrice:itemTotalPrice,
+                    totalStock:item.productId.stock
                 })
                 cartData.totalPrice+=itemTotalPrice,
                 cartData.totalQuantity+=item.quantity

@@ -1,6 +1,7 @@
 const express=require('express')
 const userHomeRouter=express.Router()
 const userHomeController=require('../../controllers/user/userHomeController')
+const userOrderController=require('../../controllers/user/userOrderController')
 const userAuthController=require('../../controllers/user/userAuthController')
 const userMiddleware=require('../../middlewares/userMiddleware')
 userHomeRouter.get('/',userMiddleware.isUserAuthenticated,userHomeController.getAuthHome)
@@ -12,4 +13,6 @@ userHomeRouter.post('/profile/address/addaddress',userMiddleware.isUserAuthentic
 userHomeRouter.get('/profile/address/edit/:id',userMiddleware.isUserAuthenticated,userHomeController.getEditAddress)
 userHomeRouter.post('/profile/address/edit/:id',userMiddleware.isUserAuthenticated,userHomeController.postEditAddress)
 userHomeRouter.post('/profile/address/delete/:id',userMiddleware.isUserAuthenticated,userHomeController.deleteAddress)
+userHomeRouter.get('/profile/orders',userMiddleware.isUserAuthenticated,userOrderController.getOrder)
+userHomeRouter.get('/profile/orders/order-details',userMiddleware.isUserAuthenticated,userOrderController.getOrderDetails)
 module.exports=userHomeRouter

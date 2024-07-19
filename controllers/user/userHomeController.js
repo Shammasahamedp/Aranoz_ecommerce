@@ -112,7 +112,8 @@ const postToCart=async (req,res)=>{
     }
     const itemIndex=cart.items.findIndex(item=>item.productId.equals(productId))
     if(itemIndex>-1){
-        cart.items[itemIndex].quantity+=1
+        // cart.items[itemIndex].quantity+=1
+       return res.status(409).json({message:'Product already exists in cart'})
     }else{
         cart.items.push({productId,quantity:1,price})
     }
@@ -120,7 +121,7 @@ const postToCart=async (req,res)=>{
     res.status(200).json({message:'Product added to cart'})
     }catch(err){
         console.error(err)
-        res.status(500).json({message:'An error occured when adding to cart'})
+       return res.status(500).json({message:'An error occured when adding to cart'})
     }
 }
 const getAddress=async(req,res)=>{

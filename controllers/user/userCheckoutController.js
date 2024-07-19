@@ -2,13 +2,13 @@ const Cart=require('../../models/cartModel')
 const Address=require('../../models/addressModel')
 const Order = require('../../models/ordersModel')
 const mongoose=require('mongoose')
+const randomNumberService=require('../../utils/otpServices')
 const {v4:uuidv4}=require('uuid')
 const getCheckout=async (req,res)=>{
     try{
         const userId=req.session.user
         const cartId=req.params.id
         const addresses=await Address.findOne({userId})
-        // console.log(addresses)
         const cart=await Cart.findById(cartId).populate('items.productId')
         let totalQuantity=0
         let totalPrice=0
@@ -54,7 +54,7 @@ const cashOnDelivery=async(req,res)=>{
         if(!cart||cart.items.length===0){
             return res.status(400).json({message:'Your cart is empty'})
         }
-       const orderId=uuidv4()
+       const orderId=randomNumberService.generateOrderId()
         orderStatus='pending'
         const order = new Order({
             userId: user,
