@@ -39,7 +39,7 @@ const getCart=async (req,res)=>{
                 cartData.totalPrice+=itemTotalPrice,
                 cartData.totalQuantity+=item.quantity
             })
-            // console.log(cartData)
+            console.log(cart)
             res.status(200).render('cart/cart',{cartData,cart})
         }
         

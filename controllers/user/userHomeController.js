@@ -197,6 +197,7 @@ const postEditAddress=async (req,res)=>{
         const userId=req.session.user;
         const addressId=req.params.id
         const {name,phone,email,district,city,state,pincode}=req.body
+        
         const updatedAddress=await Address.findOneAndUpdate(
             {'address._id':new mongoose.Types.ObjectId(addressId)},
             {

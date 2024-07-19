@@ -3,6 +3,7 @@
     <title>aranoz|checkout</title>
     <link rel="icon" href="/img/favicon.png">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="/css/usercss/bootstrap.min.css">
@@ -52,35 +53,12 @@
                                             Shop
                                         </a>
                                         <div class="dropdown-menu" aria-labelledby="navbarDropdown_1">
-                                            <a class="dropdown-item" href="category.html"> shop category</a>
-                                            <a class="dropdown-item" href="single-product.html">product details</a>
+                                            <a class="dropdown-item" href="/home/shopcategory"> shop category</a>
+                                            <!-- <a class="dropdown-item" href="single-product.html">product details</a> -->
 
                                         </div>
                                     </li>
-                                    <!-- <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="blog.html" id="navbarDropdown_3"
-                                    role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    pages
-                                </a>
-                                <div class="dropdown-menu" aria-labelledby="navbarDropdown_2">
-                                    <a class="dropdown-item" href="login.html"> login</a>
-                                    <a class="dropdown-item" href="tracking.html">tracking</a>
-                                    <a class="dropdown-item" href="checkout.html">product checkout</a>
-                                    <a class="dropdown-item" href="cart.html">shopping cart</a>
-                                    <a class="dropdown-item" href="confirmation.html">confirmation</a>
-                                    <a class="dropdown-item" href="elements.html">elements</a>
-                                </div>
-                            </li> -->
-                                    <!-- <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="blog.html" id="navbarDropdown_2"
-                                    role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    blog
-                                </a>
-                                <div class="dropdown-menu" aria-labelledby="navbarDropdown_2">
-                                    <a class="dropdown-item" href="blog.html"> blog</a>
-                                    <a class="dropdown-item" href="single-blog.html">Single blog</a>
-                                </div>
-                            </li> -->
+
 
                                     <li class="nav-item">
                                         <a class="nav-link" href="/contact">Contact</a>
@@ -107,15 +85,7 @@
                     </div>
                 </div>
             </div>
-            <!-- <div class="search_input" id="search_input_box">
-        <div class="container ">
-            <form class="d-flex justify-content-between search-inner">
-                <input type="text" class="form-control" id="search_input" placeholder="Search Here">
-                <button type="submit" class="btn"></button>
-                <span class="ti-close" id="close_search" title="Close Search"></span>
-            </form>
-        </div>
-    </div> -->
+
         </header>
         <!-- Header part end-->
 
@@ -156,19 +126,24 @@
                 <div class="billing_details">
                     <div class="row">
                         <div class="col-lg-7">
-                            <h3>Select Addresses</h3>
-                            <div class="row" id="addresslist">
-                                <% if(addresses){ %>
-                                    <% addresses.address.forEach(function(address, index) { %>
-                                        <div class="col-md-6">
-                                            <div class="address-item mb-3 d-flex align-items-start">
-                                                
-                                                <input type="radio" name="selectedAddress" value="<%= address._id %>"
-                                                    id="address<%= index %>" class="mr-2" data-name="<%=address.name%>"
-                                                    data-phone="<%=address.phone%>" data-email="<%=address.email%>"
-                                                    data-city="<%=address.city%>" data-district="<%=address.district%>"
-                                                    data-state="<%=address.state%>" data-pincode="<%=address.pincode%>">
-                                                <textarea class="form-control" rows="3" style="height: 200px;" readonly>
+                            <%if(addresses){%>
+                                <h3>Select Addresses</h3>
+                                <div class="row" id="addresslist">
+                                    <% if(addresses){ %>
+                                        <% addresses.address.forEach(function(address, index) { %>
+                                            <div class="col-md-6">
+                                                <div class="address-item mb-3 d-flex align-items-start">
+
+                                                    <input type="radio" name="selectedAddress"
+                                                        value="<%= address._id %>" id="address<%= index %>" class="mr-2"
+                                                        data-id="<%=address._id%>" data-name="<%=address.name%>"
+                                                        data-phone="<%=address.phone%>" data-email="<%=address.email%>"
+                                                        data-city="<%=address.city%>"
+                                                        data-district="<%=address.district%>"
+                                                        data-state="<%=address.state%>"
+                                                        data-pincode="<%=address.pincode%>">
+                                                    <textarea class="form-control" rows="3" style="height: 200px;"
+                                                        readonly>
                         Name: <%= address.name %>, 
                         Phone: <%= address.phone %>, 
                         Email: <%= address.email %>, 
@@ -177,80 +152,132 @@
                         State: <%= address.state %>, 
                         Pincode: <%= address.pincode %>
                       </textarea>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <% }); %>
-                                            <% } %>
-                            </div>
-                            <h3>Address for Delivery</h3>
-                            <form class="row contact_form" action="" method="post" id="addressform">
-                                <input type="hidden" id="addressId" name="addressId" value="" />
+                                            <% }); %>
+                                                <% } %>
+                                </div>
+                                <%}else{%>
+                                    <div class="row" id="addresslist">
 
-                                <div class="col-md-6 form-group p_star">
-                                    <input type="text" class="form-control" id="name" name="name" placeholder="Name"
-                                        value="<%=addresses.address[0].name%>" readonly />
-                                </div>
+                                    </div>
 
-                                <div class="col-md-6 form-group p_star">
-                                    <input type="text" class="form-control" id="number" name="number"
-                                        placeholder="Phone" value="<%=addresses.address[0].phone%>" readonly />
-                                </div>
-                                <div class="col-md-6 form-group p_star">
-                                    <input type="email" class="form-control" id="email" name="email" placeholder="Email"
-                                        value="<%=addresses.address[0].email%>" readonly />
-                                </div>
+                                    <%}%>
+                                        <h3>Address for Delivery</h3>
+                                        <%if(addresses){%>
+                                            <form class="row contact_form" action="" method="post" id="addressform">
+                                                <input type="hidden" id="addressId" name="addressId"
+                                                    value="<%=addresses.address[0]._id%>" />
 
-                                <div class="col-md-12 form-group p_star">
-                                    <input type="text" class="form-control" id="city" name="city" placeholder="City"
-                                        value="<%=addresses.address[0].city%>" readonly />
-                                </div>
-                                <div class="col-md-12 form-group p_star">
-                                    <input type="text" class="form-control" id="district" name="district"
-                                        placeholder="District" value="<%=addresses.address[0].district%>" readonly />
-                                </div>
-                                <div class="col-md-12 form-group p_star">
-                                    <input type="text" class="form-control" id="state" name="state" placeholder="State"
-                                        value="<%=addresses.address[0].state%>" readonly />
-                                </div>
+                                                <div class="col-md-6 form-group p_star">
+                                                    <input type="text" class="form-control" id="name" name="name"
+                                                        placeholder="Name" value="<%=addresses.address[0].name%>"
+                                                        readonly />
+                                                </div>
 
-                                <div class="col-md-12 form-group p_star">
-                                    <input type="text" class="form-control" id="pincode" name="pincode"
-                                        placeholder="Pincode" value="<%=addresses.address[0].pincode%>" readonly />
+                                                <div class="col-md-6 form-group p_star">
+                                                    <input type="text" class="form-control" id="number" name="number"
+                                                        placeholder="Phone" value="<%=addresses.address[0].phone%>"
+                                                        readonly />
+                                                </div>
+                                                <div class="col-md-6 form-group p_star">
+                                                    <input type="email" class="form-control" id="email" name="email"
+                                                        placeholder="Email" value="<%=addresses.address[0].email%>"
+                                                        readonly />
+                                                </div>
 
-                                </div>
-                            </form>
+                                                <div class="col-md-12 form-group p_star">
+                                                    <input type="text" class="form-control" id="city" name="city"
+                                                        placeholder="City" value="<%=addresses.address[0].city%>"
+                                                        readonly />
+                                                </div>
+                                                <div class="col-md-12 form-group p_star">
+                                                    <input type="text" class="form-control" id="district"
+                                                        name="district" placeholder="District"
+                                                        value="<%=addresses.address[0].district%>" readonly />
+                                                </div>
+                                                <div class="col-md-12 form-group p_star">
+                                                    <input type="text" class="form-control" id="state" name="state"
+                                                        placeholder="State" value="<%=addresses.address[0].state%>"
+                                                        readonly />
+                                                </div>
 
-                            <!-- <a class="btn_1" id="formsubmit">Add address</a> -->
-                            <!-- <form action="" id="addanotheraddress">
-                                <button class="btn_1" id="formsubmit" type="submit">
-                                    Add another address
-                                </button>
-                            </form> -->
-                            <form id="addanotheraddress">
-                                <button class="btn_1" type="button" data-toggle="modal" data-target="#addressModal">
-                                    Add another address
-                                </button>
-                            </form>
+                                                <div class="col-md-12 form-group p_star">
+                                                    <input type="text" class="form-control" id="pincode" name="pincode"
+                                                        placeholder="Pincode" value="<%=addresses.address[0].pincode%>"
+                                                        readonly />
+
+                                                </div>
+                                            </form>
+                                            <%}else{%>
+                                                <form class="row contact_form" action="" method="post" id="addressform">
+                                                    <input type="hidden" id="addressId" name="addressId" value="" />
+
+                                                    <div class="col-md-6 form-group p_star">
+                                                        <input type="text" class="form-control" id="name" name="name"
+                                                            placeholder="Name" value="" readonly />
+                                                    </div>
+
+                                                    <div class="col-md-6 form-group p_star">
+                                                        <input type="text" class="form-control" id="number"
+                                                            name="number" placeholder="Phone" value="" readonly />
+                                                    </div>
+                                                    <div class="col-md-6 form-group p_star">
+                                                        <input type="email" class="form-control" id="email" name="email"
+                                                            placeholder="Email" value="" readonly />
+                                                    </div>
+
+                                                    <div class="col-md-12 form-group p_star">
+                                                        <input type="text" class="form-control" id="city" name="city"
+                                                            placeholder="City" value="" readonly />
+                                                    </div>
+                                                    <div class="col-md-12 form-group p_star">
+                                                        <input type="text" class="form-control" id="district"
+                                                            name="district" placeholder="District" value="" readonly />
+                                                    </div>
+                                                    <div class="col-md-12 form-group p_star">
+                                                        <input type="text" class="form-control" id="state" name="state"
+                                                            placeholder="State" value="" readonly />
+                                                    </div>
+
+                                                    <div class="col-md-12 form-group p_star">
+                                                        <input type="text" class="form-control" id="pincode"
+                                                            name="pincode" placeholder="Pincode" value="" readonly />
+
+                                                    </div>
+                                                </form>
+                                                <%}%>
+
+
+                                                    <form id="addanotheraddress">
+                                                        <button class="btn_1" type="button" data-toggle="modal"
+                                                            data-target="#addressModal">
+                                                            Add another address
+                                                        </button>
+                                                    </form>
 
                         </div>
                         <div class="col-lg-5">
                             <div class="order_box">
                                 <h2>Your Order</h2>
-                                
+                                <input type="hidden" id="totalprice" value="<%=cartData.totalPrice%>">
+                                <input type="hidden" id="cartid" value="<%=cartData.cartId%>">
                                 <ul class="list">
                                     <li>
-                                        <a >Product
+                                        <a>Product
                                             <span>Total</span>
                                         </a>
                                     </li>
                                     <%cartData.items.forEach(item=>{%>
-                                    <li>
-                                        <a><%=item.productName%>
-                                            <span class="middle">x<%=item.quantity%></span>
-                                            <span class="last">₹<%=item.totalPrice%></span>
-                                        </a>
-                                    </li><%})%>
-                                   
+                                        <li>
+                                            <a>
+                                                <%=item.productName%>
+                                                    <span class="middle">x<%=item.quantity%></span>
+                                                    <span class="last">₹<%=item.totalPrice%></span>
+                                            </a>
+                                        </li>
+                                        <%})%>
+
                                 </ul>
                                 <ul class="list list_2">
                                     <li>
@@ -275,17 +302,25 @@
                                         Store State / County, Store Postcode.
                                         Please send a check to Store Name, Store Street, Store Town,
                                         Store State / County, Store Postcode.
+                                        Please send a check to Store Name, Store Street, Store Town,
+                                        Store State / County, Store Postcode.
+                                        Please send a check to Store Name, Store Street, Store Town,
+                                        Store State / County, Store Postcode.
                                     </p>
                                     <div class="radion_btn">
-                                        <input type="radio" id="f-option5" name="selector" />
+                                        <input type="radio" id="f-option5" name="paymentMethod"
+                                            value="Cash On Delivery" />
                                         <label for="f-option5">Cash On Delivery</label>
                                         <div class="check"></div>
                                     </div>
-                                    
+
+
                                 </div>
+                                <div class="text-danger" id="codtext" style="display: none;">cash on delivery is only
+                                    available when the total price is below ₹ 5000</div>
                                 <div class="payment_item active">
                                     <div class="radion_btn">
-                                        <input type="radio" id="f-option6" name="selector" />
+                                        <input type="radio" id="f-option6" name="paymentMethod" value="Wallet" />
                                         <label for="f-option6">Wallet </label>
                                         <img src="img/product/single-product/card.jpg" alt="" />
                                         <div class="check"></div>
@@ -297,8 +332,8 @@
                                 </div>
                                 <div class="payment_item active">
                                     <div class="radion_btn">
-                                        <input type="radio" id="f-option6" name="selector" />
-                                        <label for="f-option6">Razorpay </label>
+                                        <input type="radio" id="f-option7" name="paymentMethod" value="Razorpay" />
+                                        <label for="f-option7">Razorpay </label>
                                         <img src="img/product/single-product/card.jpg" alt="" />
                                         <div class="check"></div>
                                     </div>
@@ -312,7 +347,19 @@
                                     <label for="f-option4">I’ve read and accept the </label>
                                     <a href="#">terms & conditions*</a>
                                 </div>
-                                <a class="btn_3" href="#">Proceed to Pay</a>
+                                <!-- <a class="btn_3" href="#">Proceed to Pay</a> -->
+                               <div style="display: flex; flex-direction: column; align-items: center;">
+                                <form action="" id="payform">
+                                    <!-- <a style="color: aliceblue;" class="btn_3" onclick="submitForm()">Proceed to pay</a> -->
+                                     <button class="btn_3" type="submit">proceed to pay</button>
+                                </form>
+                                
+                                <div style="margin-top: 20px; width: 53%;">
+                                    <a class="btn_3" href="/user/cart" style="margin-left: 10 px;">Cancel</a>
+                                </div>
+                               </div>
+                                <div class="text-danger" id="addpayment" style="display: none;">add a payment method
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -321,7 +368,8 @@
         </section>
         <!--================End Checkout Area =================-->
         <!-- modal -->
-        <div class="modal fade" id="addressModal" tabindex="-1" role="dialog" aria-labelledby="addressModalLabel" aria-hidden="true">
+        <div class="modal fade" id="addressModal" tabindex="-1" role="dialog" aria-labelledby="addressModalLabel"
+            aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -331,43 +379,82 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                       
-                        <form class="row contact_form" action="" method="post" id="addressform">
-                            <input type="hidden" id="addressId" name="addressId" value="<%=addresses._id%>" />
 
-                            <div class="col-md-6 form-group p_star">
-                                <input type="text" class="form-control" id="modalName" name="name" placeholder="Name"
-                                    value="<%=addresses.address[0].name%>"  />
-                            </div>
+                        <%if(addresses){%>
+                            <form class="row contact_form" action="" method="post" id="addressform">
+                                <input type="hidden" id="addressId" name="addressId" value="<%=addresses._id%>" />
 
-                            <div class="col-md-6 form-group p_star">
-                                <input type="text" class="form-control" id="modalPhone" name="number"
-                                    placeholder="Phone" value="<%=addresses.address[0].phone%>"  />
-                            </div>
-                            <div class="col-md-6 form-group p_star">
-                                <input type="email" class="form-control" id="modalEmail" name="email" placeholder="Email"
-                                    value="<%=addresses.address[0].email%>"  />
-                            </div>
+                                <div class="col-md-6 form-group p_star">
+                                    <input type="text" class="form-control" id="modalName" name="name"
+                                        placeholder="Name" value="<%=addresses.address[0].name%>" />
+                                </div>
 
-                            <div class="col-md-12 form-group p_star">
-                                <input type="text" class="form-control" id="modalCity" name="city" placeholder="City"
-                                    value="<%=addresses.address[0].city%>"  />
-                            </div>
-                            <div class="col-md-12 form-group p_star">
-                                <input type="text" class="form-control" id="modalDistrict" name="district"
-                                    placeholder="District" value="<%=addresses.address[0].district%>"  />
-                            </div>
-                            <div class="col-md-12 form-group p_star">
-                                <input type="text" class="form-control" id="modalState" name="state" placeholder="State"
-                                    value="<%=addresses.address[0].state%>"  />
-                            </div>
+                                <div class="col-md-6 form-group p_star">
+                                    <input type="text" class="form-control" id="modalPhone" name="number"
+                                        placeholder="Phone" value="<%=addresses.address[0].phone%>" />
+                                </div>
+                                <div class="col-md-6 form-group p_star">
+                                    <input type="email" class="form-control" id="modalEmail" name="email"
+                                        placeholder="Email" value="<%=addresses.address[0].email%>" />
+                                </div>
 
-                            <div class="col-md-12 form-group p_star">
-                                <input type="text" class="form-control" id="modalPincode" name="pincode"
-                                    placeholder="Pincode" value="<%=addresses.address[0].pincode%>"  />
+                                <div class="col-md-12 form-group p_star">
+                                    <input type="text" class="form-control" id="modalCity" name="city"
+                                        placeholder="City" value="<%=addresses.address[0].city%>" />
+                                </div>
+                                <div class="col-md-12 form-group p_star">
+                                    <input type="text" class="form-control" id="modalDistrict" name="district"
+                                        placeholder="District" value="<%=addresses.address[0].district%>" />
+                                </div>
+                                <div class="col-md-12 form-group p_star">
+                                    <input type="text" class="form-control" id="modalState" name="state"
+                                        placeholder="State" value="<%=addresses.address[0].state%>" />
+                                </div>
 
-                            </div>
-                        </form>
+                                <div class="col-md-12 form-group p_star">
+                                    <input type="text" class="form-control" id="modalPincode" name="pincode"
+                                        placeholder="Pincode" value="<%=addresses.address[0].pincode%>" />
+
+                                </div>
+                            </form>
+                            <%} else{%>
+                                <form class="row contact_form" action="" method="post" id="addressform">
+                                    <input type="hidden" id="addressId" name="addressId" value="" />
+
+                                    <div class="col-md-6 form-group p_star">
+                                        <input type="text" class="form-control" id="modalName" name="name"
+                                            placeholder="Name" value="" />
+                                    </div>
+
+                                    <div class="col-md-6 form-group p_star">
+                                        <input type="text" class="form-control" id="modalPhone" name="number"
+                                            placeholder="Phone" value="" />
+                                    </div>
+                                    <div class="col-md-6 form-group p_star">
+                                        <input type="email" class="form-control" id="modalEmail" name="email"
+                                            placeholder="Email" value="" />
+                                    </div>
+
+                                    <div class="col-md-12 form-group p_star">
+                                        <input type="text" class="form-control" id="modalCity" name="city"
+                                            placeholder="City" value="" />
+                                    </div>
+                                    <div class="col-md-12 form-group p_star">
+                                        <input type="text" class="form-control" id="modalDistrict" name="district"
+                                            placeholder="District" value="" />
+                                    </div>
+                                    <div class="col-md-12 form-group p_star">
+                                        <input type="text" class="form-control" id="modalState" name="state"
+                                            placeholder="State" value="" />
+                                    </div>
+
+                                    <div class="col-md-12 form-group p_star">
+                                        <input type="text" class="form-control" id="modalPincode" name="pincode"
+                                            placeholder="Pincode" value="" />
+
+                                    </div>
+                                </form>
+                                <%}%>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn_1" data-dismiss="modal">Close</button>
@@ -376,10 +463,10 @@
                 </div>
             </div>
         </div>
-    
+
         <!-- jQuery and Bootstrap JS -->
-       
-         <!-- modal -->
+
+        <!-- modal -->
         <!--::footer_part start::-->
         <footer class="footer_part">
             <div class="container">
@@ -484,10 +571,15 @@
         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
         <script>
-           
+
         </script>
         <script>
             document.addEventListener('DOMContentLoaded', async () => {
+
+                
+                const addressList = document.getElementById('addresslist');
+                const saveAddressBtn = document.getElementById('saveAddressBtn');
+                const payForm = document.getElementById('payform');
                 const radioButtons = document.querySelectorAll('input[name="selectedAddress"]')
                 const selectedName = document.getElementById('selectedName');
                 const selectedPhone = document.getElementById('selectedPhone');
@@ -496,61 +588,203 @@
                 const selectedDistrict = document.getElementById('selectedDistrict');
                 const selectedState = document.getElementById('selectedState');
                 const selectedPincode = document.getElementById('selectedPincode');
-                console.log(radioButtons)
-                radioButtons.forEach((radio) => {
-                    radio.addEventListener('change', async (event) => {
-                        const targetRadio = event.target
-                        console.log(this)
-                        console.log('button has clicked')
-                        event.preventDefault()
-                        if (targetRadio.checked) {
-                            document.getElementById('name').value = targetRadio.dataset.name || ''
-                            document.getElementById('number').value = targetRadio.dataset.phone || ''
-                            document.getElementById('email').value = targetRadio.dataset.email || ''
-                            document.getElementById('city').value = targetRadio.dataset.city || ''
-                            document.getElementById('district').value = targetRadio.dataset.district || ''
-                            document.getElementById('state').value = targetRadio.dataset.state || ''
-                            document.getElementById('pincode').value = targetRadio.dataset.pincode || ''
+                // console.log(radioButtons)
+                addressList.addEventListener('change', async (event) => {
+                    const targetRadio = event.target;
+                    if (targetRadio.matches('input[name="selectedAddress"]')) {
+                        // Update form fields when radio button is clicked
+                        document.getElementById('addressId').value = targetRadio.value
+                        document.getElementById('name').value = targetRadio.dataset.name || '';
+                        document.getElementById('number').value = targetRadio.dataset.phone || '';
+                        document.getElementById('email').value = targetRadio.dataset.email || '';
+                        document.getElementById('city').value = targetRadio.dataset.city || '';
+                        document.getElementById('district').value = targetRadio.dataset.district || '';
+                        document.getElementById('state').value = targetRadio.dataset.state || '';
+                        document.getElementById('pincode').value = targetRadio.dataset.pin || '';
+                    }
+                });
 
-
-                        }
-
-                    })
-                })
-                document.getElementById('saveAddressBtn').addEventListener('click', function(event) {
-                    console.log('button has clicked')
+                document.getElementById('saveAddressBtn').addEventListener('click', async (event) => {
+                    // console.log('button has clicked')
                     event.preventDefault()
-                const name = document.getElementById('modalName');
-                console.log(name)
-                const phone = document.getElementById('modalPhone');
-                const email = document.getElementById('modalEmail');
-                const city = document.getElementById('modalCity');
-                const district = document.getElementById('modalDistrict');
-                const state = document.getElementById('modalState');
-                const pincode = document.getElementById('modalPincode');
-                    console.log(name.value,phone,email,city,district,state,pincode)
-                // Create a new address item and add it to the address list
-                const newAddress = `
+                    const name = document.getElementById('modalName').value;
+                    // console.log(name)
+                    const number = document.getElementById('modalPhone').value;
+                    const email = document.getElementById('modalEmail').value;
+                    const city = document.getElementById('modalCity').value;
+                    const district = document.getElementById('modalDistrict').value;
+                    const state = document.getElementById('modalState').value;
+                    const pin = document.getElementById('modalPincode').value;
+                    // console.log(name.value, phone, email, city, district, state, pincode)
+                    formData = {
+                        name, number, email, city, district, state, pin
+                    }
+                    console.log(formData)
+                    const response = await fetch('/user/dashboard/profile/address/addaddress', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(formData)
+                    })
+                    const result = await response.json()
+                    if (response.ok) {
+                        Swal.fire({
+                            title: 'success',
+                            text: result.message,
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+                            console.log(result.addressdata)
+                            const addressId = result.addressdata.address[result.addressdata.address.length - 1]._id
+                            // console.log(addressId)
+                            const newAddress = `
                     <div class="col-md-6">
                         <div class="address-item mb-3 d-flex align-items-start">
-                            <input type="radio" name="selectedAddress" value="new" class="mr-2" data-name="${name.value}" data-phone="${phone.value}" data-email="${email.value}" data-city="${city.value}" data-district="${district.value}" data-state="${state.value}" data-pincode="${pincode.value}">
+                            <input type="radio" name="selectedAddress" value="${addressId}" class="mr-2" data-name="${name}" data-phone="${number}" data-email="${email}" data-city="${city}" data-district="${district}" data-state="${state}" data-pincode="${pin}">
                             <textarea class="form-control" rows="3" style="height: 200px;" readonly>
-                                Name: ${name.value}, 
-                                Phone: ${phone.value}, 
-                                Email: ${email.value}, 
-                                City: ${city.value}, 
-                                District: ${district.value}, 
-                                State: ${state.value}, 
-                                Pincode: ${pincode.value}
+                                Name: ${name}, 
+                                Phone: ${number}, 
+                                Email: ${email}, 
+                                City: ${city}, 
+                                District: ${district}, 
+                                State: ${state}, 
+                                Pincode: ${pin}
                             </textarea>
                         </div>
                     </div>
                 `;
-    
-                document.getElementById('addresslist').insertAdjacentHTML('beforeend', newAddress);
-                $('#addressModal').modal('hide').on('hidden.bs.modal', function () {
-            $('.modal-backdrop').remove();
-        });            });
+
+                            document.getElementById('addresslist').insertAdjacentHTML('beforeend', newAddress);
+                            $('#addressModal').modal('hide').on('hidden.bs.modal', function () {
+                                $('.modal-backdrop').remove();
+                            });
+                        })
+                    } else {
+                        Swal.fire({
+                            title: 'failed',
+                            text: result.message,
+                            icon: 'failed',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+                            $('#addressModal').modal('hide').on('hidden.bs.modal', function () {
+                                $('.modal-backdrop').remove();
+                            });
+                        })
+                    }
+                });
+
+                const codRadio = document.getElementById('f-option5')
+                const codWallet = document.getElementById('f-option6')
+                const codRazorPay = document.getElementById('f-option7')
+                const totalPrice = document.getElementById('totalprice')
+                const codText = document.getElementById('codtext')
+                codRadio.addEventListener('change', async (event) => {
+                    event.preventDefault()
+                    if (Number(totalPrice.value) > 5000) {
+                        codText.style.display = 'inline'
+
+                    } else {
+                        codText.style.display = 'none'
+                        addPayment.style.display = 'none'
+                    }
+                    // console.log('the button clicked')
+                })
+                codRazorPay.addEventListener('change', async (event) => {
+                    event.preventDefault()
+                    codText.style.display = 'none'
+                    addPayment.style.display = 'none'
+                })
+                codWallet.addEventListener('change', async (event) => {
+                    event.preventDefault()
+                    codText.style.display = 'none'
+                    addPayment.style.display = 'none'
+                })
+                const addPayment = document.getElementById('addpayment')
+                // const payForm=document.getElementById('payform')
+                payForm.addEventListener('submit', async (event) => {
+                    event.preventDefault()
+                    if (!document.querySelector('input[name="paymentMethod"]:checked')) {
+                        addPayment.style.display = 'inline'
+                        return
+                    } else {
+                        addPayment.style.display = 'none'
+                    }
+                    const selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+                    if (selectedPaymentMethod === 'Cash On Delivery' && totalPrice.value > 5000) {
+                        codText.style.display = 'inline'
+                        return
+
+                    }
+
+                    if (selectedPaymentMethod === 'Cash On Delivery') {
+                        const swalResult = await Swal.fire({
+                            title: 'confirm',
+                            text: 'Are you sure to proceed to place order ',
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonText: 'Ok',
+                            cancelButtonText: 'Cancel'
+                        })
+                        if (!swalResult.isConfirmed) {
+                            return
+                        }
+                    } else {
+                        return
+                    }
+
+                    // console.log('form button clicked')
+                    const addressId = document.getElementById('addressId').value
+                    console.log(addressId)
+                    const cartId = document.getElementById('cartid').value
+                    // console.log(cartId)
+                    const totalAmount = document.getElementById('totalprice').value
+                    // console.log(totalAmount)
+                    const paymentMethod = selectedPaymentMethod
+                    orderData = {
+                        addressId, cartId, totalAmount, paymentMethod
+                    }
+                    console.log(orderData)
+
+
+                    const response = await fetch('/user/cart/checkout/order-cashondelivery', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(orderData)
+                    })
+
+                    const result = await response.json()
+                    if (response.ok) {
+                        Swal.fire({
+                            title: 'success',
+                            text: result.message,
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+                            window.location.href = '/user/cart/checkout/order-cashondelivery/order-success'
+                        })
+                    } else {
+                        if (result.status === 400) {
+                            Swal.fire({
+                                title: 'failed',
+                                text: result.message,
+                                icon: 'error',
+                                confirmButtonText: 'OK'
+                            }).then(() => {
+                                window.location.reload()
+                            })
+                        }
+                        Swal.fire({
+                            title: 'failed',
+                            text: result.message,
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        })
+                    }
+                })
+
             })
         </script>
         <!-- jquery plugins here-->
@@ -582,4 +816,6 @@
         <script src="/js/price_rangs.js"></script>
         <!-- custom js -->
         <script src="js/custom.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+
         <% include ('../usersidepartials/footer')%>
