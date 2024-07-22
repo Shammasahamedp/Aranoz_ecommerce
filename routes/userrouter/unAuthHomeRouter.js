@@ -6,6 +6,7 @@ const userCategoryController=require('../../controllers/user/userCategoryControl
 userHomeRouter.get('/',userMiddleware.isUserNotAuthenticated,userHomeController.redirectHome)
 userHomeRouter.get('/home',userMiddleware.isUserNotAuthenticated,userHomeController.getHome)
 userHomeRouter.get('/home/shopcategory',userCategoryController.getCategory)
+// userHomeRouter.post('/home/shopcategory/searchproduct',userCategoryController.searchProduct)
 userHomeRouter.get('/contact',userHomeController.getContact)
 
 module.exports=userHomeRouter

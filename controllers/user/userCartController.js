@@ -4,20 +4,21 @@ const Product=require('../../models/productsModel')
 const getCart=async (req,res)=>{
     try{
         const userId=req.session.user
-        // console.log(userId)
+        console.log(userId)
         const cart=await Cart.findOne({userId}).populate('items.productId')
-        // console.log(cart)
+        console.log('first cart',cart)
         let totalQuantity=0;
             let totalPrice=0;
-        if(!cart){
-            
+        if(!cart||cart.items.length==0){
+           console.log('this is without cart')
             let cartData={
                 items:[],
                 totalQuantity:totalQuantity,
-                totalPrice:totalPrice
+                totalPrice:totalPrice,
+                breadcrumbItems:[{name:'Dashboard',url:'/user/dashboard'},{name:'cart'}]
             }
             // console.log(cartData)
-            res.status(200).render('cart/cart',{cartData})
+            res.status(200).render('cart/cart',{cartData,cart:''})
         }else{
             let cartData={
                 items:[],
@@ -26,21 +27,25 @@ const getCart=async (req,res)=>{
                 breadcrumbItems:[{name:'Dashboard',url:'/user/dashboard'},{name:'cart'}]
 
             }
-            cart.items.forEach(item=>{
-                let itemTotalPrice=item.quantity*item.productId.price;
-                cartData.items.push({
-                    productId:item.productId._id,
-                    productImage:item.productId.imageUrl[0],
-                    productName:item.productId.name,
-                    quantity:item.quantity,
-                    price:item.productId.price,
-                    totalPrice:itemTotalPrice,
-                    totalStock:item.productId.stock
+            
+                console.log('this is inside',cart)
+                cart.items.forEach(item=>{
+                    let itemTotalPrice=item.quantity*item.productId.price;
+                    cartData.items.push({
+                        productId:item.productId._id,
+                        productImage:item.productId.imageUrl[0],
+                        productName:item.productId.name,
+                        quantity:item.quantity,
+                        price:item.productId.price,
+                        totalPrice:itemTotalPrice,
+                        totalStock:item.productId.stock
+                    })
+                    cartData.totalPrice+=itemTotalPrice,
+                    cartData.totalQuantity+=item.quantity
                 })
-                cartData.totalPrice+=itemTotalPrice,
-                cartData.totalQuantity+=item.quantity
-            })
-            console.log(cart)
+            
+            console.log(cart.length)
+            console.log(cartData)
             res.status(200).render('cart/cart',{cartData,cart})
         }
         

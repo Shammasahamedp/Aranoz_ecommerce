@@ -11,6 +11,10 @@
             border-color: #ff3368;
             color: white;
         }
+
+        .price_value input {
+            width: 50 px;
+        }
     </style>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="/css/usercss/bootstrap.min.css">
@@ -39,6 +43,7 @@
     <script src="https://cdn.jsdelivr.net/npm/nouislider@15.2.0/distribute/nouislider.min.js"></script>
 
     <!--::header part start::-->
+
     <header class="main_menu home_menu">
         <div class="container">
             <div class="row align-items-center">
@@ -59,12 +64,13 @@
                                     </li>
                                     <li class="nav-item dropdown">
                                         <a class="nav-link dropdown-toggle" href="blog.html" id="navbarDropdown_3"
-                                            role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            role="button" data-toggle="dropdown" aria-haspopup="true"
+                                            aria-expanded="false">
                                             Profile
                                         </a>
                                         <div class="dropdown-menu" aria-labelledby="navbarDropdown_2">
                                             <a class="dropdown-item" href="/user/dashboard/profile"> Profile</a>
-                                           
+
                                             <a class="dropdown-item" onclick="logout()"> Logout</a>
                                             <form id="logoutform" action="/user/logout" method="POST">
                                                 <input type="hidden" name="_method" value="POST">
@@ -76,7 +82,7 @@
                                             <a class="nav-link" href="/home">Home</a>
                                         </li>
                                         <%}%>
-                                        
+
                                             <li class="nav-item">
                                                 <a class="nav-link" href="/contact">Contact</a>
                                             </li>
@@ -119,6 +125,7 @@
     <!-- breadcrumb start-->
 
     <!--================Category Product Area =================-->
+
     <section class="cat_product_area section_padding">
         <div class="container">
             <div class="row">
@@ -130,8 +137,9 @@
                             </div>
                             <div class="widgets_inner">
                                 <ul class="list">
-                                    <li class="category-item <%= !categorySlug ? 'active' : '' %>">
-                                        <a href="/home/shopcategory?page=1">All products</a>
+                                    <li class="category-item " id="allproducts">
+                                        <a href="/home/shopcategory?page=1&categoryId=<%= categorySlug %> ">All
+                                            products</a>
                                     </li>
                                     <% categories.forEach(category=> { %>
                                         <li class="category-item" data-category-id="<%= category._id %>">
@@ -159,11 +167,18 @@
                                             <p>Price :</p>
                                         </div>
                                         <div class="price_value d-flex justify-content-center">
-                                            <input type="text" class="js-input-from" id="minPrice" readonly />
+                                            <input type="text" class="js-input-from" value="<%=minPrice%>"
+                                                id="minPrice" />
                                             <span>to</span>
-                                            <input type="text" class="js-input-to" id="maxPrice" readonly />
+                                            <input type="text" class="js-input-to" value="<%=maxPrice%>"
+                                                id="maxPrice" />
                                         </div>
+                                        <div id="price-range" data-max-price="<%=maxPrice%>"
+                                            data-min-price="<%=minPrice%>"></div>
                                     </div>
+                                    <button id="buttonPrice" class="btn_3">Get between this range</button>
+                                    <p>maxPrice:<%=maxPrice%>
+                                    </p>
                                 </div>
 
                             </div>
@@ -197,11 +212,13 @@
                                 </div>
                                 <div class="single_product_menu d-flex">
                                     <div class="input-group">
-                                        <input type="text" class="form-control" placeholder="search"
-                                            aria-describedby="inputGroupPrepend">
+                                        <input type="text" id="productsearch" class="form-control" placeholder="search"
+                                            aria-describedby="inputGroupPrepend" value="">
                                         <div class="input-group-prepend">
-                                            <span class="input-group-text" id="inputGroupPrepend"><i
-                                                    class="bi bi-search"></i></span>
+                                            <span class="input-group-text" id="inputGroupPrepend"><a
+                                                    onclick="searchTerm()">
+                                                    <i class="bi bi-search"></i>
+                                                </a></span>
                                         </div>
                                     </div>
                                 </div>
@@ -210,42 +227,49 @@
                     </div>
 
                     <div class="row align-items-center latest_product_inner">
-                        <% products.forEach(product => { %>
+                        <% products.forEach(product=> { %>
                             <div class="col-lg-4 col-sm-6">
                                 <div class="single_product_item">
                                     <a href="/user/product/<%= product._id %>">
                                         <img src="<%= product.imageUrl[0] %>" alt="<%= product.name %>">
                                         <div class="single_product_text">
-                                            <h4><%= product.name %></h4>
-                                            <h3>$<%= product.price %></h3>
+                                            <h4>
+                                                <%= product.name %>
+                                            </h4>
+                                            <h3>$<%= product.price %>
+                                            </h3>
                                             <% if (user) { %>
                                                 <!-- <div>hello</div> -->
                                                 <a class="add_cart" onclick="addToCart(`<%= product._id %>`)">
                                                     + add to cart
                                                 </a>
-                                                <form id="add-to-cart-form-<%= product._id %>" action="/user/dashboard/addtocart/<%= product._id %>" method="POST" style="display: none;">
+                                                <form id="add-to-cart-form-<%= product._id %>"
+                                                    action="/user/dashboard/addtocart/<%= product._id %>" method="POST"
+                                                    style="display: none;">
                                                     <input type="hidden" name="product_id" value="<%= product._id %>">
                                                 </form>
-                                                <a href="#" class="like_us d-flex justify-content-center align-items-center">
+                                                <a href="#"
+                                                    class="like_us d-flex justify-content-center align-items-center">
                                                     <i class="bi bi-heart-fill"></i>
                                                 </a>
-                                            <% } else { %>
-                                                <!-- <div>no user</div> -->
-                                                <a class="add_cart" href="/user/login">
-                                                    + add to cart
-                                                </a>
-                                                <a href="/user/login" class="like_us d-flex justify-content-center align-items-center">
-                                                    <i class="bi bi-heart-fill"></i>
-                                                </a>
-                                            <% } %>
+                                                <% } else { %>
+                                                    <!-- <div>no user</div> -->
+                                                    <a class="add_cart" href="/user/login">
+                                                        + add to cart
+                                                    </a>
+                                                    <a href="/user/login"
+                                                        class="like_us d-flex justify-content-center align-items-center">
+                                                        <i class="bi bi-heart-fill"></i>
+                                                    </a>
+                                                    <% } %>
                                         </div>
                                     </a>
                                 </div>
                             </div>
-                        <% }) %>
+                            <% }) %>
 
-                      
-                        
+
+
                                 <div class="col-lg-12">
                                     <div class="col-lg-12">
                                         <div class="pagination">
@@ -254,7 +278,7 @@
                                                     <% if (currentPage> 1) { %>
                                                         <li class="page-item">
                                                             <a class="page-link"
-                                                                href="/home/shopcategory?page=<%= currentPage - 1 %>&category=<%= categorySlug %>"
+                                                                href="/home/shopcategory?page=<%= currentPage - 1 %>&categoryId=<%= categorySlug %>"
                                                                 aria-label="Previous">
                                                                 <i class="ti-angle-double-left"></i>
                                                             </a>
@@ -264,7 +288,7 @@
                                                                 <li
                                                                     class="page-item <%= currentPage === i ? 'active' : '' %>">
                                                                     <a class="page-link"
-                                                                        href="/home/shopcategory?page=<%= i %>&category=<%= categorySlug %>">
+                                                                        href="/home/shopcategory?page=<%= i %>&categoryId=<%= categorySlug %>">
                                                                         <%= i %>
                                                                     </a>
                                                                 </li>
@@ -272,7 +296,7 @@
                                                                     <% if (currentPage < totalPages) { %>
                                                                         <li class="page-item">
                                                                             <a class="page-link"
-                                                                                href="/home/shopcategory?page=<%= currentPage + 1 %>&category=<%= categorySlug %>"
+                                                                                href="/home/shopcategory?page=<%= currentPage + 1 %>&categoryId=<%= categorySlug %>"
                                                                                 aria-label="Next">
                                                                                 <i class="ti-angle-double-right"></i>
                                                                             </a>
@@ -428,7 +452,143 @@
     <script src="/js/price_rangs.js"></script>
     <!-- custom js -->
     <script src="/js/custom.js"></script>
-    
+    <script>
+        const searchCategory = null
+        document.addEventListener('DOMContentLoaded', async () => {
+            let maxPrice = document.getElementById('maxPrice').value || ''
+            let minPrice = document.getElementById('minPrice').value || ''
+            const searchQuery = document.getElementById('productsearch').value || ''
+            console.log(minPrice)
+            console.log(maxPrice)
+            document.querySelectorAll('.category-item').forEach(item => {
+                item.addEventListener('click', function () {
+                    const categoryId = this.getAttribute('data-category-id');
+                    window.location.href = `/home/shopcategory?page=1&categoryId=${categoryId}&minPrice=${minPrice}$maxPrice=${maxPrice}&searchQuery=${searchQuery}`;
+                });
+            });
+
+            document.getElementById('buttonPrice').addEventListener('click', async (event) => {
+                event.preventDefault()
+                maxPrice = document.getElementById('maxPrice').value || ''
+                minPrice = document.getElementById('minPrice').value || ''
+                window.location.href = `/home/shopcategory?page=1&categoryId=<%= categorySlug %> &minPrice=${minPrice}&maxPrice=${maxPrice}&searchQuery=${searchQuery}`
+            })
+
+
+
+        })
+        async function searchTerm() {
+            console.log('this is ')
+            try {
+                // const response = await fetch(`/home/shopcategory/?page=1&searchQuery=${searchQuery}`, {
+                //     method: 'POST',
+                //     headers: {
+                //         'Content-Type': 'application/json'
+                //     },
+
+                // })
+                window.location.href = `/home/shopcategory/?page=1&categoryId=<%= categorySlug %>&minPrice=${minPrice}&maxPrice=${maxPrice}&searchQuery=${searchQuery}`
+
+                // if (response.ok) {
+                //     const result = await response.json()
+                //     console.log(result.message)
+                //     console.log(result.products)
+                // } else {
+                //     console.log('something went wrong')
+                // }
+            } catch (err) {
+                console.error(err)
+            }
+        }
+    </script>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const priceRangeElement = document.getElementById('price-range');
+            const minPrice = parseInt(priceRangeElement.getAttribute('data-min-price'));
+            const maxPrice = parseInt(priceRangeElement.getAttribute('data-max-price'));
+            function updateInputs(data) {
+                from = data.from;
+                to = data.to;
+
+                $inputFrom.prop("value", from);
+                $inputTo.prop("value", to);
+            }
+
+           
+            $(function () {
+
+                var $range = $(".js-range-slider"),
+                    $inputFrom = $(".js-input-from"),
+                    $inputTo = $(".js-input-to"),
+                    instance,
+                    min = 0,
+                    max = 50000,
+                    from = 10,
+                    to = 100;
+
+                $range.ionRangeSlider({
+                    type: "double",
+                    min: min,
+                    max: max,
+                    from: minPrice,
+                    to: maxPrice,
+                    prefix: 'tk. ',
+                    onStart: updateInputs,
+                    onChange: updateInputs,
+                    step: 1,
+                    prettify_enabled: true,
+                    prettify_separator: ".",
+                    values_separator: " - ",
+                    force_edges: true
+
+
+                });
+
+                instance = $range.data("ionRangeSlider");
+
+                function updateInputs(data) {
+                    from = data.from;
+                    to = data.to;
+
+                    $inputFrom.prop("value", from);
+                    $inputTo.prop("value", to);
+                }
+
+                $inputFrom.on("input", function () {
+                    var val = $(this).prop("value");
+
+                    // validate
+                    if (val < min) {
+                        val = min;
+                    } else if (val > to) {
+                        val = to;
+                    }
+
+                    instance.update({
+                        from: val
+                    });
+                });
+
+                $inputTo.on("input", function () {
+                    var val = $(this).prop("value");
+
+                    // validate
+                    if (val < from) {
+                        val = from;
+                    } else if (val > max) {
+                        val = max;
+                    }
+
+                    instance.update({
+                        to: val
+                    });
+                });
+
+            });
+        });
+    </script>
     <script>
         async function logout() {
 
@@ -469,55 +629,44 @@
             }
         }
     </script>
-      <script>
-      
-        async function addToCart(productId){
-
-try {
-
-   const response = await fetch(`/user/dashboard/addtocart/${productId}`, {
-       method: 'POST',
-       headers: {
-           'Content-Type': 'application/json'
-       },
-   }).then(response=>response.json()).then(data=>{
-       if(data.message==='Product added to cart'){
-           Swal.fire({
-               title:'success',
-               text:data.message,
-               icon:'success',
-               confirmButtonText:'OK'
-           })
-       }else{
-           Swal.fire({
-               title:'failed',
-               text:data.message,
-               icon:'error',
-               confirmButtonText:'OK'
-           })
-       }
-})
- 
-} catch (err) {
-   console.error(err);
-}
-}
-  
-   </script>
     <script>
 
-        document.addEventListener('DOMContentLoaded', async () => {
-            
-            document.querySelectorAll('.category-item').forEach(item => {
-                item.addEventListener('click', function () {
-                    const categoryId = this.getAttribute('data-category-id');
-                    window.location.href = `/home/shopcategory?page=1&categoryId=${categoryId}`;
-                });
-            });
+        async function addToCart(productId) {
+
+            try {
+
+                const response = await fetch(`/user/dashboard/addtocart/${productId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                }).then(response => response.json()).then(data => {
+                    if (data.message === 'Product added to cart') {
+                        Swal.fire({
+                            title: 'success',
+                            text: data.message,
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        })
+                    } else {
+                        Swal.fire({
+                            title: 'failed',
+                            text: data.message,
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        })
+                    }
+                })
+
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+    </script>
+    <script>
 
 
-           
-        })
 
 
     </script>

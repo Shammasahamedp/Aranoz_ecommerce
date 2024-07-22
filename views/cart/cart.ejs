@@ -200,7 +200,9 @@
           </table>
           <div class="checkout_btn_inner float-right">
             <a class="btn_1" href="/home/shopcategory">Continue Shopping</a>
+           <%if(cart&&cart.items.length>0){%>
             <a class="btn_1 checkout_btn_1" href="/user/cart/checkout/<%=cart._id%>">Proceed to checkout</a>
+            <%}%>
           </div>
         </div>
       </div>

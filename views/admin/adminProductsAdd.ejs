@@ -145,21 +145,26 @@
                 <!-- Upload Button -->
                 <div id="imagecontainer" style="display: flex; justify-content: space-between;">
                   <div class="image-group">
+                   
+
                     <img src="" alt="" id="currentimage1" style="width: 100px; height: 100px; object-fit: cover;">
-                    <input type="file" id="uploadimage1" style="display: none;">
+                    <input type="file" accept="image/png, image/jpeg" id="uploadimage1" style="display: none;">
                     <button type="button" class="btn btn-primary uploadButton mt-1" id="uploadbutton1">Upload Image 1</button>
+                    <div class="text-danger" id="imagevalid1" style="display: none;">not every file accepted</div>
                   </div>
-                
+                    
                   <div class="image-group">
                     <img src="" alt="" id="currentimage2" style="width: 100px; height: 100px; object-fit: cover;">
-                    <input type="file" id="uploadimage2" style="display: none;">
+                    <input type="file" accept="image/png, image/jpeg" id="uploadimage2" style="display: none;">
                     <button type="button" class="btn btn-primary uploadButton mt-1" id="uploadbutton2">Upload Image 2</button>
+                    <div class="text-danger" id="imagevalid2" style="display: none;">not every file accepted</div>
                   </div>
-                
+                  
                   <div class="image-group">
                     <img src="" alt="" id="currentimage3" style="width: 100px; height: 100px; object-fit: cover;">
-                    <input type="file" id="uploadimage3" style="display: none;">
+                    <input type="file" accept="image/png, image/jpeg" id="uploadimage3" style="display: none;">
                     <button type="button" class="btn btn-primary uploadButton mt-1" id="uploadbutton3">Upload Image 3</button>
+                    <div class="text-danger" id="imagevalid3" style="display: none;">not every file accepted</div>
                   </div>
                   <!-- Add more as needed -->
                 </div>

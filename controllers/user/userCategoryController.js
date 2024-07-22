@@ -8,22 +8,30 @@ const getCategory = async (req, res) => {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 9; 
         const skip = (page - 1) * limit;
+        // Number.MAX_SAFE_INTEGER
+        console.log(req.query.minPrice)
 
         const minPrice = parseInt(req.query.minPrice) || 0;
-        const maxPrice = parseInt(req.query.maxPrice) || Number.MAX_SAFE_INTEGER;
-        // const categorySlug = req.query.category || ''; 
+        const maxPrice = parseInt(req.query.maxPrice) || 1000000;
 
+        // const categorySlug = req.query.category || ''; 
+        const categoryId = req.query.categoryId ? req.query.categoryId : ''
+        const searchQuery=req.query.searchQuery
         const filter = {
             price: { $gte: minPrice, $lte: maxPrice },
-            isListed:true
+            isListed:true,
+            $or: [
+                { name: { $regex: new RegExp(searchQuery, 'i') } },
+                { 'category.name': { $regex: new RegExp(searchQuery, 'i') } }
+            ]
         };
-        const categoryId = req.query.categoryId ? req.query.categoryId : ''
         
-            if (categoryId) {
-                filter['category.id'] = categoryId;
+        
+            if (categoryId&&  mongoose.Types.ObjectId.isValid(categoryId)) {
+                filter['category.id'] =new mongoose.Types.ObjectId(categoryId);
             }
         
-
+            console.log(filter)
         const productsQuery =  Product.find(filter).skip(skip).limit(limit)
         const countQuery =  Product.countDocuments(filter);
         const categoryquery = Category.find({listed:true})
@@ -34,6 +42,7 @@ const getCategory = async (req, res) => {
         ]);
 
         if(req.session.user){
+            console.log(maxPrice)
             return res.status(200).render('users/category', {
                 products,
                 currentPage: page,
@@ -41,10 +50,11 @@ const getCategory = async (req, res) => {
                 categories,
                 minPrice,
                 maxPrice,
-                categorySlug:categoryId,
+                categorySlug:categoryId||'',
                 user: req.session.user
             });
         } else {
+            console.log(maxPrice)
             return res.status(200).render('users/category', {
                 products,
                 currentPage: page,
@@ -52,7 +62,7 @@ const getCategory = async (req, res) => {
                 categories,
                 minPrice,
                 maxPrice,
-                categorySlug:categoryId,
+                categorySlug:categoryId||'',
                 user: ''
             });
         }
@@ -61,34 +71,19 @@ const getCategory = async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 };
+// const searchProduct=async (req,res)=>{
+//     try{
+//         const query=req.body.searchQuery
+//         console.log(query)
+//         const products=await Product.find({$or:[{name:{$regex:new RegExp(query,'i')}},{'category.name':{$regex:new RegExp(query,'i')}}]})
+//         console.log(products)
+//         res.status(200).json({message:'successfully reached here',products})
+//     }catch(err){
+//         console.error(err)
+//     }
+// }
 
-const showCategory=async (req,res)=>{
-    try{
-        const page = parseInt(req.query.page) || 1;
-        const limit = parseInt(req.query.limit) || 9; 
-        const skip = (page - 1) * limit;
-
-        const minPrice = parseInt(req.query.minPrice) || 0;
-        const maxPrice = parseInt(req.query.maxPrice) || Number.MAX_SAFE_INTEGER;
-
-        const filter = {
-            price: { $gte: minPrice, $lte: maxPrice }
-        };
-
-        const productsQuery = Product.find(filter).skip(skip).limit(limit);
-        const countQuery = Product.countDocuments(filter);
-
-        const [products, totalProducts, categories] = await Promise.all([
-            productsQuery.exec(),
-            countQuery.exec(),
-            Category.find()
-        ]);
-
-    }catch(err){
-        console.error(err)
-    }
-}
 module.exports = {
     getCategory,
-    showCategory
+    // searchProduct
 };
