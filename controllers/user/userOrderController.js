@@ -17,31 +17,13 @@ const getOrderDetails = async (req, res) => {
     const userId = req.session.user
     const orders1 = await Order.findOne({ userId })
     console.log('asdfasd', orders1)
-    const orders = await Order.findOne({ userId }).populate('items.productId')
+    const orders = await Order.findOne({ userId }).sort({orderDate:-1})
     console.log('asdfasdfasdf', orders)
     const addressId1 = orders.addressId
     console.log('addressId', addressId1)
     console.log('userId', userId)
-    // const address=await Address.aggregate([
-    //     { $match: { 
-    //          userId:new mongoose.Types.ObjectId(userId),
-    //         'address._id':{
-    //           $in:[new mongoose.Types.ObjectId(addressId1)]
-    //         }
-    //      } },
-    //     { 
-    //       $project: {
-    //         address: {
-    //           $filter: {
-    //             input: "$address",
-    //             as: "add",
-    //             cond: { $eq: ["$$add._id", [new mongoose.Types.ObjectId(addressId1)]] }
-    //           }
-    //         }
-    //       }
-    //     }
-    //   ])
-    const address = await Address.aggregate([
+    
+    const Addresses = await Address.aggregate([
       {
         $match: {
           userId: new mongoose.Types.ObjectId(userId),
@@ -61,10 +43,12 @@ const getOrderDetails = async (req, res) => {
       }
     ]);
 
-    console.log(address[0].address);
-
-    console.log('this is address:', address)
-    res.status(200).render('orders/orderDetails', { orders ,address})
+    console.log('this is real address',Addresses[0].address);
+    const some=Addresses[0].address
+    console.log(some)
+    console.log(Addresses[0].address[0].name)
+    console.log('this is address:', Addresses)
+    res.status(200).render('orders/orderDetails', { orders ,address:Addresses[0].address})
   } catch (err) {
     console.error(err)
   }

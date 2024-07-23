@@ -180,7 +180,7 @@
               <tbody>
                 <%orderData.items.forEach(item=>{%>
                 <tr>
-                  <th colspan="2"><span><%item.productName%></span></th>
+                  <th colspan="2"><span><%=item.productName%></span></th>
                   <th>x<%=item.quantity%></th>
                   <th> <span>$<%=item.totalPrice%></span></th>
                 </tr>

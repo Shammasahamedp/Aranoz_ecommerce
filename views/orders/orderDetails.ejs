@@ -115,13 +115,13 @@
                 <p>order number</p><span>: 60235</span>
               </li>
               <li>
-                <p>date</p><span>: <%=orderData.date.toLocaleDateString()%></span>
+                <p>date</p><span>: <%=orders.orderDate.toLocaleDateString()%></span>
               </li>
               <li>
-                <p>total</p><span>₹<%=orderData.totalPrice%> </span>
+                <p>total</p><span>₹<%=orders.totalAmount%> </span>
               </li>
               <li>
-                <p>Payment Method</p><span>: <%=orderData.paymentMethod%></span>
+                <p>Payment Method</p><span>: <%=orders.paymentMethod%></span>
               </li>
             </ul>
           </div>
@@ -131,16 +131,16 @@
             <h4>Billing Address</h4>
             <ul>
               <li>
-                <p>City</p><span>: <%=orderData.address[0].city%></span>
+                <p>City</p><span>: <%=address[0].city%></span>
               </li>
               <li>
-                <p>District</p><span>: <%=orderData.address[0].district%></span>
+                <p>District</p><span>: <%=address[0].district%></span>
               </li>
               <li>
-                <p>State</p><span>: <%=orderData.address[0].state%></span>
+                <p>State</p><span>: <%=address[0].state%></span>
               </li>
               <li>
-                <p>postcode</p><span>: <%=orderData.address[0].pincode%></span>
+                <p>postcode</p><span>: <%=address[0].pincode%></span>
               </li>
             </ul>
           </div>
@@ -149,17 +149,22 @@
           <div class="single_confirmation_details">
             <h4>shipping Address</h4>
             <ul>
+              <%if(address.name){%>
+               <p>hello address is here</p>
+                <%}else{%>
+                  <p>no address is here</p>
+                  <%}%>
                 <li>
-                    <p>City</p><span>: <%=orderData.address[0].city%></span>
+                    <p>City</p><span>: <%=address[0].city%></span>
                   </li>
                   <li>
-                    <p>District</p><span>: <%=orderData.address[0].district%></span>
+                    <p>District</p><span>: <%=address[0].district%></span>
                   </li>
                   <li>
-                    <p>State</p><span>: <%=orderData.address[0].state%></span>
+                    <p>State</p><span>: <%=address[0].state%></span>
                   </li>
                   <li>
-                    <p>postcode</p><span>: <%=orderData.address[0].pincode%></span>
+                    <p>postcode</p><span>: <%=address[0].pincode%></span>
                   </li>
             </ul>
           </div>
@@ -178,18 +183,18 @@
                 </tr>
               </thead>
               <tbody>
-                <%orderData.items.forEach(item=>{%>
+                <%orders.items.forEach(item=>{%>
                 <tr>
-                  <th colspan="2"><span><%item.productName%></span></th>
+                  <th colspan="2"><span><%item.productId.name%></span></th>
                   <th>x<%=item.quantity%></th>
-                  <th> <span>$<%=item.totalPrice%></span></th>
+                  <th> <span>$<%=item.price%></span></th>
                 </tr>
               <%})%>
               </tbody>
               <tfoot>
                 <tr>
                   <!-- <th scope="col" colspan="3">Quantity</th> -->
-                  <th scope="col">Total : <%=orderData.totalPrice%></th>
+                  <th scope="col">Total : <%=orders.totalAmount%></th>
                 </tr>
               </tfoot>
             </table>

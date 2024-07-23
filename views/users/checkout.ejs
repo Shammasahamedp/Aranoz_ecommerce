@@ -135,7 +135,7 @@
                                                 <div class="address-item mb-3 d-flex align-items-start">
 
                                                     <input type="radio" name="selectedAddress"
-                                                        value="<%= address._id %>" id="address<%= index %>" class="mr-2"
+                                                        data-value="<%= address._id %>" id="address<%= index %>" class="mr-2"
                                                         data-id="<%=address._id%>" data-name="<%=address.name%>"
                                                         data-phone="<%=address.phone%>" data-email="<%=address.email%>"
                                                         data-city="<%=address.city%>"
@@ -593,7 +593,7 @@
                     const targetRadio = event.target;
                     if (targetRadio.matches('input[name="selectedAddress"]')) {
                         // Update form fields when radio button is clicked
-                        document.getElementById('addressId').value = targetRadio.value
+                        document.getElementById('addressId').value = targetRadio.dataset.value
                         document.getElementById('name').value = targetRadio.dataset.name || '';
                         document.getElementById('number').value = targetRadio.dataset.phone || '';
                         document.getElementById('email').value = targetRadio.dataset.email || '';
