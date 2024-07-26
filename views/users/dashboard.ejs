@@ -299,16 +299,18 @@
                                                             </h3>
                                                             <%if(product.stock==0){%>
                                                                 <h3 class="text-danger">out of stock</h3>
-                                                                <a class="add_cart"><a href="#"
+                                                                <a class="add_cart"><a 
                                                                     class="like_us d-flex justify-content-center align-items-center">
-                                                                    <i class="bi bi-heart-fill"></i>
+                                                                    <!-- <i class="bi bi-heart-fill" onclick="addToWishlist('<%=product._id%>')"></i> -->
                                                                 <%}else{%>
-                                                                    <a class="add_cart">+ add to cart<a href="#"
+                                                                    <a class="add_cart">+ add to cart<a 
                                                                         class="like_us d-flex justify-content-center align-items-center">
-                                                                        <i class="bi bi-heart-fill"></i>
                                                                         <%}%>
+                                                                        <i class="bi bi-heart-fill" onclick="addToWishlist('<%=product._id%>')"></i>
+
                                                                     </a>
-                                                                    
+
+                                                                   
                                                             
                                                                 <form
                                                                     action="/user/dashboard/addtocart/<%= product._id %>"
@@ -328,6 +330,7 @@
                                                 <% if (count===5) { %>
                             </div> <!-- close the first row -->
                         </div> <!-- close the first single_product_list_slider -->
+                       
                         <!-- start a new single_product_list_slider for the second section -->
                         <div class="single_product_list_slider">
                             <div class="row align-items-center justify-content-between">
@@ -343,9 +346,10 @@
                                                     </h4>
                                                     <h3>$<%= product.price %>
                                                     </h3>
-                                                    <a class="add_cart" id='atag<%=product._id%>'>+ add to cart<a href="#"
+                                                    <a class="add_cart" id='atag<%=product._id%>'>+ add to cart<a 
                                                             class="like_us d-flex justify-content-center align-items-center">
-                                                            <i class="bi bi-heart-fill"></i>
+                                                            <i class="bi bi-heart-fill" onclick="addToWishlist('<%=product._id%>')"></i>
+
                                                         </a>
                                                         <form action="/user/dashboard/addtocart/<%= product._id %>"
                                                             style="display: none;" method="POST" class="add_cart_form">
@@ -669,6 +673,40 @@
             })
             
 
+    </script>
+     <script>
+        async function addToWishlist(productId){
+           try{
+            const response=await fetch('/user/dashboard/add-to-wishlist',{
+                method:'POST',
+                headers:{
+                    'Content-Type':'application/json'
+                },
+                body:JSON.stringify({productId})
+            })
+            const result=await response.json()
+            if(response.ok){
+                console.log('successfully added to wishlist')
+                Swal.fire({
+                    title:'success',
+                    text:result.message,
+                    icon:'success',
+                    confirmButtonText:'OK'
+                })
+            }else{
+                if(response.status===409){
+                    Swal.fire({
+                    title:'warning',
+                    text:result.message,
+                    icon:'warning',
+                    confirmButtonText:'OK'
+                })
+                }
+            }
+           }catch(err){
+            console.error(err)
+           }
+        }
     </script>
     <script>
         async function logout() {

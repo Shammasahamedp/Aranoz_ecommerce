@@ -239,13 +239,68 @@ const deleteAddress=async(req,res)=>{
         console.error(err)
     }
 }
-const getWishlist=async(req,res)=>{
+const addToWishlist=async (req,res)=>{
     try{
         const userId=req.session.user
-        const wishlists=await WishList.findOne({userId}).populate('items.productId')
-        res.status(200).render('')
+        const {productId}=req.body
+        const data=await WishList.findOne({userId,'items.productId':new mongoose.Types.ObjectId(productId)})
+        if(data){
+            console.log('product exists')
+            return res.status(409).json({message:'Product is already in wishlist'})
+        }
+        const wishlist = await WishList.findOneAndUpdate(
+            { userId },
+            { $push: { items: { productId:new mongoose.Types.ObjectId(productId) } } },
+            { new: true, upsert: true }
+        );
+                console.log(wishlist)
+        res.status(200).json({message:'added to wishlist'})
     }catch(err){
+        console.error(err)
+    }
+}
+const deleteFromWishlist=async(req,res)=>{
+    try{
+        const userId=req.session.user
+        const {productId}=req.body
+        const updatedWishlist=await WishList.findOneAndUpdate({userId},{$pull:{items:{productId:new mongoose.Types.ObjectId(productId)}}})
+        if(updatedWishlist){
+            return res.status(200).json({message:'product removed from wishlist'})
+        }
+    }catch(err){
+        console.error(err)
+    }
+}
+const getWishlist=async(req,res)=>{
+    try{
+        const page=parseInt(req.query.page)||1
+        let limit=parseInt(req.query.limit)||9
+        const skip=(page-1)*limit
 
+        const userId=req.session.user
+        const wishlist=await WishList.findOne({userId}).populate('items.productId').skip(skip).limit(limit)
+        if(wishlist){
+            const products=wishlist.items
+            console.log(products)
+        let totalProducts=wishlist.items.length
+        res.status(200).render('users/wishlist',{
+            products,
+            currentPage:page,
+            totalPages:Math.ceil(totalProducts/limit),
+            totalProducts
+        })
+        }else{
+            totalProducts=1
+            limit=1
+            res.status(200).render('users/wishlist',{
+                products:[],
+                currentPage:page,
+                totalPages:Math.ceil(totalProducts/limit),
+                totalProducts
+            })
+        }
+    }catch(err){
+        console.error(err)
     }
 }
 module.exports={
@@ -261,5 +316,7 @@ module.exports={
     getEditAddress,
     postEditAddress,
     deleteAddress,
-    getWishlist
+    getWishlist,
+    addToWishlist,
+    deleteFromWishlist
 }

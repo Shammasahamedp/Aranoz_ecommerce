@@ -245,7 +245,7 @@
                                                 </form>
                                                 <a href="#"
                                                     class="like_us d-flex justify-content-center align-items-center">
-                                                    <i class="bi bi-heart-fill"></i>
+                                                    <i class="bi bi-heart-fill" onclick="addToWishlist('<%=product._id%>')"></i>
                                                 </a>
                                                 <% } else { %>
                                                     <!-- <div>no user</div> -->
@@ -447,11 +447,40 @@
     <script src="/js/price_rangs.js"></script>
     <!-- custom js -->
     <script src="/js/custom.js"></script>
+   
     <script>
-
-    </script>
-    <script>
-
+        async function addToWishlist(productId){
+           try{
+            const response=await fetch('/user/dashboard/add-to-wishlist',{
+                method:'POST',
+                headers:{
+                    'Content-Type':'application/json'
+                },
+                body:JSON.stringify({productId})
+            })
+            const result=await response.json()
+            if(response.ok){
+                console.log('successfully added to wishlist')
+                Swal.fire({
+                    title:'success',
+                    text:result.message,
+                    icon:'success',
+                    confirmButtonText:'OK'
+                })
+            }else{
+                if(response.status===409){
+                    Swal.fire({
+                    title:'warning',
+                    text:result.message,
+                    icon:'warning',
+                    confirmButtonText:'OK'
+                })
+                }
+            }
+           }catch(err){
+            console.error(err)
+           }
+        }
         const searchCategory = null
         let maxPrice = document.getElementById('maxPrice').value || ''
         console.log(maxPrice)

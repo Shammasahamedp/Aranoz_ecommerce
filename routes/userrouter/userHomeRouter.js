@@ -18,4 +18,6 @@ userHomeRouter.get('/profile/orders/:id',userMiddleware.isUserAuthenticated,user
 userHomeRouter.post('/profile/orders/cancel-order',userMiddleware.isUserAuthenticated,userOrderController.cancelOrder)
 userHomeRouter.post('/profile/orders/cancel-order-single',userMiddleware.isUserAuthenticated,userOrderController.cancelSingleProduct)
 userHomeRouter.get('/profile/wishlist',userMiddleware.isUserAuthenticated,userHomeController.getWishlist)
+userHomeRouter.post('/profile/wishlist/remove',userMiddleware.isUserAuthenticated,userHomeController.deleteFromWishlist)
+userHomeRouter.post('/add-to-wishlist',userMiddleware.isUserAuthenticated,userHomeController.addToWishlist)
 module.exports=userHomeRouter
