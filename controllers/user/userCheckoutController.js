@@ -48,6 +48,8 @@ const cashOnDelivery = async (req, res) => {
         if (!addressId) {
             return res.status(400).json({ message: 'Address is not added' })
         }
+        console.log('address id:',addressId)
+        console.log('userId:',userId)
         const address = new mongoose.Types.ObjectId(addressId)
         const user = new mongoose.Types.ObjectId(userId)
         const cart = await Cart.findOne({ userId }).populate('items.productId')

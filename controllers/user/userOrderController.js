@@ -6,7 +6,7 @@ const getOrder = async (req, res) => {
   try {
     const userId = req.session.user
     const orders = await Order.find({ userId }).populate('items.productId')
-    // console.log('sdfgsdfg',orders)
+    console.log('sdfgsdfg',orders)
     res.status(200).render('orders/usersOrder', { orders })
   } catch (err) {
     console.error(err)
@@ -15,9 +15,10 @@ const getOrder = async (req, res) => {
 const getOrderDetails = async (req, res) => {
   try {
     const userId = req.session.user
+    const orderId=req.params.id
     const orders1 = await Order.findOne({ userId })
     console.log('asdfasd', orders1)
-    const orders = await Order.findOne({ userId }).sort({orderDate:-1})
+    const orders=await Order.findById(orderId).populate('items.productId')
     console.log('asdfasdfasdf', orders)
     const addressId1 = orders.addressId
     console.log('addressId', addressId1)
@@ -53,7 +54,38 @@ const getOrderDetails = async (req, res) => {
     console.error(err)
   }
 }
+const cancelOrder=async(req,res)=>{
+  try{
+    const {orderId}=req.body
+    console.log(orderId)
+    const order=await Order.findById(orderId)
+    if(order){
+      order.items.forEach(item=>{
+        item.itemStatus='cancelled'
+      })
+      order.orderStatus='cancelled'
+      await order.save()
+      res.status(200).json({message:'Your order cancelled '})
+    }else{
+      console.log('order not found')
+    }
+
+    // console.log(orderDeleted)
+   
+  }catch(err){
+    console.error(err)
+  }
+}
+const cancelSingleProduct=async(req,res)=>{
+  try{
+
+  }catch(err){
+
+  }
+}
 module.exports = {
   getOrder,
-  getOrderDetails
+  getOrderDetails,
+  cancelOrder,
+  cancelSingleProduct
 }

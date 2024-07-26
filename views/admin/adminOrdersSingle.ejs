@@ -19,27 +19,6 @@
         <div style="background-color: #6a008a;">Purple</div>
       </div>
       <div class="navbar-menu-wrapper d-flex align-items-stretch">
-        <div class="search-field ml-4 d-none d-md-block">
-          <form class="d-flex align-items-stretch h-100" action="/admin/products/search" id="searchform" method="get">
-            <div class="input-group">
-              <input type="text" class="form-control bg-transparent border-0" placeholder="Search"
-                value="<%= searchterm%>" id="inputsearch">
-              <div class="input-group-btn">
-                  <button type="button" class="btn bg-transparent dropdown-toggle px-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <i class="mdi mdi-earth"></i>
-                  </button>
-                 
-                </div>
-              <div class="input-group-addon bg-transparent border-0 search-button">
-
-                <button type="submit" class="btn btn-sm btn-success px-3 searchbtn">
-                  <i class="mdi mdi-magnify">Search</i>
-                </button>
-
-              </div>
-            </div>
-          </form>
-        </div>
 
         <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button"
           data-toggle="offcanvas">
@@ -141,101 +120,88 @@
                             No.
                           </th>
                           <th>
-                            OrderId.
+                            Product
                           </th>
                           <th>
-                            User
+                            Name
                           </th>
                           <th>
-                            Date
+                            Subtotal
                           </th>
-                          <th>
+                          <!-- <th>
                             Paymentmethod
-                          </th>
-                          <th>
+                          </th> -->
+                          <!-- <th>
                             totalAmount
-                          </th>
+                          </th> -->
                           
                           <th>
                             Status
                           </th>
-                          <th>
+                          <!-- <th>
                             Actions
-                          </th>
+                          </th> -->
 
 
                         </tr>
                       </thead>
                       <tbody>
-                        <% orders.forEach(order=> { %>
+                        <% order.items.forEach(item=> { %>
                           <tr>
                             <td>
-                              <%= orders.indexOf(order) + 1 %>
+                              <%= order.items.indexOf(item) + 1 %>
                             </td>
                             <td>
-                              <%= order.orderId %>
+                              <img src="<%= item.productId.imageUrl[0] %>" style="width: 100px;height: 100px;" alt="">
                             </td>
                             
                             
                           
                             <td>
-                              <%= order.userId.name %>
+                              <%= item.productId.name %>
                             </td>
                             <td>
-                              <%= order.orderDate.toLocaleDateString() %>
+                              <%= item.quantity*item.price %>
                             </td>
+                           
                             <td>
-                              <%= order.paymentMethod %>
-                            </td>
-                            <td>
-                              <%= order.totalAmount %>
-                            </td>
-                            <td>
-                              <%= order.orderStatus %>
-                            </td>
-                            
+  <select class="form-select status-dropdown" id="dropdown" onchange="changeStatus(event, '<%= item._id %>', '<%= order._id %>')" style="width: 120px;" data-item-id="<%= item._id %>">
+      <option value="Pending" <%= item.itemStatus === 'Pending' ? 'selected' : 'disabled' %>>Pending</option>
+      <option value="Shipped" <%= item.itemStatus === 'Shipped' ? 'selected' : (item.itemStatus === 'Pending' ? '' : 'disabled') %>>Shipped</option>
+      <option value="Cancelled" <%= item.itemStatus === 'Cancelled' ? 'selected' : (item.itemStatus === 'Delivered' ? 'disabled' : '') %>>Cancelled</option>
+
+      <option value="Delivered" <%= item.itemStatus === 'Delivered' ? 'selected' : (item.itemStatus === 'Pending' || item.itemStatus === 'Shipped' ? '' : 'disabled') %>>Delivered</option>
+      <option value="Return Requested" <%= item.itemStatus === 'Return Requested' ? 'selected' : (item.itemStatus === 'Cancelled'||item.itemStatus==='Pending'||item.itemStatus==='Shipped' ? 'disabled' : '') %>>Return Requested</option>
+      <option value="Return Approved" <%= item.itemStatus === 'Return Approved' ? 'selected' : (item.itemStatus === 'Return Requested' ? '' : 'disabled') %>>Return Approved</option>
+      <option value="Return Rejected" <%= item.itemStatus === 'Return Rejected' ? 'selected' : (item.itemStatus === 'Return Requested' ? '' : 'disabled') %>>Return Rejected</option>
+  </select>
+</td>
+
+                           
                             
 
 
-                            <td>
+                            <!-- <td>
                               <button type="button" class="btn btn-icons btn-rounded btn-success"><a
-                                  href="/admin/orders/single-order/<%=order._id%>">View</a> </button>
+                                  href="">View</a> </button>
                               <button type="button" class="btn btn-icons btn-rounded" data-id=""></button>
-                            </td>
+                            </td> -->
 
 
                           </tr>
                           <% }); %>
+                          <tr>
+                            <td></td>
+                            <td></td>
+                            <td>total Amount</td>
+                            <td><%=order.totalAmount%></td>
+                            <td></td>
+                          </tr>
+                        
+                          
+                          
                       </tbody>
-                      <nav aria-label="Page navigation">
-                        <ul class="pagination">
-                          <% if (currentPage> 1) { %>
-                            <li class="page-item">
-                              <a class="page-link" href="?page=1">First</a>
-                            </li>
-                            <li class="page-item">
-                              <a class="page-link" href="?page=<%= currentPage - 1 %>">Previous</a>
-                            </li>
-                            <% } %>
-
-                              <% for (let i=1; i <=totalPages; i++) { %>
-                                <li class="page-item <%= i === currentPage ? 'active' : '' %>">
-                                  <a class="page-link" href="?page=<%= i %>">
-                                    <%= i %>
-                                  </a>
-                                </li>
-                                <% } %>
-
-                                  <% if (currentPage < totalPages) { %>
-                                    <li class="page-item">
-                                      <a class="page-link" href="?page=<%= currentPage + 1 %>">Next</a>
-                                    </li>
-                                    <li class="page-item">
-                                      <a class="page-link" href="?page=<%= totalPages %>">Last</a>
-                                    </li>
-                                    <% } %>
-                        </ul>
-                      </nav>
+                      
                     </table>
                   </div>
                 </div>
@@ -244,15 +210,30 @@
           </div>
           <div class="row mt-4">
             <div class="col-12 text-center">
-              <a href="/admin/dashboard" class="btn btn-primary btn-lg">
-                Dashboard
+              <a href="/admin/orders" class="btn btn-primary btn-lg">
+                back
               </a>
             </div>
           </div>
+          <div class="container mt-5">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    Delivered to 
+                </div>
+                <div class="card-body">
+                    <p class="mb-1"><strong>Name    :    </strong> <%=order.userId.name%></p>
+                    <p class="mb-1"><strong>Eamil    :    </strong> <%=theAddress.email%></p>
+                    <p class="mb-1"><strong>Phone    :    </strong> <%=theAddress.phone%></p>
 
+                    <p class="mb-1"><strong>District    :    </strong> <%=theAddress.district%></p>
 
-          <!-- content-wrapper ends -->
-          <!-- partial:partials/_footer.html -->
+                    <p class="mb-1"><strong>State   :   </strong><%=theAddress.state%></p>
+                    <p><strong>Postcode    :   </strong> <%=theAddress.pincode%></p>
+                </div>
+            </div>
+        </div>
+        </div>
+          
 
           <!-- partial -->
         </div>
@@ -261,7 +242,33 @@
       <!-- page-body-wrapper ends -->
     </div>
     <!-- container-scroller -->
+    <script>
+      async function changeStatus(event,itemId,orderId){
+        event.preventDefault()
+          
+          try{
+            console.log('changed')
+          const statusValue=event.target.value
+          console.log(itemId,statusValue)
+          const response=await fetch('/admin/orders/single-order/status',{
+            method:'POST',
+            headers:{
+              'Content-Type':'application/json'
+            },
+            body:JSON.stringify({itemId,statusValue,orderId})
+          })
+          if(response.ok){
 
+          }
+          }catch(err){
+            console.error(err)
+          }
+        // })
+      }
+      // document.addEventListener('DOMContentLoaded',async()=>{
+        
+      // })
+    </script>
     <!-- plugins:js -->
     <script src="node_modules/jquery/dist/jquery.min.js"></script>
     <script src="node_modules/popper.js/dist/umd/popper.min.js"></script>
@@ -281,7 +288,7 @@
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"></script>
     <!-- End custom js for this page-->
-    <script  src="/js/adminProductsScript.js">
+    <!-- <script  src="/js/adminProductsScript.js"> -->
      
     </script>
     <%-include('../partials/footer') %>

@@ -3,6 +3,7 @@ const Product=require('../../models/productsModel')
 // const mongoose=require('mongoose')
 const User = require('../../models/usersModel')
 const Address=require('../../models/addressModel')
+const WishList=require('../../models/wishlistModel')
 const { default: mongoose } = require('mongoose')
 const e = require('express')
 const redirectHome=function (req,res){
@@ -238,6 +239,15 @@ const deleteAddress=async(req,res)=>{
         console.error(err)
     }
 }
+const getWishlist=async(req,res)=>{
+    try{
+        const userId=req.session.user
+        const wishlists=await WishList.findOne({userId}).populate('items.productId')
+        res.status(200).render('')
+    }catch(err){
+
+    }
+}
 module.exports={
     getHome,
     redirectHome,
@@ -250,5 +260,6 @@ module.exports={
     postAddAddress,
     getEditAddress,
     postEditAddress,
-    deleteAddress
+    deleteAddress,
+    getWishlist
 }

@@ -26,7 +26,7 @@ const orderSchema=new mongoose.Schema({
         },
         itemStatus:{
             type:String,
-            enum:['pending','shipped','delivered','cancelled'],
+            enum:['pending','shipped','delivered','cancelled','return requested','request approved','request rejected'],
             default:'pending'
         }
     }],
@@ -45,7 +45,7 @@ const orderSchema=new mongoose.Schema({
     },
     orderStatus:{
         type:String,
-        enum:['pending','shipped','delivered','cancelled'],
+        enum:['pending','shipped','delivered','cancelled','return requested','request approved','request rejected'],
         default:'pending'
     },
     orderDate:{

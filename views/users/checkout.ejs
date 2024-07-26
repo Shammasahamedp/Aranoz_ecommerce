@@ -132,10 +132,12 @@
                                     <% if(addresses){ %>
                                         <% addresses.address.forEach(function(address, index) { %>
                                             <div class="col-md-6">
-                                                <div class="address-item mb-3 d-flex align-items-start">
+                                                <script>
 
-                                                    <input type="radio" name="selectedAddress"
-                                                        data-value="<%= address._id %>" id="address<%= index %>" class="mr-2"
+                                                </script>
+                                                <div class="address-item mb-3 d-flex align-items-start">
+                                                    <input type="radio"  name="selectedAddress"
+                                                        data-id="<%= address._id %>" id="address<%= index %>" class="mr-2"
                                                         data-id="<%=address._id%>" data-name="<%=address.name%>"
                                                         data-phone="<%=address.phone%>" data-email="<%=address.email%>"
                                                         data-city="<%=address.city%>"
@@ -166,7 +168,7 @@
                                         <h3>Address for Delivery</h3>
                                         <%if(addresses){%>
                                             <form class="row contact_form" action="" method="post" id="addressform">
-                                                <input type="hidden" id="addressId" name="addressId"
+                                                <input type="hidden" id="addressId1" name="addressId"
                                                     value="<%=addresses.address[0]._id%>" />
 
                                                 <div class="col-md-6 form-group p_star">
@@ -574,34 +576,47 @@
 
         </script>
         <script>
+        //    async function addressSelect(event,addressId){
+        //     const targetRadio = event.target;
+             
+        //                const id= document.getElementById('addressId1').value = targetRadio.dataset.value
+        //               const name=  document.getElementById('name').value = targetRadio.dataset.name || '';
+        //                const phone= document.getElementById('number').value = targetRadio.dataset.phone || '';
+        //                 document.getElementById('email').value = targetRadio.dataset.email || '';
+        //                 document.getElementById('city').value = targetRadio.dataset.city || '';
+        //                 document.getElementById('district').value = targetRadio.dataset.district || '';
+        //                 document.getElementById('state').value = targetRadio.dataset.state || '';
+        //                 document.getElementById('pincode').value = targetRadio.dataset.pin || '';
+                    
+                  
+        //     }
             document.addEventListener('DOMContentLoaded', async () => {
 
                 
                 const addressList = document.getElementById('addresslist');
                 const saveAddressBtn = document.getElementById('saveAddressBtn');
                 const payForm = document.getElementById('payform');
-                const radioButtons = document.querySelectorAll('input[name="selectedAddress"]')
-                const selectedName = document.getElementById('selectedName');
-                const selectedPhone = document.getElementById('selectedPhone');
-                const selectedEmail = document.getElementById('selectedEmail');
-                const selectedCity = document.getElementById('selectedCity');
-                const selectedDistrict = document.getElementById('selectedDistrict');
-                const selectedState = document.getElementById('selectedState');
-                const selectedPincode = document.getElementById('selectedPincode');
+                // const radioButtons = document.querySelectorAll('input[name="selectedAddress"]')
+           
                 // console.log(radioButtons)
                 addressList.addEventListener('change', async (event) => {
                     const targetRadio = event.target;
                     if (targetRadio.matches('input[name="selectedAddress"]')) {
-                        // Update form fields when radio button is clicked
-                        document.getElementById('addressId').value = targetRadio.dataset.value
-                        document.getElementById('name').value = targetRadio.dataset.name || '';
-                        document.getElementById('number').value = targetRadio.dataset.phone || '';
+                        console.log('this is name:',targetRadio.dataset.name)
+                        console.log('this is id:',targetRadio.dataset.id)
+                        const something=document.getElementById('addressId1')
+                        console.log('this is addressId1',something)
+                      document.getElementById('addressId1').value = targetRadio.dataset.id
+                       document.getElementById('name').value = targetRadio.dataset.name || '';
+                       document.getElementById('number').value = targetRadio.dataset.phone || '';
                         document.getElementById('email').value = targetRadio.dataset.email || '';
                         document.getElementById('city').value = targetRadio.dataset.city || '';
                         document.getElementById('district').value = targetRadio.dataset.district || '';
                         document.getElementById('state').value = targetRadio.dataset.state || '';
                         document.getElementById('pincode').value = targetRadio.dataset.pin || '';
                     }
+                   
+                    
                 });
 
                 document.getElementById('saveAddressBtn').addEventListener('click', async (event) => {
@@ -641,7 +656,7 @@
                             const newAddress = `
                     <div class="col-md-6">
                         <div class="address-item mb-3 d-flex align-items-start">
-                            <input type="radio" name="selectedAddress" value="${addressId}" class="mr-2" data-name="${name}" data-phone="${number}" data-email="${email}" data-city="${city}" data-district="${district}" data-state="${state}" data-pincode="${pin}">
+                            <input type="radio" name="selectedAddress" value="${addressId}" class="mr-2" data-id="${addressId}" data-name="${name}" data-phone="${number}" data-email="${email}" data-city="${city}" data-district="${district}" data-state="${state}" data-pincode="${pin}">
                             <textarea class="form-control" rows="3" style="height: 200px;" readonly>
                                 Name: ${name}, 
                                 Phone: ${number}, 
@@ -701,7 +716,6 @@
                     addPayment.style.display = 'none'
                 })
                 const addPayment = document.getElementById('addpayment')
-                // const payForm=document.getElementById('payform')
                 payForm.addEventListener('submit', async (event) => {
                     event.preventDefault()
                     if (!document.querySelector('input[name="paymentMethod"]:checked')) {
@@ -734,7 +748,7 @@
                     }
 
                     // console.log('form button clicked')
-                    const addressId = document.getElementById('addressId').value
+                    const addressId = document.getElementById('addressId1').value
                     console.log(addressId)
                     const cartId = document.getElementById('cartid').value
                     // console.log(cartId)
