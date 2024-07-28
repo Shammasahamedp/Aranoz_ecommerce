@@ -117,12 +117,14 @@
                     <div class="check_title">
                         <h2>
                             Have a coupon?
-                            <a href="#">Click here to see your available coupon</a>
+                            <a href="/user/coupons">Click here to see your available coupon</a>
                         </h2>
                     </div>
-                    <input type="text" placeholder="Enter coupon code" />
-                    <a class="tp_btn" href="#">Apply Coupon</a>
+                    <input type="text" id="coupon" value="" placeholder="Enter coupon code" />
+                    <div class="text-danger" id="couponValidation"></div>
+                    <a class="tp_btn" onclick="applyCoupon('<%=cartData.totalPrice%>')">Apply Coupon</a>
                 </div>
+               
                 <div class="billing_details">
                     <div class="row">
                         <div class="col-lg-7">
@@ -294,7 +296,7 @@
                                     </li>
                                     <li>
                                         <a href="#">Total
-                                            <span>₹<%=cartData.totalPrice%></span>
+                                            <span id="totalcouponamount">₹<%=cartData.totalPrice%></span>
                                         </a>
                                     </li>
                                 </ul>
@@ -573,7 +575,53 @@
         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
         <script>
+                    document.addEventListener('DOMContentLoaded',async()=>{
 
+                    })
+            async function applyCoupon(totalPrice){
+                console.log('clicked')
+             
+                const coupon=document.getElementById('coupon')
+            const couponValid=document.getElementById('couponValidation')
+            const totalcouponamount=document.getElementById('totalcouponamount')
+            console.log(totalcouponamount)
+                console.log('the button clicked')
+                if(!coupon.value||coupon.value===''){
+                    couponValid.textContent='coupon code is not valid'
+                    return 
+                }else{
+                    couponValid.textContent=''
+                }
+                try{
+                    const couponCode=coupon.value
+                    const response=await fetch('/user/coupons/apply-coupon',{
+                        method:'POST',
+                        headers:{
+                            'Content-Type':'application/json'
+                        },
+                        body:JSON.stringify({couponCode,totalPrice})
+                    })
+                    const result=await response.json()
+                    if(response.ok){
+                        const resultantPrice=result.totalPrice
+                        totalcouponamount.textContent=`₹${resultantPrice}`
+                        Swal.fire({
+                            title:'success',
+                            text:'applied your discount see the new price !',
+                            icon:'success',
+                            confirmButtonText:'OK'
+
+                        })
+                        console.log('response is ok')
+                    }else{
+                        couponValid.textContent=result.message
+                        return 
+                    }
+                }catch(err){
+                    console.error(err)
+                }
+     
+            }
         </script>
         <script>
         //    async function addressSelect(event,addressId){

@@ -1,6 +1,6 @@
 <% include ('../usersidepartials/header')%>
 
-  <title>aranaz|order confirmation</title>
+  <title>aranaz|order detailes</title>
   <link rel="icon" href="/img/favicon.png">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 
@@ -137,11 +137,13 @@
            
             <div class="card_area d-flex justify-content-between align-items-center">
              
-              <%if(item.itemStatus!=='cancelled'){%>
+              <%if(item.itemStatus!=='cancelled'&& item.itemStatus !== 'delivered' ){%>
                 <!-- <a href="#" class="btn_3"></a> -->
-                <button class="btn_3" onclick="cancelOrderProduct('<%=item.productId._id%>')">Cancel order</button>
+                <button class="btn_3" onclick="cancelOrderProduct('<%=item.productId._id%>','<%=orders._id%>')">Cancel order</button>
 
-                <%}%>
+                <%}else if(item.itemStatus == 'delivered'){%>
+                  <button class="btn_3" onclick="retrunOneProduct()">Return item</button>
+                  <%}%>
                 
               <!-- <a href="#" class="like_us"> <i class="ti-heart"></i> </a> -->
             </div>
@@ -152,12 +154,14 @@
     <%})%>
   </div>
   <div style="display: flex; align-items: center;justify-content: center;">
-    <%if(orders.orderStatus!=='cancelled'){%>
+    <%if(orders.orderStatus!=='cancelled'&&orders.orderStatus!=='delivered'){%>
       <button class="btn_3" onclick="cancelAllOrder('<%=orders._id%>')">Cancel all </button>
 
-      <%}else{%>
-        <h3>Your order has cancelled</h3>
-        <%}%>
+      <%}else if(orders.orderStatus== 'delivered'){%>
+        <button class="btn_3" onclick="returnAllProduct()">Return all</button>
+        <%}else{%>
+          <h3>Your order has cancelled</h3>
+          <%}%>
   </div>
  
   <section class="confirmation_part padding_top">
@@ -367,11 +371,21 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
   <!-- jquery plugins here-->
   <!-- jquery -->
   <script>
-    async function cancelOrderProduct(productId){
+    async function cancelOrderProduct(productId,orderId){
       try{
         console.log('button pressed')
-        console.log(productId)
-        // const response=await fetch('/')
+        console.log('productId:',productId,'orderId:',orderId)
+        
+        const response=await fetch('/user/dashboard/profile/orders/cancel-order-single',{
+          method:'POST',
+          headers:{
+            'Content-Type':'application/json'
+          },
+          body:JSON.stringify({productId,orderId})
+        })
+        if(response.ok){
+          console.log('deletion success')
+        }
       }catch(err){
         console.error(err)
       }

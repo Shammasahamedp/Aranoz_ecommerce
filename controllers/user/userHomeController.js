@@ -303,6 +303,7 @@ const getWishlist=async(req,res)=>{
         console.error(err)
     }
 }
+
 module.exports={
     getHome,
     redirectHome,

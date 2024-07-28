@@ -721,14 +721,7 @@
                 const data = await response.json()
 
                 if (response.ok) {
-                    Swal.fire({
-                        title: 'success',
-                        text: data.message,
-                        icon: 'success',
-                        confirmButtonText: 'OK'
-                    }).then(() => {
-                        window.location.href = '/'
-                    })
+                    window.location.href = '/'
                 } else {
                     Swal.fire({
                         title: 'failed',

@@ -60,7 +60,25 @@ const changeStatus=async(req,res)=>{
         const {itemId,statusValue,orderId}=req.body
         console.log(itemId,statusValue,orderId)
         const order=await Order.findOneAndUpdate({_id:orderId,'items._id':itemId},{$set:{'items.$.itemStatus':statusValue}},{new:true})
-        
+        let newOrderStatus = 'delivered';
+        for (const item of order.items) {
+            if (item.itemStatus === 'pending') {
+                newOrderStatus = 'pending';
+                break;
+            } else if (item.itemStatus === 'shipped') {
+                newOrderStatus = 'shipped';
+            } else if (item.itemStatus === 'return requested') {
+                newOrderStatus = 'return requested';
+            } else if (item.itemStatus === 'request approved') {
+                newOrderStatus = 'request approved';
+            } else if (item.itemStatus === 'request rejected') {
+                newOrderStatus = 'request rejected';
+            }
+        }
+
+        // Update the overall order status
+        order.orderStatus = newOrderStatus;
+        await order.save();
         console.log('completed',order)
         res.status(200).json({message:'success'})
     }catch(err){

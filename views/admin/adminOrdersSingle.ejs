@@ -165,16 +165,27 @@
                             </td>
                            
                             <td>
-  <select class="form-select status-dropdown" id="dropdown" onchange="changeStatus(event, '<%= item._id %>', '<%= order._id %>')" style="width: 120px;" data-item-id="<%= item._id %>">
-      <option value="Pending" <%= item.itemStatus === 'Pending' ? 'selected' : 'disabled' %>>Pending</option>
-      <option value="Shipped" <%= item.itemStatus === 'Shipped' ? 'selected' : (item.itemStatus === 'Pending' ? '' : 'disabled') %>>Shipped</option>
-      <option value="Cancelled" <%= item.itemStatus === 'Cancelled' ? 'selected' : (item.itemStatus === 'Delivered' ? 'disabled' : '') %>>Cancelled</option>
-
-      <option value="Delivered" <%= item.itemStatus === 'Delivered' ? 'selected' : (item.itemStatus === 'Pending' || item.itemStatus === 'Shipped' ? '' : 'disabled') %>>Delivered</option>
-      <option value="Return Requested" <%= item.itemStatus === 'Return Requested' ? 'selected' : (item.itemStatus === 'Cancelled'||item.itemStatus==='Pending'||item.itemStatus==='Shipped' ? 'disabled' : '') %>>Return Requested</option>
-      <option value="Return Approved" <%= item.itemStatus === 'Return Approved' ? 'selected' : (item.itemStatus === 'Return Requested' ? '' : 'disabled') %>>Return Approved</option>
-      <option value="Return Rejected" <%= item.itemStatus === 'Return Rejected' ? 'selected' : (item.itemStatus === 'Return Requested' ? '' : 'disabled') %>>Return Rejected</option>
-  </select>
+                              <select class="form-select status-dropdown" id="dropdown" onchange="changeStatus(event, '<%= item._id %>', '<%= order._id %>')" style="width: 120px;" data-item-id="<%= item._id %>">
+                                <option value="pending" <%= item.itemStatus === 'pending' ? 'selected' : 'disabled' %>>Pending</option>
+                                <option value="shipped" <%= item.itemStatus === 'shipped' ? 'selected' : (item.itemStatus === 'pending' ? '' : 'disabled') %>>Shipped</option>
+                                <option value="delivered" <%= item.itemStatus === 'delivered' ? 'selected' : (item.itemStatus === 'pending' || item.itemStatus === 'shipped' ? '' : 'disabled') %>>Delivered</option>
+                                <option value="cancelled" <%= item.itemStatus === 'cancelled' ? 'selected' : 'disabled' %>>Cancelled</option>
+                                <option value="return requested" <%= item.itemStatus === 'return requested' ? 'selected' : 'disabled' %>>Return Requested</option>
+                                <option value="request approved" <%= item.itemStatus === 'request approved' ? 'selected' : (item.itemStatus === 'return requested' ? '' : 'disabled') %>>Request Approved</option>
+                                <option value="request rejected" <%= item.itemStatus === 'request rejected' ? 'selected' : (item.itemStatus === 'return requested' ? '' : 'disabled') %>>Request Rejected</option>
+                              </select>
+                              
+                              
+                              
+                              
+                              
+                              
+                              
+                              
+                              
+                              
+                              
+                              
 </td>
 
                            
@@ -258,7 +269,7 @@
             body:JSON.stringify({itemId,statusValue,orderId})
           })
           if(response.ok){
-
+            window.location.reload()
           }
           }catch(err){
             console.error(err)
