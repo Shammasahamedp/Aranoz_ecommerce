@@ -67,7 +67,7 @@
                     </div>
                     <div class="hearer_icon d-flex">
                         <a id="search_1" href="javascript:void(0)"><i class="bi bi-search"></i></a>
-                        <a href=""><i class="bi bi-heart"></i></a>
+                        <a href="/user/dashboard/profile/wishlist"><i class="bi bi-heart"></i></a>
                         <div class="dropdown cart">
                           
                         <a href="/user/cart"><i class="bi bi-cart"></i></a>
@@ -142,9 +142,17 @@
                 <button class="btn_3" onclick="cancelOrderProduct('<%=item.productId._id%>','<%=orders._id%>')">Cancel order</button>
 
                 <%}else if(item.itemStatus == 'delivered'){%>
-                  <button class="btn_3" onclick="retrunOneProduct()">Return item</button>
+                  <button class="btn_3" onclick="retrunOneProduct('<%=item.productId._id%>','<%=orders._id%>')">Return item</button>
                   <%}%>
-                
+                <script>
+                  async function retrunOneProduct(productId,orderId){
+                    try{
+
+                    }catch(err){
+
+                    }
+                  }
+                </script>
               <!-- <a href="#" class="like_us"> <i class="ti-heart"></i> </a> -->
             </div>
           </div>
@@ -154,15 +162,18 @@
     <%})%>
   </div>
   <div style="display: flex; align-items: center;justify-content: center;">
-    <%if(orders.orderStatus!=='cancelled'&&orders.orderStatus!=='delivered'){%>
-      <button class="btn_3" onclick="cancelAllOrder('<%=orders._id%>')">Cancel all </button>
+    <% let showCancelButton = orders.orderStatus !== 'cancelled' && orders.orderStatus !== 'delivered'; %>
+    <% orders.items.forEach(item => { if (item.itemStatus === 'delivered'||item.itemStatus === 'cancelled') { showCancelButton = false; } }); %>
 
-      <%}else if(orders.orderStatus== 'delivered'){%>
+    <% if (showCancelButton) { %>
+        <button class="btn_3" onclick="cancelAllOrder('<%= orders._id %>')">Cancel all</button>
+    <% } else if (orders.orderStatus === 'delivered') { %>
         <button class="btn_3" onclick="returnAllProduct()">Return all</button>
-        <%}else{%>
-          <h3>Your order has cancelled</h3>
-          <%}%>
-  </div>
+    <% } else if (orders.orderStatus === 'cancelled') { %>
+        <h3>Your order has been cancelled</h3>
+    <% } %>
+</div>
+
  
   <section class="confirmation_part padding_top">
     <div class="container">
@@ -383,8 +394,17 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
           },
           body:JSON.stringify({productId,orderId})
         })
+        const result=await response.json()
         if(response.ok){
           console.log('deletion success')
+          Swal.fire({
+            title:'success',
+            text:result.message,
+            icon:'success',
+            confirmButtonText:'OK'
+          }).then(()=>{
+            window.location.reload()
+          })
         }
       }catch(err){
         console.error(err)

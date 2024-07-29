@@ -124,7 +124,7 @@
                     <div class="text-danger" id="couponValidation"></div>
                     <a class="tp_btn" onclick="applyCoupon('<%=cartData.totalPrice%>')">Apply Coupon</a>
                 </div>
-               
+
                 <div class="billing_details">
                     <div class="row">
                         <div class="col-lg-7">
@@ -138,11 +138,11 @@
 
                                                 </script>
                                                 <div class="address-item mb-3 d-flex align-items-start">
-                                                    <input type="radio"  name="selectedAddress"
-                                                        data-id="<%= address._id %>" id="address<%= index %>" class="mr-2"
-                                                        data-id="<%=address._id%>" data-name="<%=address.name%>"
-                                                        data-phone="<%=address.phone%>" data-email="<%=address.email%>"
-                                                        data-city="<%=address.city%>"
+                                                    <input type="radio" name="selectedAddress"
+                                                        data-id="<%= address._id %>" id="address<%= index %>"
+                                                        class="mr-2" data-id="<%=address._id%>"
+                                                        data-name="<%=address.name%>" data-phone="<%=address.phone%>"
+                                                        data-email="<%=address.email%>" data-city="<%=address.city%>"
                                                         data-district="<%=address.district%>"
                                                         data-state="<%=address.state%>"
                                                         data-pincode="<%=address.pincode%>">
@@ -336,7 +336,7 @@
                                 </div>
                                 <div class="payment_item active">
                                     <div class="radion_btn">
-                                        <input type="radio" id="f-option7" name="paymentMethod" value="Razorpay" />
+                                        <input type="radio" id="f-option7" name="paymentMethod" value="RazorPay" />
                                         <label for="f-option7">Razorpay </label>
                                         <img src="img/product/single-product/card.jpg" alt="" />
                                         <div class="check"></div>
@@ -352,16 +352,16 @@
                                     <a href="#">terms & conditions*</a>
                                 </div>
                                 <!-- <a class="btn_3" href="#">Proceed to Pay</a> -->
-                               <div style="display: flex; flex-direction: column; align-items: center;">
-                                <form action="" id="payform">
-                                    <!-- <a style="color: aliceblue;" class="btn_3" onclick="submitForm()">Proceed to pay</a> -->
-                                     <button class="btn_3" type="submit">proceed to pay</button>
-                                </form>
-                                
-                                <div style="margin-top: 20px; width: 53%;">
-                                    <a class="btn_3" href="/user/cart" style="margin-left: 10 px;">Cancel</a>
+                                <div style="display: flex; flex-direction: column; align-items: center;">
+                                    <form action="" id="payform">
+                                        <!-- <a style="color: aliceblue;" class="btn_3" onclick="submitForm()">Proceed to pay</a> -->
+                                        <button class="btn_3" type="submit">proceed to pay</button>
+                                    </form>
+
+                                    <div style="margin-top: 20px; width: 53%;">
+                                        <a class="btn_3" href="/user/cart" style="margin-left: 10 px;">Cancel</a>
+                                    </div>
                                 </div>
-                               </div>
                                 <div class="text-danger" id="addpayment" style="display: none;">add a payment method
                                 </div>
                             </div>
@@ -574,97 +574,82 @@
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-        <script>
-                    document.addEventListener('DOMContentLoaded',async()=>{
+        <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
-                    })
-            async function applyCoupon(totalPrice){
+        <script>
+           
+            async function applyCoupon(totalPrice) {
                 console.log('clicked')
-             
-                const coupon=document.getElementById('coupon')
-            const couponValid=document.getElementById('couponValidation')
-            const totalcouponamount=document.getElementById('totalcouponamount')
-            console.log(totalcouponamount)
+
+                const coupon = document.getElementById('coupon')
+                const couponValid = document.getElementById('couponValidation')
+                const totalcouponamount = document.getElementById('totalcouponamount')
+                console.log(totalcouponamount)
                 console.log('the button clicked')
-                if(!coupon.value||coupon.value===''){
-                    couponValid.textContent='coupon code is not valid'
-                    return 
-                }else{
-                    couponValid.textContent=''
+                if (!coupon.value || coupon.value === '') {
+                    couponValid.textContent = 'coupon code is not valid'
+                    return
+                } else {
+                    couponValid.textContent = ''
                 }
-                try{
-                    const couponCode=coupon.value
-                    const response=await fetch('/user/coupons/apply-coupon',{
-                        method:'POST',
-                        headers:{
-                            'Content-Type':'application/json'
+                try {
+                    const couponCode = coupon.value
+                    const response = await fetch('/user/coupons/apply-coupon', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
                         },
-                        body:JSON.stringify({couponCode,totalPrice})
+                        body: JSON.stringify({ couponCode, totalPrice })
                     })
-                    const result=await response.json()
-                    if(response.ok){
-                        const resultantPrice=result.totalPrice
-                        totalcouponamount.textContent=`₹${resultantPrice}`
+                    const result = await response.json()
+                    if (response.ok) {
+                        const resultantPrice = result.totalPrice
+                        totalcouponamount.textContent = `₹${resultantPrice}`
                         Swal.fire({
-                            title:'success',
-                            text:'applied your discount see the new price !',
-                            icon:'success',
-                            confirmButtonText:'OK'
+                            title: 'success',
+                            text: 'applied your discount see the new price !',
+                            icon: 'success',
+                            confirmButtonText: 'OK'
 
                         })
                         console.log('response is ok')
-                    }else{
-                        couponValid.textContent=result.message
-                        return 
+                    } else {
+                        couponValid.textContent = result.message
+                        return
                     }
-                }catch(err){
+                } catch (err) {
                     console.error(err)
                 }
-     
+
             }
         </script>
         <script>
-        //    async function addressSelect(event,addressId){
-        //     const targetRadio = event.target;
-             
-        //                const id= document.getElementById('addressId1').value = targetRadio.dataset.value
-        //               const name=  document.getElementById('name').value = targetRadio.dataset.name || '';
-        //                const phone= document.getElementById('number').value = targetRadio.dataset.phone || '';
-        //                 document.getElementById('email').value = targetRadio.dataset.email || '';
-        //                 document.getElementById('city').value = targetRadio.dataset.city || '';
-        //                 document.getElementById('district').value = targetRadio.dataset.district || '';
-        //                 document.getElementById('state').value = targetRadio.dataset.state || '';
-        //                 document.getElementById('pincode').value = targetRadio.dataset.pin || '';
-                    
-                  
-        //     }
+
             document.addEventListener('DOMContentLoaded', async () => {
 
-                
+                let formData={}
                 const addressList = document.getElementById('addresslist');
                 const saveAddressBtn = document.getElementById('saveAddressBtn');
                 const payForm = document.getElementById('payform');
-                // const radioButtons = document.querySelectorAll('input[name="selectedAddress"]')
-           
-                // console.log(radioButtons)
+
                 addressList.addEventListener('change', async (event) => {
                     const targetRadio = event.target;
                     if (targetRadio.matches('input[name="selectedAddress"]')) {
-                        console.log('this is name:',targetRadio.dataset.name)
-                        console.log('this is id:',targetRadio.dataset.id)
-                        const something=document.getElementById('addressId1')
-                        console.log('this is addressId1',something)
-                      document.getElementById('addressId1').value = targetRadio.dataset.id
-                       document.getElementById('name').value = targetRadio.dataset.name || '';
-                       document.getElementById('number').value = targetRadio.dataset.phone || '';
+                        console.log('this is name:', targetRadio.dataset.name)
+                        console.log('this is id:', targetRadio.dataset.id)
+                        const something = document.getElementById('addressId1')
+                        console.log('this is addressId1', something)
+                        document.getElementById('addressId1').value = targetRadio.dataset.id
+                        document.getElementById('name').value = targetRadio.dataset.name || '';
+                        document.getElementById('number').value = targetRadio.dataset.phone || '';
                         document.getElementById('email').value = targetRadio.dataset.email || '';
                         document.getElementById('city').value = targetRadio.dataset.city || '';
                         document.getElementById('district').value = targetRadio.dataset.district || '';
                         document.getElementById('state').value = targetRadio.dataset.state || '';
                         document.getElementById('pincode').value = targetRadio.dataset.pin || '';
                     }
-                   
-                    
+
+
                 });
 
                 document.getElementById('saveAddressBtn').addEventListener('click', async (event) => {
@@ -791,60 +776,131 @@
                         if (!swalResult.isConfirmed) {
                             return
                         }
-                    } else {
-                        return
-                    }
-
-                    // console.log('form button clicked')
-                    const addressId = document.getElementById('addressId1').value
-                    console.log(addressId)
-                    const cartId = document.getElementById('cartid').value
-                    // console.log(cartId)
-                    const totalAmount = document.getElementById('totalprice').value
-                    // console.log(totalAmount)
-                    const paymentMethod = selectedPaymentMethod
-                    orderData = {
-                        addressId, cartId, totalAmount, paymentMethod
-                    }
-                    console.log(orderData)
+                        const addressId = document.getElementById('addressId1').value
+                        console.log(addressId)
+                        const cartId = document.getElementById('cartid').value
+                        // console.log(cartId)
+                        const totalAmount = document.getElementById('totalprice').value
+                        // console.log(totalAmount)
+                        const paymentMethod = selectedPaymentMethod
+                        // console.log(formData)
+                        orderData = {
+                            addressId, cartId, totalAmount, paymentMethod
+                        }
+                        console.log(orderData)
 
 
-                    const response = await fetch('/user/cart/checkout/order-cashondelivery', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(orderData)
-                    })
-
-                    const result = await response.json()
-                    if (response.ok) {
-                        Swal.fire({
-                            title: 'success',
-                            text: result.message,
-                            icon: 'success',
-                            confirmButtonText: 'OK'
-                        }).then(() => {
-                            window.location.href = '/user/cart/checkout/order-cashondelivery/order-success'
+                        const response = await fetch('/user/cart/checkout/order-cashondelivery', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(orderData)
                         })
-                    } else {
-                        if (result.status === 400) {
+
+                        const result = await response.json()
+                        if (response.ok) {
+                            Swal.fire({
+                                title: 'success',
+                                text: result.message,
+                                icon: 'success',
+                                confirmButtonText: 'OK'
+                            }).then(() => {
+                                window.location.href = '/user/cart/checkout/order-cashondelivery/order-success'
+                            })
+                        } else {
+                            if (result.status === 400) {
+                                Swal.fire({
+                                    title: 'failed',
+                                    text: result.message,
+                                    icon: 'error',
+                                    confirmButtonText: 'OK'
+                                }).then(() => {
+                                    window.location.reload()
+                                })
+                            }
                             Swal.fire({
                                 title: 'failed',
                                 text: result.message,
                                 icon: 'error',
                                 confirmButtonText: 'OK'
-                            }).then(() => {
-                                window.location.reload()
                             })
                         }
-                        Swal.fire({
-                            title: 'failed',
-                            text: result.message,
-                            icon: 'error',
-                            confirmButtonText: 'OK'
+                    } else if (selectedPaymentMethod === 'RazorPay') {
+                        console.log('razorpay selected')
+                        const addressId = document.getElementById('addressId1').value
+                        console.log(addressId)
+                        const cartId = document.getElementById('cartid').value
+                        // console.log(cartId)
+                        const totalAmount = document.getElementById('totalprice').value
+                        // console.log(totalAmount)
+                        const paymentMethod = selectedPaymentMethod
+                        console.log(formData)
+                        orderData = {
+                            addressId, cartId, totalAmount, paymentMethod
+                        }
+                        console.log(orderData)
+                        const response = await fetch('/user/online-payment/razorpay/create-order', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                amount: (totalPrice.value ),
+                                currency: 'INR',
+                                
+                            })
                         })
+                        const order= await response.json()
+                           const options = {
+                            "key": 'rzp_test_t6lNXNWWwp0wq6', // Replace with your Razorpay Test Key ID
+                            "amount": order.amount, // Amount is in currency subunits
+                            "currency": order.currency,
+                            "name": "Aranoz",
+                            "description": " Transaction",
+                            "image": "https://yourlogo.com/logo.png",
+                            "order_id": order.id, // This is the order ID created in step 2
+                            "handler": function (response) {
+                                fetch('/user/online-payment/razorpay/verify-payment', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify({
+                                        razorpay_order_id: response.razorpay_order_id,
+                                        razorpay_payment_id: response.razorpay_payment_id,
+                                        razorpay_signature: response.razorpay_signature,
+                                        orderData
+                                    })
+                                }).then(response => response.json())
+                                    .then(data => {
+                                        if (data.message === 'verification success') {
+                                            window.location.href='/user/cart/checkout/order-cashondelivery/order-success'
+                                        } else {
+                                            alert('Payment verification failed');
+                                        }
+                                    }).catch(error => {
+                                        console.error(error);
+                                    });
+                            },
+                            "prefill": {
+                                "name": "Test User",
+                                "email": "test.user@example.com",
+                                "contact": "9999999999"
+                            },
+                            "notes": {
+                                "address": "Razorpay Corporate Office"
+                            },
+                            "theme": {
+                                "color": "#3399cc"
+                            }
+                        };
+
+                        const rzp1 = new Razorpay(options);
+                        rzp1.open();
                     }
+
+                    
                 })
 
             })

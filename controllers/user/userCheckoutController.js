@@ -1,6 +1,7 @@
 const Cart = require('../../models/cartModel')
 const Address = require('../../models/addressModel')
 const Order = require('../../models/ordersModel')
+const Product=require('../../models/productsModel')
 const mongoose = require('mongoose')
 const randomNumberService = require('../../utils/otpServices')
 const { v4: uuidv4 } = require('uuid')
@@ -45,6 +46,7 @@ const cashOnDelivery = async (req, res) => {
         console.log('this is cashondelivery')
         const userId = req.session.user
         const { addressId, cartId, totalAmount, paymentMethod } = req.body
+        // console.log(formData)
         if (!addressId) {
             return res.status(400).json({ message: 'Address is not added' })
         }
@@ -87,7 +89,10 @@ const orderSuccess = async (req, res) => {
         const order = await Order.findOne({ userId }).sort({orderDate:-1})
         console.log(order)
         console.log('order addressid:', order.addressId)
-       
+        for(const item of order.items){
+            console.log(item)
+            const updatedProduct=await Product.findByIdAndUpdate(item.productId,{$inc:{stock:-item.quantity}})
+        }
         const orderAddress = await Address.aggregate([
             {
                 $match: {
@@ -108,7 +113,6 @@ const orderSuccess = async (req, res) => {
             }
         ]);
         console.log('this is orderAddress',orderAddress)
-        console.log(orderAddress.address)
         console.log(orderAddress[0].address)
         console.log(orderAddress[0].address[0].name)
         const cart = await Cart.findOne({ userId }).populate('items.productId')

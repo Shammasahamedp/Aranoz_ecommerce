@@ -346,8 +346,14 @@
                                                     </h4>
                                                     <h3>$<%= product.price %>
                                                     </h3>
+                                                    <%if(product.stock==0){%>
+                                                        <h3 class="text-danger">out of stock</h3>
+                                                        <a class="add_cart"><a 
+                                                            class="like_us d-flex justify-content-center align-items-center">
+                                                            <%}else{%>
                                                     <a class="add_cart" id='atag<%=product._id%>'>+ add to cart<a 
                                                             class="like_us d-flex justify-content-center align-items-center">
+                                                            <%}%>
                                                             <i class="bi bi-heart-fill" onclick="addToWishlist('<%=product._id%>')"></i>
 
                                                         </a>

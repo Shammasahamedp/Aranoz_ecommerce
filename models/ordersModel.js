@@ -43,6 +43,10 @@ const orderSchema=new mongoose.Schema({
         enum:['Cash On Delivery','Wallet','RazorPay'],
         required:true
     },
+    paymentStatus:{
+        type:String,
+        enum:['pending','completed','failed']
+    },
     orderStatus:{
         type:String,
         enum:['pending','shipped','delivered','cancelled','return requested','request approved','request rejected'],
@@ -52,7 +56,7 @@ const orderSchema=new mongoose.Schema({
         type:Date,
         default:Date.now
     }
-})
+},{timestamps:true})
 
 const Order=mongoose.model('Order',orderSchema)
 

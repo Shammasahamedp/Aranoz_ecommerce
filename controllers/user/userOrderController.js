@@ -81,8 +81,18 @@ const cancelSingleProduct=async(req,res)=>{
     let  {productId,orderId}=req.body
     productId=new mongoose.Types.ObjectId(productId)
     orderId=new mongoose.Types.ObjectId(orderId)
-    const newOrderData=await Order.findByIdAndUpdate({orderId},{$pull:{items:{productId:productId}}},{new:true})
-    if(newOrderData){
+    const updatedOrder = await Order.findOneAndUpdate(
+      { _id: orderId, 'items.productId': productId },
+      { $set: { 'items.$.itemStatus': 'cancelled' } },
+      { new: true }
+  );    
+  const allCancelled = updatedOrder.items.every(item => item.itemStatus === 'cancelled');
+
+        if (allCancelled) {
+            updatedOrder.orderStatus = 'cancelled';
+            await updatedOrder.save();
+        }
+  if(updatedOrder){
       return res.status(200).json({message:"successfully cancelled the product"})
     }else{
       return res.status(404).json({message:'order not found'})
