@@ -20,4 +20,5 @@ userHomeRouter.post('/profile/orders/cancel-order-single',userMiddleware.isUserA
 userHomeRouter.get('/profile/wishlist',userMiddleware.isUserAuthenticated,userHomeController.getWishlist)
 userHomeRouter.post('/profile/wishlist/remove',userMiddleware.isUserAuthenticated,userHomeController.deleteFromWishlist)
 userHomeRouter.post('/add-to-wishlist',userMiddleware.isUserAuthenticated,userHomeController.addToWishlist)
+userHomeRouter.get('/profile/wallet',userMiddleware.isUserAuthenticated,userHomeController.getWallet)
 module.exports=userHomeRouter

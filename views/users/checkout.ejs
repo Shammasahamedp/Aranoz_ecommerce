@@ -833,7 +833,7 @@
                         const cartId = document.getElementById('cartid').value
                         // console.log(cartId)
                         const totalAmount = document.getElementById('totalprice').value
-                        // console.log(totalAmount)
+                        console.log('totalamount is:',totalAmount)
                         const paymentMethod = selectedPaymentMethod
                         console.log(formData)
                         orderData = {
@@ -846,15 +846,16 @@
                                 'Content-Type': 'application/json'
                             },
                             body: JSON.stringify({
-                                amount: (totalPrice.value ),
+                                amount: totalAmount*100 ,
                                 currency: 'INR',
                                 
                             })
                         })
                         const order= await response.json()
+                        console.log(order.amount)
                            const options = {
                             "key": 'rzp_test_t6lNXNWWwp0wq6', // Replace with your Razorpay Test Key ID
-                            "amount": order.amount, // Amount is in currency subunits
+                            "amount": (order.amount), // Amount is in currency subunits
                             "currency": order.currency,
                             "name": "Aranoz",
                             "description": " Transaction",
@@ -892,7 +893,7 @@
                                 "address": "Razorpay Corporate Office"
                             },
                             "theme": {
-                                "color": "#3399cc"
+                                "color": "#ff3368"
                             }
                         };
 

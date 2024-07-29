@@ -4,6 +4,7 @@ const Product=require('../../models/productsModel')
 const User = require('../../models/usersModel')
 const Address=require('../../models/addressModel')
 const WishList=require('../../models/wishlistModel')
+const Wallet=require('../../models/walletModel')
 const { default: mongoose } = require('mongoose')
 const e = require('express')
 const redirectHome=function (req,res){
@@ -303,7 +304,23 @@ const getWishlist=async(req,res)=>{
         console.error(err)
     }
 }
-
+const getWallet=async (req,res)=>{
+    try{
+        const userId=req.session.user
+        let wallet=await Wallet.findOne({userId})
+        if(!wallet){
+            wallet=new Wallet({
+                userId,
+                balance:0,
+                transactions:[]
+            })
+            await wallet.save()
+        }
+        res.status(200).render('users/wallet',{wallet})
+    }catch(err){
+        console.error(err)
+    }
+}
 module.exports={
     getHome,
     redirectHome,
@@ -319,5 +336,6 @@ module.exports={
     deleteAddress,
     getWishlist,
     addToWishlist,
-    deleteFromWishlist
+    deleteFromWishlist,
+    getWallet
 }

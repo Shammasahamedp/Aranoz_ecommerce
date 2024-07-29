@@ -10,7 +10,10 @@ const getCategory = async (req, res) => {
         const skip = (page - 1) * limit;
         // Number.MAX_SAFE_INTEGER
         // console.log(req.query.minPrice)
-        const sortBy=req.query.sort||'name'
+        const sortBy=req.query.sort
+        if(!sortBy){
+            sortBy='name'
+        }
         // console.log(sortBy)
         const minPrice = parseInt(req.query.minPrice) || 0;
         const maxPrice = parseInt(req.query.maxPrice) || 50000;

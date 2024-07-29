@@ -59,6 +59,7 @@ const changeStatus=async(req,res)=>{
         console.log('this is change status function')
         const {itemId,statusValue,orderId}=req.body
         console.log(itemId,statusValue,orderId)
+        
         const order=await Order.findOneAndUpdate({_id:orderId,'items._id':itemId},{$set:{'items.$.itemStatus':statusValue}},{new:true})
         let newOrderStatus = 'delivered';
         for (const item of order.items) {
@@ -78,6 +79,10 @@ const changeStatus=async(req,res)=>{
 
         // Update the overall order status
         order.orderStatus = newOrderStatus;
+        if(order.orderStatus==='delivered'){
+            order.paymentStatus='completed'
+            await order.save()
+        }
         await order.save();
         console.log('completed',order)
         res.status(200).json({message:'success'})

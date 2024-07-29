@@ -123,6 +123,15 @@
               <li>
                 <p>Payment Method</p><span>: <%=orderData.paymentMethod%></span>
               </li>
+              <%if(orderData.paymentStatus){%>
+              <li>
+                <p>Payment Status</p><span>: <%=orderData.paymentStatus%></span>
+              </li>
+              <%}else{%>
+                <li>
+                  <p>Payment Status</p><span>: Not Done</span>
+                </li>
+                <%}%>
             </ul>
           </div>
         </div>
