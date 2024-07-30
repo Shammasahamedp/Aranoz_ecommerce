@@ -131,7 +131,7 @@
                     <div class="card-body">
                         <div class="text-center mb-4">
                             <h5>Current Balance</h5>
-                            <h2>$  <%=wallet.balance%> </h2>
+                            <h2>₹  <%=wallet.balance%> </h2>
                         </div>
                         <div class="text-center mb-4">
                             <button class="btn_3">Add Funds</button>
@@ -157,9 +157,9 @@
                         <tr>
                             <td><%=index+1%></td>
                             <td><%=transaction.type%></td>
-                            <td>$<%=transaction.amount%></td>
-                            <td>$<%=transaction.description%></td>
-                            <td>$<%=transaction.date%></td>
+                            <td>₹<%=transaction.amount%></td>
+                            <td><%=transaction.description%></td>
+                            <td><%=transaction.date.toLocaleDateString()%></td>
                         </tr>
                        <%})%>
                     </tbody>

@@ -3,6 +3,7 @@ const User=require('../../models/usersModel')
 const Product=require('../../models/productsModel')
 const Address=require('../../models/addressModel')
 const mongoose=require('mongoose')
+const Wallet=require('../../models/walletModel')
 const getOrder=async(req,res)=>{
     try{
         const page=parseInt(req.query.page)||1
@@ -46,9 +47,7 @@ const getSingleOrder=async(req,res)=>{
                 }
             }
         ]);
-        // console.log('this is order address',orderAddress)
        const theAddress=orderAddress[0].address[0]
-    //    console.log(theAddress)
         res.status(200).render('admin/adminOrdersSingle',{order,theAddress})
     }catch(err){
         console.log(err)
@@ -59,8 +58,43 @@ const changeStatus=async(req,res)=>{
         console.log('this is change status function')
         const {itemId,statusValue,orderId}=req.body
         console.log(itemId,statusValue,orderId)
+        let order;
+        if(statusValue==='request approved'){
+            order=await Order.findOneAndUpdate({_id:orderId,'items._id':itemId},{$set:{'items.$.itemStatus':statusValue}},{new:true})
+            item=order.items.find(item=>item._id.toString()===itemId.toString())
+            const {productId,quantity,price,itemStatus}=item
+            walletAmount=quantity*price
+            const userId=new mongoose.Types.ObjectId(userId)
+            const wallet=await Wallet.findOne({userId})
+            if(!wallet){
+                const wallet=new Wallet({
+                    userId:userId,
+                    balance:walletAmount,
+                    transactions:[]
+                })
+                let transaction={
+                    type:'credit',
+                    amount:walletAmount,
+                    description:'order returned',
+
+                }
+                wallet.transactions.push(transaction)
+                await wallet.save()
+            }else{
+                wallet.balance+=walletAmount
+                let transaction={
+                    type:'credit',
+                    amount:walletAmount,
+                    description:'order returned',
+
+                }
+                wallet.transactions.push(transaction)
+                await wallet.save()
+            }
+        }else {
+             order=await Order.findOneAndUpdate({_id:orderId,'items._id':itemId},{$set:{'items.$.itemStatus':statusValue}},{new:true})
+        }
         
-        const order=await Order.findOneAndUpdate({_id:orderId,'items._id':itemId},{$set:{'items.$.itemStatus':statusValue}},{new:true})
         let newOrderStatus = 'delivered';
         for (const item of order.items) {
             if (item.itemStatus === 'pending') {

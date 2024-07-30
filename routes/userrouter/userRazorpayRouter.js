@@ -61,7 +61,7 @@ razorpayRouter.post('/verify-payment',async (req,res)=>{
         }
         const orderId=randomNumberService.generateOrderId()
         orderStatus='pending'
-        paymentStatus= 'completed'
+        paymentStatus='completed'
         const order= new Order({
             userId:userId,
             orderId,

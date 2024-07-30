@@ -1,12 +1,13 @@
-<%-include('../partials/header') %>
-  
+<%include('../partials/header.ejs')%>
+
   <link rel="stylesheet" href="/css/admindashboard.css">
   <style>
     input#categoryName::placeholder {
       color: black;
 
     }
-    .btn a{
+
+    .btn a {
       color: aliceblue;
     }
   </style>
@@ -134,7 +135,7 @@
                           <!-- <th>
                             totalAmount
                           </th> -->
-                          
+
                           <th>
                             Status
                           </th>
@@ -154,65 +155,53 @@
                             <td>
                               <img src="<%= item.productId.imageUrl[0] %>" style="width: 100px;height: 100px;" alt="">
                             </td>
-                            
-                            
-                          
+
+
+
                             <td>
                               <%= item.productId.name %>
                             </td>
                             <td>
                               <%= item.quantity*item.price %>
                             </td>
-                           
+
                             <td>
-                              <select class="form-select status-dropdown" id="dropdown" onchange="changeStatus(event, '<%= item._id %>', '<%= order._id %>')" style="width: 120px;" data-item-id="<%= item._id %>">
-                                <option value="pending" <%= item.itemStatus === 'pending' ? 'selected' : 'disabled' %>>Pending</option>
-                                <option value="shipped" <%= item.itemStatus === 'shipped' ? 'selected' : (item.itemStatus === 'pending' ? '' : 'disabled') %>>Shipped</option>
-                                <option value="delivered" <%= item.itemStatus === 'delivered' ? 'selected' : (item.itemStatus === 'pending' || item.itemStatus === 'shipped' ? '' : 'disabled') %>>Delivered</option>
-                                <option value="cancelled" <%= item.itemStatus === 'cancelled' ? 'selected' : 'disabled' %>>Cancelled</option>
-                                <option value="return requested" <%= item.itemStatus === 'return requested' ? 'selected' : 'disabled' %>>Return Requested</option>
-                                <option value="request approved" <%= item.itemStatus === 'request approved' ? 'selected' : (item.itemStatus === 'return requested' ? '' : 'disabled') %>>Request Approved</option>
-                                <option value="request rejected" <%= item.itemStatus === 'request rejected' ? 'selected' : (item.itemStatus === 'return requested' ? '' : 'disabled') %>>Request Rejected</option>
+                              <select class="form-select status-dropdown" id="dropdown"
+                                onchange="changeStatus(event, '<%= item._id %>', '<%= order._id %>')"
+                                style="width: 120px;" data-item-id="<%= item._id %>">
+                                <option value="pending" <%=item.itemStatus==='pending' ? 'selected' : 'disabled' %>
+                                  >Pending</option>
+                                <option value="shipped" <%=item.itemStatus==='shipped' ? 'selected' :
+                                  (item.itemStatus==='pending' ? '' : 'disabled' ) %>>Shipped</option>
+                                <option value="delivered" <%=item.itemStatus==='delivered' ? 'selected' :
+                                  (item.itemStatus==='pending' || item.itemStatus==='shipped' ? '' : 'disabled' ) %>
+                                  >Delivered</option>
+                                <option value="cancelled" <%=item.itemStatus==='cancelled' ? 'selected' : 'disabled' %>
+                                  >Cancelled</option>
+                                <option value="return requested" <%=item.itemStatus==='return requested' ? 'selected'
+                                  : 'disabled' %>>Return Requested</option>
+                                <option value="request approved" <%=item.itemStatus==='request approved' ? 'selected' :
+                                  (item.itemStatus==='return requested' ? '' : 'disabled' ) %>>Request Approved</option>
+                                <option value="request rejected" <%=item.itemStatus==='request rejected' ? 'selected' :
+                                  (item.itemStatus==='return requested' ? '' : 'disabled' ) %>>Request Rejected</option>
                               </select>
-                              
-                              
-                              
-                              
-                              
-                              
-                              
-                              
-                              
-                              
-                              
-                              
-</td>
-
-                           
-                            
-
-
-                            <!-- <td>
-                              <button type="button" class="btn btn-icons btn-rounded btn-success"><a
-                                  href="">View</a> </button>
-                              <button type="button" class="btn btn-icons btn-rounded" data-id=""></button>
-                            </td> -->
-
-
+                            </td>
                           </tr>
                           <% }); %>
-                          <tr>
-                            <td></td>
-                            <td></td>
-                            <td>total Amount</td>
-                            <td><%=order.totalAmount%></td>
-                            <td></td>
-                          </tr>
-                        
-                          
-                          
+                            <tr>
+                              <td></td>
+                              <td></td>
+                              <td>total Amount</td>
+                              <td>
+                                <%=order.totalAmount%>
+                              </td>
+                              <td></td>
+                            </tr>
+
+
+
                       </tbody>
-                      
+
                     </table>
                   </div>
                 </div>
@@ -228,78 +217,88 @@
           </div>
           <div class="container mt-5">
             <div class="card">
-                <div class="card-header bg-primary text-white">
-                    Delivered to 
-                </div>
-                <div class="card-body">
-                    <p class="mb-1"><strong>Name    :    </strong> <%=order.userId.name%></p>
-                    <p class="mb-1"><strong>Eamil    :    </strong> <%=theAddress.email%></p>
-                    <p class="mb-1"><strong>Phone    :    </strong> <%=theAddress.phone%></p>
+              <div class="card-header bg-primary text-white">
+                Delivered to
+              </div>
+              <div class="card-body">
+                <p class="mb-1"><strong>Name : </strong>
+                  <%=order.userId.name%>
+                </p>
+                <p class="mb-1"><strong>Eamil : </strong>
+                  <%=theAddress.email%>
+                </p>
+                <p class="mb-1"><strong>Phone : </strong>
+                  <%=theAddress.phone%>
+                </p>
 
-                    <p class="mb-1"><strong>District    :    </strong> <%=theAddress.district%></p>
+                <p class="mb-1"><strong>District : </strong>
+                  <%=theAddress.district%>
+                </p>
 
-                    <p class="mb-1"><strong>State   :   </strong><%=theAddress.state%></p>
-                    <p><strong>Postcode    :   </strong> <%=theAddress.pincode%></p>
-                </div>
+                <p class="mb-1"><strong>State : </strong>
+                  <%=theAddress.state%>
+                </p>
+                <p><strong>Postcode : </strong>
+                  <%=theAddress.pincode%>
+                </p>
+              </div>
             </div>
+          </div>
         </div>
-        </div>
-          
 
-          <!-- partial -->
-        </div>
-        <!-- row-offcanvas ends -->
+
+        <!-- partial -->
       </div>
-      <!-- page-body-wrapper ends -->
+      <!-- row-offcanvas ends -->
     </div>
-    <!-- container-scroller -->
-    <script>
-      async function changeStatus(event,itemId,orderId){
-        event.preventDefault()
-          
-          try{
-            console.log('changed')
-          const statusValue=event.target.value
-          console.log(itemId,statusValue)
-          const response=await fetch('/admin/orders/single-order/status',{
-            method:'POST',
-            headers:{
-              'Content-Type':'application/json'
-            },
-            body:JSON.stringify({itemId,statusValue,orderId})
-          })
-          if(response.ok){
-            window.location.reload()
-          }
-          }catch(err){
-            console.error(err)
-          }
-        // })
+    <!-- page-body-wrapper ends -->
+  </div>
+  <!-- container-scroller -->
+  <script>
+    async function changeStatus(event, itemId, orderId) {
+      event.preventDefault()
+
+      try {
+        console.log('changed')
+        const statusValue = event.target.value
+        console.log(itemId, statusValue)
+        const response = await fetch('/admin/orders/single-order/status', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ itemId, statusValue, orderId })
+        })
+        if (response.ok) {
+          window.location.reload()
+        }
+      } catch (err) {
+        console.error(err)
       }
-      // document.addEventListener('DOMContentLoaded',async()=>{
-        
       // })
-    </script>
-    <!-- plugins:js -->
-    <script src="node_modules/jquery/dist/jquery.min.js"></script>
-    <script src="node_modules/popper.js/dist/umd/popper.min.js"></script>
-    <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script src="node_modules/perfect-scrollbar/dist/js/perfect-scrollbar.jquery.min.js"></script>
-    <!-- endinject -->
-    <!-- Plugin js for this page-->
-    <script src="node_modules/chart.js/dist/Chart.min.js"></script>
-    <!-- End plugin js for this page-->
-    <!-- inject:js -->
-    <script src="js/off-canvas.js"></script>
-    <script src="js/misc.js"></script>
-    <!-- endinject -->
-    <!-- Custom js for this page-->
-    <script src="js/dashboard.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-      crossorigin="anonymous"></script>
-    <!-- End custom js for this page-->
-    <!-- <script  src="/js/adminProductsScript.js"> -->
-     
-    </script>
-    <%-include('../partials/footer') %>
+    }
+
+  </script>
+  <!-- plugins:js -->
+  <script src="node_modules/jquery/dist/jquery.min.js"></script>
+  <script src="node_modules/popper.js/dist/umd/popper.min.js"></script>
+  <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+  <script src="node_modules/perfect-scrollbar/dist/js/perfect-scrollbar.jquery.min.js"></script>
+  <!-- endinject -->
+  <!-- Plugin js for this page-->
+  <script src="node_modules/chart.js/dist/Chart.min.js"></script>
+  <!-- End plugin js for this page-->
+  <!-- inject:js -->
+  <script src="js/off-canvas.js"></script>
+  <script src="js/misc.js"></script>
+  <!-- endinject -->
+  <!-- Custom js for this page-->
+  <script src="js/dashboard.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"></script>
+  <!-- End custom js for this page-->
+  <!-- <script  src="/js/adminProductsScript.js"> -->
+
+  </script>
+  <%include('../partials/footer.ejs')%>

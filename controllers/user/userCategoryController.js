@@ -1,24 +1,15 @@
 const Product = require('../../models/productsModel');
 const Category = require('../../models/categoriesModel');
 const { default: mongoose } = require('mongoose');
-
-
 const getCategory = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 9;
         const skip = (page - 1) * limit;
-        // Number.MAX_SAFE_INTEGER
-        // console.log(req.query.minPrice)
-        const sortBy=req.query.sort
-        if(!sortBy){
-            sortBy='name'
-        }
-        // console.log(sortBy)
+        const sortBy=req.query.sort ||'name'
+        console.log(sortBy)
         const minPrice = parseInt(req.query.minPrice) || 0;
         const maxPrice = parseInt(req.query.maxPrice) || 50000;
-
-        // const categorySlug = req.query.category || ''; 
         const categoryId = req.query.categoryId
         console.log(categoryId)
         const searchQuery = req.query.searchQuery
@@ -50,9 +41,7 @@ const getCategory = async (req, res) => {
             countQuery.exec(),
             categoryquery.exec()
         ]);
-        // console.log(count)
         if (req.session.user) {
-            // console.log(maxPrice)
             return res.status(200).render('users/category', {
                 products,
                 currentPage: page,
@@ -67,7 +56,6 @@ const getCategory = async (req, res) => {
                 user: req.session.user
             });
         } else {
-            // console.log(maxPrice)
             return res.status(200).render('users/category', {
                 products,
                 currentPage: page,
@@ -87,9 +75,6 @@ const getCategory = async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 };
-
-
 module.exports = {
     getCategory,
-    // searchProduct
 };

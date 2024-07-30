@@ -197,9 +197,9 @@
                                 <div class="single_product_menu d-flex" id="">
                                     <h5>sort by : </h5>
                                     <select id="sort" onchange="sortChange(event)">
-                                        <option data-display="<%=sortBy%>">name</option>
-                                        <option value="Price Low To High">price low to high </option>
-                                        <option value="Price High To Low">price high to low</option>
+                                        <option value="name" <%= sortBy === 'name' ? 'selected': '' %>>name</option>
+                                        <option value="Price Low To High" <%= sortBy === 'Price Low To High' ? 'selected': '' %>>price low to high </option>
+                                        <option value="Price High To Low" <%= sortBy === 'Price High To Low' ? 'selected': '' %>>price high to low</option>
                                         <!-- <option value="sort3">product</option> -->
                                     </select>
                                 </div>
@@ -233,7 +233,7 @@
                                             </h4>
                                             <h3>$<%= product.price %>
                                             </h3>
-                                            <% if (user) { %>
+                                            <% if (user && product.stock!==0) { %>
                                                 <!-- <div>hello</div> -->
                                                 <a class="add_cart" onclick="addToCart(`<%= product._id %>`)">
                                                     + add to cart
@@ -247,11 +247,12 @@
                                                     class="like_us d-flex justify-content-center align-items-center">
                                                     <i class="bi bi-heart-fill" onclick="addToWishlist('<%=product._id%>')"></i>
                                                 </a>
-                                                <% } else { %>
+                                                <% } else if(product.stock==0){ %>
                                                     <!-- <div>no user</div> -->
-                                                    <a class="add_cart" href="/user/login">
+                                                    <h3 class="text-danger">out of stock</h3>
+                                                    <!-- <a class="add_cart" href="/user/login">
                                                         + add to cart
-                                                    </a>
+                                                    </a> -->
                                                     <a href="/user/login"
                                                         class="like_us d-flex justify-content-center align-items-center">
                                                         <i class="bi bi-heart-fill"></i>
@@ -486,8 +487,8 @@
         console.log(maxPrice)
         let minPrice = document.getElementById('minPrice').value || ''
         let categoryId = document.getElementById('category').value || ''
-        let parent = document.getElementById('sort')
-        let sortingMethod = parent.querySelector('option').value || ''
+        let sortingMethod = document.getElementById('sort').value
+        // let sortingMethod = parent.querySelector('option').value || ''
         const searchQuery = document.getElementById('productsearch').value || ''
         
         document.addEventListener('DOMContentLoaded', async () => {

@@ -55,6 +55,10 @@ const orderSchema=new mongoose.Schema({
     orderDate:{
         type:Date,
         default:Date.now
+    },
+    refundAmount:{
+        type:Number,
+        default:0
     }
 },{timestamps:true})
 

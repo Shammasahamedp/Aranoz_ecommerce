@@ -155,7 +155,7 @@
   </div>
   <div style="display: flex; align-items: center;justify-content: center;">
     <% let showCancelButton = orders.orderStatus !== 'cancelled' && orders.orderStatus !== 'delivered'; %>
-    <% orders.items.forEach(item => { if (item.itemStatus !== 'shipped'||item.itemStatus !== 'pending') { showCancelButton = false; } }); %>
+    <% orders.items.forEach(item => { if (item.itemStatus !== 'shipped'&&item.itemStatus !== 'pending') { showCancelButton = false; } }); %>
 
     <% if (showCancelButton) { %>
         <button class="btn_3" onclick="cancelAllOrder('<%= orders._id %>')">Cancel all</button>
@@ -407,6 +407,8 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
             text:result.message,
             icon:'success',
             confirmButtonText:'OK'
+          }).then(()=>{
+            window.location.reload()
           })
         }
       }catch(err){

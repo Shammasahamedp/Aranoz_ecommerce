@@ -139,6 +139,7 @@ const orderSuccess = async (req, res) => {
         });
         orderData.date = order.orderDate,
             orderData.paymentMethod = order.paymentMethod,
+            orderData.paymentStatus = order.paymentStatus
             orderData.address = orderAddress[0].address
         console.log(orderData.address)
         cart.items = []

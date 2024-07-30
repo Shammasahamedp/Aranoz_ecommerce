@@ -1,6 +1,7 @@
 const { errorMonitor } = require('nodemailer/lib/xoauth2')
 const Order = require('../../models/ordersModel')
 const Address = require('../../models/addressModel')
+const Wallet=require('../../models/walletModel')
 const mongoose = require('mongoose')
 const { findOneAndUpdate } = require('../../models/adminModel')
 const { truncate } = require('lodash')
@@ -60,8 +61,37 @@ const cancelOrder=async(req,res)=>{
   try{
     const {orderId}=req.body
     console.log(orderId)
+    const userId=req.session.user
     const order=await Order.findById(orderId)
-    if(order){
+    if(order&&order.paymentStatus==='completed'){
+      order.items.forEach(item=>{
+        item.itemStatus='cancelled'
+      })
+      order.orderStatus='cancelled'
+      const wallet=await Wallet.findOne({userId})
+      const transaction={
+        type:'credit',
+        amount:order.totalAmount,
+        description:'order cancelled',
+        
+      }
+      if(!wallet){
+        const wallet=new Wallet({
+          userId:userId,
+          balance:order.totalAmount,
+          transactions:[]
+        })
+        wallet.transactions.push(transaction)
+        await wallet.save()
+      }else{
+        wallet.balance+=order.totalAmount
+        wallet.transactions.push(transaction)
+        await wallet.save()
+      }
+      order.refundAmount=order.totalAmount
+      await order.save()
+    }
+    else if(order){
       order.items.forEach(item=>{
         item.itemStatus='cancelled'
       })
@@ -81,19 +111,61 @@ const cancelOrder=async(req,res)=>{
 const cancelSingleProduct=async(req,res)=>{
   try{
     let  {productId,orderId}=req.body
+    const userId=req.session.user
     productId=new mongoose.Types.ObjectId(productId)
     orderId=new mongoose.Types.ObjectId(orderId)
-    const updatedOrder = await Order.findOneAndUpdate(
-      { _id: orderId, 'items.productId': productId },
-      { $set: { 'items.$.itemStatus': 'cancelled' } },
-      { new: true }
-  );    
-  const allCancelled = updatedOrder.items.every(item => item.itemStatus === 'cancelled');
+    const order=await Order.findById(orderId)
+    let updatedOrder;
+    if(order&&order.paymentStatus==='completed'){
+       updatedOrder = await Order.findOneAndUpdate(
+        { _id: orderId, 'items.productId': productId },
+        { $set: { 'items.$.itemStatus': 'cancelled' } },
+        { new: true }
+    );    
+    const allCancelled = updatedOrder.items.every(item => item.itemStatus === 'cancelled');
+  
+          if (allCancelled) {
+              updatedOrder.orderStatus = 'cancelled';
+              await updatedOrder.save();
+          } 
+          const item=updatedOrder.items.find(item=>item.productId.toString()=== productId.toString())
+          const totalAmount=item.quantity*item.price
+          updatedOrder.refundAmount+=totalAmount
+          await updatedOrder.save()
+          const wallet=await Wallet.findOne({userId})
+          const transaction={
+            type:'credit',
+            amount:totalAmount,
+            description:'single product returned'
+          }
+          if(!wallet){
+            const wallet=new Wallet({
+              userId:userId,
+              balance:totalAmount,
+              transactions:[]
+            })
+            wallet.transactions.push(transaction)
+            await wallet.save()
+          }else{
+            wallet.balance+=totalAmount
+            wallet.transactions.push(transaction)
+            await wallet.save()
+          }
 
-        if (allCancelled) {
-            updatedOrder.orderStatus = 'cancelled';
-            await updatedOrder.save();
-        }
+    }else if(order){
+      const updatedOrder = await Order.findOneAndUpdate(
+        { _id: orderId, 'items.productId': productId },
+        { $set: { 'items.$.itemStatus': 'cancelled' } },
+        { new: true }
+    );    
+    const allCancelled = updatedOrder.items.every(item => item.itemStatus === 'cancelled');
+  
+          if (allCancelled) {
+              updatedOrder.orderStatus = 'cancelled';
+              await updatedOrder.save();
+          }
+    }
+    
   if(updatedOrder){
       return res.status(200).json({message:"successfully cancelled the product"})
     }else{
