@@ -130,29 +130,21 @@
                 <!-- <a href="#"> <span>Availibility</span> : In Stock</a> -->
               </li>
               <li>
-                <a ><span>Status</span> : <%=item.itemStatus%></a>
+                <a ><span id="itemstatus">Status</span> : <%=item.itemStatus%></a>
                 <!-- <a href="#"> <span>Availibility</span> : In Stock</a> -->
               </li>
             </ul>
            
             <div class="card_area d-flex justify-content-between align-items-center">
              
-              <%if(item.itemStatus!=='cancelled'&& item.itemStatus !== 'delivered' ){%>
+              <%if(item.itemStatus=='pending'|| item.itemStatus == 'shipped' ){%>
                 <!-- <a href="#" class="btn_3"></a> -->
                 <button class="btn_3" onclick="cancelOrderProduct('<%=item.productId._id%>','<%=orders._id%>')">Cancel order</button>
 
                 <%}else if(item.itemStatus == 'delivered'){%>
                   <button class="btn_3" onclick="retrunOneProduct('<%=item.productId._id%>','<%=orders._id%>')">Return item</button>
                   <%}%>
-                <script>
-                  async function retrunOneProduct(productId,orderId){
-                    try{
-
-                    }catch(err){
-
-                    }
-                  }
-                </script>
+               
               <!-- <a href="#" class="like_us"> <i class="ti-heart"></i> </a> -->
             </div>
           </div>
@@ -163,15 +155,22 @@
   </div>
   <div style="display: flex; align-items: center;justify-content: center;">
     <% let showCancelButton = orders.orderStatus !== 'cancelled' && orders.orderStatus !== 'delivered'; %>
-    <% orders.items.forEach(item => { if (item.itemStatus === 'delivered'||item.itemStatus === 'cancelled') { showCancelButton = false; } }); %>
+    <% orders.items.forEach(item => { if (item.itemStatus !== 'shipped'||item.itemStatus !== 'pending') { showCancelButton = false; } }); %>
 
     <% if (showCancelButton) { %>
         <button class="btn_3" onclick="cancelAllOrder('<%= orders._id %>')">Cancel all</button>
     <% } else if (orders.orderStatus === 'delivered') { %>
-        <button class="btn_3" onclick="returnAllProduct()">Return all</button>
+        <button class="btn_3" onclick="returnAllProduct('<%=orders._id%>')">Return all</button>
+       
     <% } else if (orders.orderStatus === 'cancelled') { %>
         <h3>Your order has been cancelled</h3>
-    <% } %>
+    <% } else if(orders.orderStatus === 'return requested'){%>
+      <h3>Your order has requested to return</h3>
+      <%}else if(orders.orderStatus === 'request rejected'){%>
+        <h3>Your request has been rejected</h3>
+        <%}else if(orders.orderStatus === 'request approved'){%>
+          <h3>Your request has been approved . The amount creditted in your Wallet .Please check the wallet </h3>
+          <%}%>
 </div>
 
  
@@ -188,7 +187,7 @@
             <h4>order info</h4>
             <ul>
               <li>
-                <p>order number</p><span>: 60235</span>
+                <p>order number</p><span>: <%=orders.orderId%></span>
               </li>
               <li>
                 <p>date</p><span>: <%=orders.orderDate.toLocaleDateString()%></span>
@@ -391,6 +390,31 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
   <!-- jquery plugins here-->
   <!-- jquery -->
   <script>
+    async function retrunOneProduct(productId,orderId){
+      try{
+        const response=await fetch('/user/dashboard/profile/orders/return-order-single',{
+          method:'POST',
+          headers:{
+            'Content-Type':'application/json'
+          },
+          body:JSON.stringify({productId,orderId})
+        })
+        const result=await response.json()
+        if(response.ok){
+
+          Swal.fire({
+            title:'success',
+            text:result.message,
+            icon:'success',
+            confirmButtonText:'OK'
+          })
+        }
+      }catch(err){
+        console.error(err)
+      }
+    }
+  </script>
+  <script>
     async function cancelOrderProduct(productId,orderId){
       try{
         console.log('button pressed')
@@ -412,13 +436,14 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
             icon:'success',
             confirmButtonText:'OK'
           }).then(()=>{
-            window.location.reload()
+            window.location.href='/user/dashboard/profile/orders'
           })
         }
       }catch(err){
         console.error(err)
       }
     }
+    
     async function cancelAllOrder(orderId){
       try{
         console.log('this is cancel all button')
@@ -432,6 +457,34 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
         })
         const result=await response.json()
         if(response.ok){
+          Swal.fire({
+            title:'success',
+            text:result.message,
+            icon:'success',
+            confirmButtonText:'OK'
+          }).then(()=>{
+            window.location.href='/user/dashboard/profile/orders'
+          })
+        }
+      }catch(err){
+        console.error(err)
+      }
+    }
+  </script>
+   <script>
+    const status=document.getElementById('itemstatus')
+    async function returnAllProduct(orderId){
+      try{
+        const response = await fetch('/user/dashboard/profile/orders/return-order',{
+          method:'POST',
+          headers:{
+            'Content-Type':'applications/json'
+          },
+          body:JSON.stringify({orderId})
+        })
+        const result=await response.json()
+        if(response.ok){
+          // status.textContent=''
           Swal.fire({
             title:'success',
             text:result.message,

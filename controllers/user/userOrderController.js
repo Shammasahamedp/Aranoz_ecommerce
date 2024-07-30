@@ -2,6 +2,8 @@ const { errorMonitor } = require('nodemailer/lib/xoauth2')
 const Order = require('../../models/ordersModel')
 const Address = require('../../models/addressModel')
 const mongoose = require('mongoose')
+const { findOneAndUpdate } = require('../../models/adminModel')
+const { truncate } = require('lodash')
 const getOrder = async (req, res) => {
   try {
     const userId = req.session.user
@@ -101,9 +103,52 @@ const cancelSingleProduct=async(req,res)=>{
     console.error(err)
   }
 }
+const returnOrder=async(req,res)=>{
+  try{
+    const userId=req.session.user
+    const  {orderId}=req.body
+    console.log(orderId)
+    const order=await Order.findById(orderId)
+    order.items.forEach(item=>{
+      item.itemStatus='return requested'
+    })
+    order.orderStatus='return requested'
+    await order.save()
+    res.status(200).json({message:'order return has requested'})
+  }catch(err){
+    console.error(err)
+  }
+}
+const returnSingleProduct=async(req,res)=>{
+  try{
+    const userId=req.session.user
+    const {productId,orderId}=req.body
+    const updatedOrder=await Order.findOneAndUpdate(
+      {_id:orderId,'items.productId':productId},
+      {$set:{'items.$.itemStatus': 'return requested'}},
+      {new:true}
+    )    
+    console.log(updatedOrder)
+    const allReturnRequested = updatedOrder.items.every(item => item.itemStatus === 'return requested');
+
+        if (allReturnRequested) {
+            updatedOrder.orderStatus = 'return requested';
+            await updatedOrder.save();
+        }
+        if(updatedOrder){
+          return res.status(200).json({message:'order has requested to return '})
+        }else{
+          res.status(404).json({message:'order not found'})
+        }
+  }catch(err){
+    console.error(err)
+  }
+}
 module.exports = {
   getOrder,
   getOrderDetails,
   cancelOrder,
-  cancelSingleProduct
+  cancelSingleProduct,
+  returnOrder,
+  returnSingleProduct
 }
