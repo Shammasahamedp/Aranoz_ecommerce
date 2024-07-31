@@ -5,6 +5,12 @@ const User = require('../../models/usersModel')
 const Address=require('../../models/addressModel')
 const WishList=require('../../models/wishlistModel')
 const Wallet=require('../../models/walletModel')
+const Razorpay=require('razorpay')
+const razorpayInstance=new Razorpay({
+    key_id:process.env.RAZORPAY_KEY_ID,
+    key_secret:process.env.RAZORPAY_KEY_SECRET
+})
+const crypto=require('crypto')
 const { default: mongoose } = require('mongoose')
 const e = require('express')
 const redirectHome=function (req,res){
@@ -321,6 +327,61 @@ const getWallet=async (req,res)=>{
         console.error(err)
     }
 }
+const razorpayCreation=async(req,res)=>{
+    try{
+        console.log('this is razorpay method')
+        const {amount,currency}=req.body
+        const options={
+            amount:amount,
+            currency:currency
+        }
+        const order=await razorpayInstance.orders.create(options)
+        if(!order){
+            return res.status(500).json({message:'Internal server error'})
+        }
+        res.status(200).json(order)
+    }catch(err){
+        console.error(err)
+    }
+}
+const razorpayVarify=async(req,res)=>{
+    try{
+        const userId=req.session.user
+        console.log('this is verify method')
+        let {razorpay_order_id,razorpay_payment_id,razorpay_signature,amount}=req.body
+        const key_secret=process.env.RAZORPAY_KEY_SECRET
+        let hmac=crypto.createHmac('sha256',key_secret)
+        hmac.update(razorpay_order_id+"|"+razorpay_payment_id)
+        const generated_signature = hmac.digest('hex')
+        console.log('this is generated :',generated_signature)
+        console.log('this is razorpay signature:',razorpay_signature)
+        if(generated_signature === razorpay_signature){
+            console.log('this is checking part')
+            const wallet = await Wallet.findOne({userId})
+            if(!wallet){
+                return res.status(404).json({message:'wallet not found'})
+            }
+            console.log('this is wallet adding part')
+            wallet.balance+=amount
+            const transaction={
+                type:'credit',
+                amount:amount,
+                description:'Amount added to wallet'
+            }
+            wallet.transactions.push(transaction)
+            await wallet.save()
+            console.log('this is after saving part')
+            res.status(200).json({message:'balance added successfully'})
+
+        }else{
+            console.log('this is verification failed path')
+            res.status(500).json({message:'verification faild'})
+        }
+
+    }catch(err){
+        console.error(err)
+    }
+}
 module.exports={
     getHome,
     redirectHome,
@@ -337,5 +398,7 @@ module.exports={
     getWishlist,
     addToWishlist,
     deleteFromWishlist,
-    getWallet
+    getWallet,
+    razorpayCreation,
+    razorpayVarify
 }

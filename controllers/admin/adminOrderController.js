@@ -59,26 +59,37 @@ const changeStatus=async(req,res)=>{
         const {itemId,statusValue,orderId}=req.body
         console.log(itemId,statusValue,orderId)
         let order;
-        if(statusValue==='request approved'){
-            order=await Order.findOneAndUpdate({_id:orderId,'items._id':itemId},{$set:{'items.$.itemStatus':statusValue}},{new:true})
-            item=order.items.find(item=>item._id.toString()===itemId.toString())
+        let userId
+        if(statusValue ==='request approved'){
+            console.log('this is new return ')
+            order = await Order.findOneAndUpdate({_id:orderId,'items._id':itemId},{$set:{'items.$.itemStatus':statusValue}},{new:true})
+            userId=order.userId
+            const updatedOrder = order.items.every(item=>item.itemStatus==='request approved')
+            if(updatedOrder){
+                order.orderStatus='request approved'
+                await order.save()
+            }
+            item = order.items.find(item=>item._id.toString()===itemId.toString())
             const {productId,quantity,price,itemStatus}=item
-            walletAmount=quantity*price
-            const userId=new mongoose.Types.ObjectId(userId)
-            const wallet=await Wallet.findOne({userId})
-            if(!wallet){
-                const wallet=new Wallet({
+            walletAmount = quantity*price
+            //  userId = new mongoose.Types.ObjectId(userId)
+            console.log('this is userId :',userId)
+            const wallet = await Wallet.findOne({userId})
+            console.log('this is wallet',wallet)
+            if(!wallet) {
+                const wallet = new Wallet({
                     userId:userId,
                     balance:walletAmount,
-                    transactions:[]
+                    transactions : []
                 })
-                let transaction={
+                let transaction = {
                     type:'credit',
                     amount:walletAmount,
                     description:'order returned',
 
                 }
                 wallet.transactions.push(transaction)
+                console.log('this is new wallet:',wallet)
                 await wallet.save()
             }else{
                 wallet.balance+=walletAmount

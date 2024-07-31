@@ -15,6 +15,10 @@ const categorySchema=new Schema({
         type:Boolean,
         default:true
     },
+    offers:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Offer'
+    }],
     createdAt:{
         type:Date,
         default:Date.now

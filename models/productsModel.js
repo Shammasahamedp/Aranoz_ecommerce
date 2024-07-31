@@ -35,6 +35,12 @@ const productSchema = new Schema({
     },
     specifications:[
         {key:String,value:String}
+    ],
+    offers:[
+        {
+            type:mongoose.Schema.Types.ObjectId,
+            ref:'Offer'
+        }
     ]
 });
 

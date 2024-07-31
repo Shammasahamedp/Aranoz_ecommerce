@@ -154,8 +154,8 @@
     <%})%>
   </div>
   <div style="display: flex; align-items: center;justify-content: center;">
-    <% let showCancelButton = orders.orderStatus !== 'cancelled' && orders.orderStatus !== 'delivered'; %>
-    <% orders.items.forEach(item => { if (item.itemStatus !== 'shipped'&&item.itemStatus !== 'pending') { showCancelButton = false; } }); %>
+    <% let showCancelButton = orders.orderStatus !== 'cancelled' && orders.orderStatus !== 'delivered' && orders.orderStatus !== 'request approved'; %>
+    <% orders.items.forEach(item => { if (item.itemStatus !== 'shipped'&&item.itemStatus !== 'pending' && item.itemStatus !=='request approved') { showCancelButton = false; } }); %>
 
     <% if (showCancelButton) { %>
         <button class="btn_3" onclick="cancelAllOrder('<%= orders._id %>')">Cancel all</button>
@@ -163,7 +163,7 @@
         <button class="btn_3" onclick="returnAllProduct('<%=orders._id%>')">Return all</button>
        
     <% } else if (orders.orderStatus === 'cancelled') { %>
-        <h3>Your order has been cancelled</h3>
+        <h3>Your order has been cancelled . If you have paid it will refund in your wallet today</h3>
     <% } else if(orders.orderStatus === 'return requested'){%>
       <h3>Your order has requested to return</h3>
       <%}else if(orders.orderStatus === 'request rejected'){%>

@@ -223,7 +223,7 @@
                                     <h4>join date</h4>
                                 </label>
                                 <input type="email" class="form-control" id="joindate" name="joindate" placeholder=""
-                                    value="<%=profileDetails.createdAt%>" disabled>
+                                    value="<%=profileDetails.createdAt.toLocaleDateString()%>" disabled>
                             </div>
                             <div class="col-md-12 form-group">
                                 <button type="submit" value="submit" class="btn_3">Edit profile</button>
