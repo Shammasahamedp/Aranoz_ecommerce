@@ -172,11 +172,9 @@ const postAddAddress=async(req,res)=>{
             console.log('this is before push')
             addressdata.address.push({name,phone:number,email,city,district,state,pincode:pin})
             await addressdata.save()
-            // console.log(addressdata)
-            // console.log(address)
+          
             return res.status(200).json({message:'Address added successfully',addressdata})
         }else{
-            // return res.status(404).json({message:'Address not found'})
             let addressdata=new Address({userId,address:[{name,phone:number,email,district,city,state,pincode:pin}]})
             await addressdata.save()
             console.log('address created:',addressdata)
@@ -312,6 +310,9 @@ const getWishlist=async(req,res)=>{
 }
 const getWallet=async (req,res)=>{
     try{
+        let page=parseInt(req.query.page) || 1
+        let limit = parseInt(req.query.limit) || 5
+        let skip = (page-1)*limit
         const userId=req.session.user
         let wallet=await Wallet.findOne({userId})
         if(!wallet){

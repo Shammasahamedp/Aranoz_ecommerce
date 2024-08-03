@@ -4,6 +4,7 @@ const Product=require('../../models/productsModel')
 const Address=require('../../models/addressModel')
 const mongoose=require('mongoose')
 const Wallet=require('../../models/walletModel')
+const { truncate } = require('lodash')
 const getOrder=async(req,res)=>{
     try{
         const page=parseInt(req.query.page)||1
@@ -71,8 +72,8 @@ const changeStatus=async(req,res)=>{
             }
             item = order.items.find(item=>item._id.toString()===itemId.toString())
             const {productId,quantity,price,itemStatus}=item
+            const newProduct=await Product.findByIdAndUpdate(productId,{$inc:{stock:1}},{new:true})
             walletAmount = quantity*price
-            //  userId = new mongoose.Types.ObjectId(userId)
             console.log('this is userId :',userId)
             const wallet = await Wallet.findOne({userId})
             console.log('this is wallet',wallet)

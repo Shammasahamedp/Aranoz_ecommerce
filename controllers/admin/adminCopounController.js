@@ -28,10 +28,10 @@ const postAddCoupon = async (req, res) => {
     try {
         const { couponCode,
             discountPercentage,
-            maxDiscountAmount,
-            minDiscountAmount,
+            maxPurchaseAmount,
+            minPurchaseAmount,
             expiryDate } = req.body
-            console.log(couponCode,discountPercentage,maxDiscountAmount,minDiscountAmount,expiryDate)
+            console.log(couponCode,discountPercentage,maxPurchaseAmount,minPurchaseAmount,expiryDate)
             const coupon=await Coupon.findOne({couponCode})
             if(coupon){
               return   res.status(409).json({message:'coupon code is already exists'})
@@ -39,8 +39,8 @@ const postAddCoupon = async (req, res) => {
             const newCoupon=new Coupon({
                couponCode: couponCode,
            discountPercentage: discountPercentage,
-           maxDiscountAmount: maxDiscountAmount,
-           minDiscountAmount: minDiscountAmount,
+           maxPurchaseAmount: maxPurchaseAmount,
+           minPurchaseAmount: minPurchaseAmount,
            expiryDate: expiryDate
             })
             const couponData=await newCoupon.save()

@@ -2,6 +2,7 @@ const { errorMonitor } = require('nodemailer/lib/xoauth2')
 const Order = require('../../models/ordersModel')
 const Address = require('../../models/addressModel')
 const Wallet=require('../../models/walletModel')
+const Product=require('../../models/productsModel')
 const mongoose = require('mongoose')
 const { findOneAndUpdate } = require('../../models/adminModel')
 const { truncate } = require('lodash')
@@ -68,6 +69,13 @@ const cancelOrder=async(req,res)=>{
         item.itemStatus='cancelled'
       })
       order.orderStatus='cancelled'
+      const productIds = order.items.map(item => item.productId);
+
+        const updatePromises = productIds.map(productId => 
+            Product.findByIdAndUpdate(productId, { $inc: { stock: 1 } }, { new: true })
+        );
+
+        const updatedProducts = await Promise.all(updatePromises);
       const wallet=await Wallet.findOne({userId})
       const transaction={
         type:'credit',
@@ -102,7 +110,6 @@ const cancelOrder=async(req,res)=>{
       console.log('order not found')
     }
 
-    // console.log(orderDeleted)
    
   }catch(err){
     console.error(err)
@@ -123,7 +130,7 @@ const cancelSingleProduct=async(req,res)=>{
         { new: true }
     );    
     const allCancelled = updatedOrder.items.every(item => item.itemStatus === 'cancelled');
-  
+    const newProductDetails=await Product.findByIdAndUpdate(productId,{$inc:{stock:1}},{new:true})
           if (allCancelled) {
               updatedOrder.orderStatus = 'cancelled';
               await updatedOrder.save();

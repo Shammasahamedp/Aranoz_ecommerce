@@ -7,4 +7,6 @@ const userCheckoutController=require('../../controllers/user/userCheckoutControl
 userCheckoutRouter.get('/checkout/:id',userMiddleware.isUserAuthenticated,userCheckoutController.getCheckout)
 userCheckoutRouter.post('/checkout/order-cashondelivery',userMiddleware.isUserAuthenticated,userCheckoutController.cashOnDelivery)
 userCheckoutRouter.get('/checkout/order-cashondelivery/order-success',userMiddleware.isUserAuthenticated,userCheckoutController.orderSuccess)
+userCheckoutRouter.post('/checkout/order-wallet',userMiddleware.isUserAuthenticated,userCheckoutController.walletOrder)
+userCheckoutRouter.get('/checkout/order-wallet/order-success',userMiddleware.isUserAuthenticated,userCheckoutController.orderSuccess)
 module.exports=userCheckoutRouter

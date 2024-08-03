@@ -2,6 +2,7 @@ const Cart = require('../../models/cartModel')
 const Address = require('../../models/addressModel')
 const Order = require('../../models/ordersModel')
 const Product=require('../../models/productsModel')
+const Wallet= require('../../models/walletModel')
 const mongoose = require('mongoose')
 const randomNumberService = require('../../utils/otpServices')
 const { v4: uuidv4 } = require('uuid')
@@ -68,7 +69,7 @@ const cashOnDelivery = async (req, res) => {
                 quantity: item.quantity,
                 price: item.price
             })),
-            totalAmount: totalAmount,
+            totalAmount: Number(totalAmount),
             addressId: address,
             paymentMethod: paymentMethod,
             orderStatus: orderStatus
@@ -79,6 +80,59 @@ const cashOnDelivery = async (req, res) => {
     } catch (err) {
         console.error(err)
         res.status(500).json({ message: 'error occured while placing the order' })
+    }
+}
+const walletOrder=async (req,res)=>{
+    try{
+        console.log('this wallet order')
+        console.log('this is cashondelivery')
+        const userId = req.session.user
+        const { addressId, cartId, totalAmount, paymentMethod } = req.body
+        if (!addressId) {
+            return res.status(400).json({ message: 'Address is not added' })
+        }
+        console.log('address id:',addressId)
+        console.log('userId:',userId)
+        const address = new mongoose.Types.ObjectId(addressId)
+        const user = new mongoose.Types.ObjectId(userId)
+        const cart = await Cart.findOne({ userId }).populate('items.productId')
+        if (!cart || cart.items.length === 0) {
+            return res.status(400).json({ message: 'Your cart is empty' })
+        }
+        const transaction = {
+            type:'debit',
+            amount:Number(totalAmount),
+            description:'purchased using wallet amount',
+        }
+        const wallet = await Wallet.findOne({userId})
+        if(wallet.balance < totalAmount){
+            return res.status(400).json({message:'Your wallet has not enough balance , check the wallet'})
+        }
+        wallet.balance-=totalAmount
+        wallet.transactions.push(transaction)
+       await wallet.save()
+        const orderId = randomNumberService.generateOrderId()
+        orderStatus = 'pending'
+        const order = new Order({
+            userId: user,
+            orderId,
+            items: cart.items.map(item => ({
+                productId: item.productId._id,
+                quantity: item.quantity,
+                price: item.price
+            })),
+            totalAmount: Number(totalAmount),
+            addressId: address,
+            paymentMethod: paymentMethod,
+            paymentStatus:'completed',
+            orderStatus: orderStatus
+        });
+        await order.save()
+
+        res.status(201).json({ message: 'Order has successfully placed' })
+
+    }catch(err){
+        console.error(err)
     }
 }
 const orderSuccess = async (req, res) => {
@@ -131,24 +185,25 @@ const orderSuccess = async (req, res) => {
                 quantity: item.quantity,
                 price: item.productId.price,
                 totalPrice: itemTotalPrice
-
             })
-            orderData.totalPrice += itemTotalPrice,
                 orderData.totalQuantity += item.quantity
-
         });
         orderData.date = order.orderDate,
-            orderData.paymentMethod = order.paymentMethod,
-            orderData.paymentStatus = order.paymentStatus
+        orderData.totalPrice=order.totalAmount
+            orderData.paymentMethod = order.paymentMethod
+            console.log('this is payment method:',orderData.paymentMethod)
+            if(orderData.paymentMethod === 'Wallet'){
+                orderData.paymentStatus = 'completed'
+                order.paymentStatus = 'completed'
+            }else{
+                orderData.paymentStatus = order.paymentStatus
+            }
             orderData.address = orderAddress[0].address
         console.log(orderData.address)
         cart.items = []
         await cart.save()
         console.log(cart)
-
         res.status(200).render('orders/orderConfirmation', { addresses, orderData })
-
-
     } catch (err) {
         console.error(err)
     }
@@ -156,5 +211,6 @@ const orderSuccess = async (req, res) => {
 module.exports = {
     getCheckout,
     cashOnDelivery,
-    orderSuccess
+    orderSuccess,
+    walletOrder
 }

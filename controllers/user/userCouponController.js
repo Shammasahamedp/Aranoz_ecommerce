@@ -13,14 +13,15 @@ const applyCoupon=async(req,res)=>{
         let {couponCode,totalPrice}=req.body
         const userId=req.session.user
         const coupon=await Coupon.findOne({couponCode})
+        console.log(coupon)
         if(!coupon){
             return res.status(404).json({message:'coupon not found'})
         }
-        console.log(coupon.minDiscountAmount)
-        console.log(coupon.maxDiscountAmount)
+        console.log(coupon.minPurchaseAmount)
+        console.log(coupon.maxPurchaseAmount)
         console.log(Number(totalPrice))
         totalPrice=Number(totalPrice)
-        if(coupon.minDiscountAmount<totalPrice&&totalPrice<coupon.maxDiscountAmount){
+        if(coupon.minPurchaseAmount<totalPrice&&totalPrice<coupon.maxPurchaseAmount){
             totalPrice=totalPrice-(totalPrice*(coupon.discountPercentage/100))
             console.log(totalPrice)
           return   res.status(200).json({message:'successfully applied coupon',totalPrice})

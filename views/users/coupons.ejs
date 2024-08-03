@@ -109,8 +109,8 @@
               <div class="card bg-gradient-warning text-white">
                 <div class="card-body" style="text-align: center;">
                   <h3>Coupon code: <%= coupon.couponCode %></h3>
-                  <h5>Get <%= coupon.discountPercentage %> % discount for the purchase <span>upto ₹ <%= coupon.maxDiscountAmount %></span></h5>
-                  <h5>Minimum amount to get the coupon: <span>₹ <%= coupon.minDiscountAmount %> </span></h5>
+                  <h5>Get <%= coupon.discountPercentage %> % discount for the purchase <span>upto ₹ <%= coupon.maxPurchaseAmount %></span></h5>
+                  <h5>Minimum amount to get the coupon: <span>₹ <%= coupon.minPurchaseAmount %> </span></h5>
                   <h4>Expiry Date: <%= coupon.expiryDate.toLocaleDateString() %></h4>
                 </div>
               </div>
@@ -121,6 +121,7 @@
           <% }) %>
         </div>
       </div>
+      <!-- <button class="btn_3"  onclick="backToCheckout()">Back</button> -->
       
 </section>
 <!--================End Category Product Area =================-->
