@@ -185,8 +185,15 @@
                             <h3>
                                 <%=product.name%>
                             </h3>
-                            <h2>₹<%=product.price%>
-                            </h2>
+                            <%if(product.discountPercentage){%>
+                                <h2 style="display: inline;">₹<%=product.discountPercentage%></h2>
+                                <h2 style="text-decoration: line-through;display: inline;margin-left: 65px;">₹<%=product.price%>
+                                </h2>
+                                <%}else{%>
+                                    <h2 style="display: inline;">₹<%=product.price%>
+                                    </h2>
+                                    <%}%>
+                            
                             <ul class="list">
                                 <li>
                                     <a class="active" href="#">

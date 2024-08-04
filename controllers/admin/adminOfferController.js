@@ -1,11 +1,19 @@
 const Offer=require('../../models/offerModel')
 const Product=require('../../models/productsModel')
 const Category=require('../../models/categoriesModel')
+const { off } = require('../../models/adminModel')
 const getOffer=async(req,res)=>{
     try{
         const page = parseInt(req.query.page)||1
         const limit = 5 ;
-        const offers=await Offer.find({}).skip((page-1)*limit).limit(limit)
+        const offers=await Offer.find({}).skip((page-1)*limit).limit(limit).populate({
+            path:'category',
+            // match:{offerType:'category'}
+        }).populate({
+            path:'product',
+            // match:{offerType:'product'}
+        })
+        console.log(offers)
         const totalCount = await Offer.countDocuments()
         res.render('admin/adminOffers',{
             offers,
@@ -35,13 +43,59 @@ const getCategory=async(req,res)=>{
 }
 const getProducts=async(req,res)=>{
     try{
-
+        const products=await Product.find({})
+        res.status(200).json({products})
     }catch(err){
-
+        console.error(err)
+    }
+}
+const addProductOffer = async (req,res)=>{
+    try{
+        const {startDate,endDate,offerName,discountPercentage,offerType,itemId}= req.body
+        console.log('this is add offer method',startDate,endDate,offerName,discountPercentage,offerType,itemId)
+        const offer = new Offer({
+            name:offerName,
+            discountPercentage:discountPercentage,
+            startDate:new Date(startDate),
+            endDate:new Date(endDate),
+            offerType:offerType,
+            product:itemId
+        })
+        await offer.save()
+        if(offer){
+            res.status(200).json({message:'successfully added the offer'})
+        }
+        console.log(offer)
+    }catch(err){
+        console.error(err)
+    }
+}
+const addCategoryOffer = async (req,res)=>{
+    try{
+        const {startDate,endDate,offerName,discountPercentage,offerType,itemId}= req.body
+        console.log('this is add offer method',startDate,endDate,offerName,discountPercentage,offerType,itemId)
+        const offer = new Offer({
+            name:offerName,
+            discountPercentage:discountPercentage,
+            startDate:new Date(startDate),
+            endDate:new Date(endDate),
+            offerType:offerType,
+            category:itemId
+        })
+        await offer.save()
+        if(offer){
+            res.status(200).json({message:'successfully added the offer'})
+        }
+        console.log(offer)
+    }catch(err){
+        console.error(err)
     }
 }
 module.exports={
     getOffer,
     getAddOffer,
-    getCategory
+    getCategory,
+    getProducts,
+    addProductOffer,
+    addCategoryOffer
 }

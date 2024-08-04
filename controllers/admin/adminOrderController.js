@@ -27,7 +27,6 @@ const getSingleOrder=async(req,res)=>{
         const orderId=req.params.id
         
         const order=await Order.findById(orderId).populate('items.productId').populate('userId')
-        // console.log(order.addressId)
         const userId=order.userId
         const orderAddress = await Address.aggregate([
             {
@@ -123,7 +122,6 @@ const changeStatus=async(req,res)=>{
             }
         }
 
-        // Update the overall order status
         order.orderStatus = newOrderStatus;
         if(order.orderStatus==='delivered'){
             order.paymentStatus='completed'

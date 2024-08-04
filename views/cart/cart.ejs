@@ -377,7 +377,6 @@
             newQuantity: newQuantity
           },
           success: function(response) {
-            // Update the DOM with the new quantities and prices
             $('tr[data-product-id="' + productId + '"] .input-number').val(newQuantity);
             $('tr[data-product-id="' + productId + '"] .item-total-price').text(newQuantity * $('tr[data-product-id="' + productId + '"] .item-price').data('price'));
             $('#cart-subtotal').text(response.totalPrice);

@@ -4,9 +4,7 @@ const Product=require('../../models/productsModel')
 const getCart=async (req,res)=>{
     try{
         const userId=req.session.user
-        console.log(userId)
         const cart=await Cart.findOne({userId}).populate('items.productId')
-        console.log('first cart',cart)
         let totalQuantity=0;
             let totalPrice=0;
         if(!cart||cart.items.length==0){
@@ -17,7 +15,6 @@ const getCart=async (req,res)=>{
                 totalPrice:totalPrice,
                 breadcrumbItems:[{name:'Dashboard',url:'/user/dashboard'},{name:'cart'}]
             }
-            // console.log(cartData)
             res.status(200).render('cart/cart',{cartData,cart:''})
         }else{
             let cartData={
@@ -28,7 +25,6 @@ const getCart=async (req,res)=>{
 
             }
             
-                console.log('this is inside',cart)
                 cart.items.forEach(item=>{
                     let itemTotalPrice=item.quantity*item.productId.price;
                     cartData.items.push({
@@ -43,9 +39,6 @@ const getCart=async (req,res)=>{
                     cartData.totalPrice+=itemTotalPrice,
                     cartData.totalQuantity+=item.quantity
                 })
-            
-            console.log(cart.length)
-            console.log(cartData)
             res.status(200).render('cart/cart',{cartData,cart})
         }
         
@@ -55,7 +48,6 @@ const getCart=async (req,res)=>{
 }
 const updateCart=async (req, res) => {
     try {
-        console.log(' this is update cart function ')
         const userId = req.session.user;
         const { productId, newQuantity } = req.body;
 
@@ -93,7 +85,6 @@ const updateCart=async (req, res) => {
 };
 const deleteCart=async (req,res)=>{
     try{
-        console.log('this is deletecart method')
         const productId=req.params.id
         const userId=req.session.user
         const cart = await Cart.findOne({userId})

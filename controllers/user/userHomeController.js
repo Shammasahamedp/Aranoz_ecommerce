@@ -5,6 +5,7 @@ const User = require('../../models/usersModel')
 const Address=require('../../models/addressModel')
 const WishList=require('../../models/wishlistModel')
 const Wallet=require('../../models/walletModel')
+const Offer=require('../../models/offerModel')
 const Razorpay=require('razorpay')
 const razorpayInstance=new Razorpay({
     key_id:process.env.RAZORPAY_KEY_ID,
@@ -39,8 +40,25 @@ const getHome= async(req,res)=>{
             }
         }
     ])
-        
-    // console.log('this is home router')
+        for(let product of products){
+            const offer = await Offer.findOne({
+                product:product._id,
+                startDate:{$lte:new Date()},
+                endDate:{$gte:new Date()}
+            })
+            const offerCategory= await Offer.findOne({
+                category:product.category.id,
+                startDate:{$lte:new Date()},
+                endDate:{$gte:new Date()}
+            })
+            if(offer){
+                product.discountPrice = product.price - (product.price*offer.discountPercentage/100)
+                product.offer = offer
+            }else if(offerCategory){
+                product.discountPrice = product.price - (product.price*offer.discountPrice/100)
+                product.offer = offerCategory
+            }
+        }
         res.status(200).render('users/home',{products})
     }catch(err){
         console.error(err)
@@ -67,6 +85,31 @@ const getAuthHome=async(req,res)=>{
                 }
             }
         ])
+        console.log('these are products:',products)
+        for(let product of products){
+            console.log(product._id)
+            const offer = await Offer.findOne({
+                product:product._id,
+                startDate:{$lte:new Date()},
+                endDate:{$gte:new Date()}
+            })
+            const offerCategory = await Offer.findOne({
+                category:product.category.id,
+                startDate:{$lte:new Date()},
+                endDate:{$gte:new Date()}
+            })
+            console.log('this is offer:',offer)
+            if(offer){
+                product.discountPercentage = product.price - (product.price*offer.discountPercentage/100)
+                product.offer = offer
+                
+            }else if(offerCategory){
+                product.discountPercentage = product.price - (product.price*offerCategory.discountPercentage/100)
+                product.offer = offerCategory
+            }
+        }
+       
+        // console.log(products)
            return  res.render('users/dashboard',{products})
         }else{
             delete req.session.user
@@ -90,12 +133,9 @@ const postUserProfile=async(req,res)=>{
     try{
         const {name,phonenumber}=req.body
         const user=await User.findById(req.session.user)
-        console.log(user)
         let data={name,phone:phonenumber}
-        // console.log('this is post user profile method')
-        // console.log(data)
+        
         const updatedData=await User.findByIdAndUpdate(req.session.user,data,{new:true})
-        // console.log(updatedData)
         if(updatedData){
             res.status(200).json({message:'profile has updated successfully'})
         }else if(!updatedData){
@@ -120,7 +160,6 @@ const postToCart=async (req,res)=>{
     }
     const itemIndex=cart.items.findIndex(item=>item.productId.equals(productId))
     if(itemIndex>-1){
-        // cart.items[itemIndex].quantity+=1
        return res.status(409).json({message:'Product already exists in cart'})
     }else{
         cart.items.push({productId,quantity:1,price})
@@ -162,14 +201,11 @@ const postAddAddress=async(req,res)=>{
         console.log('this is post add address')
         const userId=req.session.user
         const {name,number,email,city,district,state,pin}=req.body
-        console.log(name,email,city,district,state,pin)
         const addressdata = await Address.findOne({userId})
-        console.log(addressdata)
         if(addressdata){
             if(addressdata.address.length>=4){
                return  res.status(403).json({message:'User cannot add more than 4 addresses'})
             }
-            console.log('this is before push')
             addressdata.address.push({name,phone:number,email,city,district,state,pincode:pin})
             await addressdata.save()
           
@@ -177,7 +213,6 @@ const postAddAddress=async(req,res)=>{
         }else{
             let addressdata=new Address({userId,address:[{name,phone:number,email,district,city,state,pincode:pin}]})
             await addressdata.save()
-            console.log('address created:',addressdata)
             res.status(200).json({message:'Address added successfully',addressdata:addressdata})
 
         }
@@ -190,9 +225,7 @@ const getEditAddress=async (req,res)=>{
     try{
         const userId=req.session.user
         const addressId=new mongoose.Types.ObjectId(req.params.id)
-        // console.log(addressId)
         const addressData=await Address.aggregate([{$unwind:'$address'},{$match:{'address._id':addressId}}])
-        // console.log(addressData)
         res.status(200).render('users/addressEdit',{addressData})
     }catch(err){
         console.error(err)
@@ -258,7 +291,6 @@ const addToWishlist=async (req,res)=>{
             { $push: { items: { productId:new mongoose.Types.ObjectId(productId) } } },
             { new: true, upsert: true }
         );
-                console.log(wishlist)
         res.status(200).json({message:'added to wishlist'})
     }catch(err){
         console.error(err)
@@ -286,7 +318,6 @@ const getWishlist=async(req,res)=>{
         const wishlist=await WishList.findOne({userId}).populate('items.productId').skip(skip).limit(limit)
         if(wishlist){
             const products=wishlist.items
-            console.log(products)
         let totalProducts=wishlist.items.length
         res.status(200).render('users/wishlist',{
             products,
@@ -348,21 +379,17 @@ const razorpayCreation=async(req,res)=>{
 const razorpayVarify=async(req,res)=>{
     try{
         const userId=req.session.user
-        console.log('this is verify method')
         let {razorpay_order_id,razorpay_payment_id,razorpay_signature,amount}=req.body
         const key_secret=process.env.RAZORPAY_KEY_SECRET
         let hmac=crypto.createHmac('sha256',key_secret)
         hmac.update(razorpay_order_id+"|"+razorpay_payment_id)
         const generated_signature = hmac.digest('hex')
-        console.log('this is generated :',generated_signature)
-        console.log('this is razorpay signature:',razorpay_signature)
+      
         if(generated_signature === razorpay_signature){
-            console.log('this is checking part')
             const wallet = await Wallet.findOne({userId})
             if(!wallet){
                 return res.status(404).json({message:'wallet not found'})
             }
-            console.log('this is wallet adding part')
             wallet.balance+=amount
             const transaction={
                 type:'credit',
@@ -371,11 +398,9 @@ const razorpayVarify=async(req,res)=>{
             }
             wallet.transactions.push(transaction)
             await wallet.save()
-            console.log('this is after saving part')
             res.status(200).json({message:'balance added successfully'})
 
         }else{
-            console.log('this is verification failed path')
             res.status(500).json({message:'verification faild'})
         }
 

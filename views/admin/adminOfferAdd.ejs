@@ -134,7 +134,7 @@
           <div class="card-body">
             <div class="form-container">
               <h4 class="card-title">Add Offer</h4>
-              <form id="productAddForm" enctype="multipart/form-data">
+              <form id="offerAddForm" enctype="multipart/form-data">
                 <!-- Name Field -->
                 <div class="form-group">
                   <label for="offerName">Name</label>
@@ -142,16 +142,10 @@
                     required>
                   <div id="validateName" class="text-danger"></div>
                 </div>
-                <!-- Upload Button -->
                 
-
-
-                <!-- Category Field -->
-                
-                <!-- Price Field -->
                 <div class="form-group">
-                  <label for="discountPercetage">Discount Percentagee</label>
-                  <input type="number" id="discountPercetage" name="discountPercetage" class="form-control"
+                  <label for="discountPercentage">Discount Percentagee</label>
+                  <input type="number" id="discountPercentage" name="discountPercentage" class="form-control"
                     placeholder="Enter offer" required>
                   <div id="validateStock" class="text-danger"></div>
                 </div>
@@ -178,18 +172,16 @@
                     </select>
                     <div id="validateCategory" class="text-danger"></div>
                   </div>
-                  <script>
-                    document.getElementById('offertype').addEventListener('change',async(event)=>{
-                        event.preventDefault()
-                        const selected=document.getElementById('offertype')
-                        const type=selected.value
-                        if(type === 'category'){
-                            
-                        }else if(type === 'product'){
+                  <div class="form-group">
+                    <label for="offerItem">Select Item</label>
+                    <select id="offerItem" name="offerItem" class="form-control" required>
+                      <option value="">Select an item</option>
 
-                        }
-                    })
-                  </script>
+                    </select>
+                    <div id="validateItem" class="text-danger"></div>
+                  </div>
+                  
+                  
                   
 
                 
@@ -211,7 +203,127 @@
     <!-- page-body-wrapper ends -->
   </div>
 
-  
+  <script>
+    document.getElementById('offertype').addEventListener('change',async(event)=>{
+        event.preventDefault()
+        const selected=document.getElementById('offertype')
+        const offerItemSelect=document.getElementById('offerItem')
+        offerItemSelect.innerHTML= '<option value="">Select an item</option>'
+        const type=selected.value
+        if(type === 'category'){
+            const response= await fetch('/admin/offers/addoffer/getcategories',{
+              method:'GET',
+              headers:{
+                'Content-Type':'application/json'
+              },
+
+            })
+            const result=await response.json()
+            const categories=result.categories
+            categories.forEach(category => {
+              const option=document.createElement('option')
+              option.value=category._id
+              option.text=category.name
+              offerItemSelect.appendChild(option)
+            });
+
+        }else if(type === 'product'){
+          const response = await fetch('/admin/offers/addoffer/getproducts',{
+            method:'GET',
+            headers:{
+              'Content-Type':'application/json'
+            }
+          })
+          const result=await response.json()
+          const products=result.products
+          products.forEach(product => {
+              const option=document.createElement('option')
+              option.value=product._id
+              option.text=product.name
+              offerItemSelect.appendChild(option)
+            });
+        }
+    })
+  </script>
+  <script>
+    document.addEventListener('DOMContentLoaded',async ()=>{
+      try{
+        let itemId;
+
+      const startDate=document.getElementById('startdate')
+      const endDate=document.getElementById('enddate')
+      const offerName=document.getElementById('offername')
+      console.log(offerName)
+      const discountPercetage=document.getElementById('discountPercentage')
+      const offerType=document.getElementById('offertype')
+      const offerItem=document.getElementById('offerItem')
+      offerItem.addEventListener('change',async(event)=>{
+        itemId=event.target.value
+      })
+      
+      const form=document.getElementById('offerAddForm')
+      form.addEventListener('submit',async(event)=>{
+        event.preventDefault()
+        const startDateValue=new Date(startDate.value)
+      const endDateValue = new Date(endDate.value)
+        if(startDateValue.getDate()>=endDateValue.getDate()){
+        alert('check the date entered agian')
+        return 
+      }
+      offerNameValue=offerName.value
+      discountPercentageValue=discountPercetage.value
+      offerTypeValue=offerType.value
+
+      const formData={
+        startDate:startDateValue,endDate:endDateValue,offerName:offerNameValue,discountPercentage:discountPercentageValue,offerType:offerTypeValue,itemId
+      }
+      console.log(formData)
+      if(offerTypeValue === 'category'){
+        const response = await fetch ('/admin/offers/addcategoryoffer',{
+          method:'POST',
+          headers:{
+            'Content-Type':'application/json'
+          },
+          body:JSON.stringify(formData)
+        })
+        const result = await response.json()
+        if(response.ok){
+          Swal.fire({
+            title:'success',
+            text:result.message,
+            icon:'success',
+            confirmButtonText:'OK'
+          }).then(()=>{
+            window.location.href='/admin/offers'
+          })
+        }
+      }else if(offerTypeValue === 'product'){
+        console.log('this is fetch part')
+        const response = await fetch('/admin/offers/addproductoffer',{
+          method:'POST',
+          headers:{
+            'Content-Type':'application/json'
+          },
+          body:JSON.stringify(formData)
+        })
+        const result = await response.json()
+        if(response.ok){
+          Swal.fire({
+            title:'success',
+            text:result.message,
+            icon:'success',
+            confirmButtonText:'OK'
+          }).then(()=>{
+            window.location.href='/admin/offers'
+          })
+        }
+      }
+      })
+      }catch(err){
+        console.error(err)
+      }
+    })
+  </script>
   <!-- Include jQuery -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 

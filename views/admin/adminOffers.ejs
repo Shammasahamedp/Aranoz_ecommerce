@@ -141,8 +141,11 @@
                             No.
                           </th>
                           <th>
-                            Name
+                           Offer Name
                           </th>
+                          <th>
+                            product/category Name
+                           </th>
                           <th>
                             Discount Percentage
                           </th>
@@ -167,25 +170,29 @@
                         <% offers.forEach(offer=> { %>
                           <tr>
                             <td>
-                              <%= products.indexOf(product) + 1 %>
+                              <%= offers.indexOf(offer) + 1 %>
                             </td>
                             <td>
                               <%= offer.name %>
                             </td>
-                            <td>
-                              <img src="<%= product.imageUrl[0] %>"
-                                style="width: 100px; height: 100px; object-fit: cover;">
-
-                            </td>
+                            <%if(offer.product){%>
+                              <td>
+                                <%= offer.product.name %>
+                              </td>
+                              <%}else if(offer.category){%>
+                                <td>
+                                  <%= offer.category.name %>
+                                </td>
+                                <%}%>
                           
                             <td>
-                              <%= offer.discountPercetage %>
+                              <%= offer.discountPercentage %>
                             </td>
                             <td>
-                              <%= offer.startDate %>
+                              <%= offer.startDate.toLocaleDateString() %>
                             </td>
                             <td>
-                              <%= offer.endDate %>
+                              <%= offer.endDate.toLocaleDateString() %>
                             </td>
                             <td>
                                 <%= offer.offerType %>
@@ -194,8 +201,7 @@
 
                             <td>
                               <button type="button" class="btn btn-icons btn-rounded btn-success"><a
-                                  href="/admin/Products/edit/<%=product._id%>">Edit</a> </button>
-                              <button type="button" class="btn btn-icons btn-rounded <%=product.isListed?'btn-warning':'btn-danger'%> toggleButton" data-id="<%=product._id%>"><%=product.isListed?'unlist':'list'%></button>
+                                  href="/admin/Products/edit/<%=offer._id%>">Edit</a> </button>
                             </td>
 
 
