@@ -30,10 +30,8 @@ const getCategories = async (req, res) => {
 }
 const getCategoryEdit = async (req, res) => {
   const categoryId = req.params.id
-  //  console.log(categoryId)
   try {
     const category = await Category.findById(categoryId)
-    // console.log(category)
     res.render('admin/adminCategoryEdit', { category })
   } catch (err) {
     console.log('error fetching category')
@@ -42,13 +40,9 @@ const getCategoryEdit = async (req, res) => {
 }
 
 const postCategoryEdit = async (req, res) => {
-  console.log('this is category edit controller')
-  console.log(req.params.id)
+ 
   const categoryId = (req.params.id)
-  console.log(categoryId)
   const { name, description } = req.body
-  console.log(name, description)
-  // res.send('asdf')
   try {
       if(!name||!description){
         res.status(400).json({message:'should include both name and description'})
@@ -57,13 +51,11 @@ const postCategoryEdit = async (req, res) => {
         name: { $regex: `^${name}$`, $options: 'i' }, 
         _id: { $ne: categoryId }  
       });
-            console.log(exists)
       if(exists){
         res.status(409).json({message:'category already exists'})
         return 
       }
       const updatedData = await Category.findByIdAndUpdate(categoryId, { name, description }, { new: true })
-      console.log(updatedData)
       if (!updatedData || updatedData == null) {
         res.status(404).json({ message: 'Category not found' })
       } else {
@@ -84,13 +76,11 @@ const getAddCategory = async (req, res) => {
 }
 const postAddCategory=async (req,res)=>{
   const {name,description}=req.body
-  console.log(name)
-  console.log(description)
+  
   const document={
     name:name,
     description:description
   }
-  console.log(document)
   try{
     const exists=await Category.findOne({name:new RegExp(`^${name}$`, 'i')})
     if(exists){
@@ -98,9 +88,7 @@ const postAddCategory=async (req,res)=>{
       return 
     }else if(!exists){
       const newCategory=new Category(document)
-      console.log(newCategory)
       await newCategory.save()
-      console.log('after')
       res.status(200).json({message:'Added successfully'})
       return 
     }
@@ -112,7 +100,6 @@ const postAddCategory=async (req,res)=>{
   }
 }
 const toggleCategory=async (req,res)=>{
-  console.log('hello')
   try{
     const categoryId=req.params.id
     const category=await Category.findById(categoryId)
@@ -134,7 +121,6 @@ const toggleCategory=async (req,res)=>{
 const getSearch = async (req, res) => {
   try {
     const searchTerm = req.query.term;
-    console.log(searchTerm);
     const categories = await Category.find({ name: { $regex: searchTerm, $options: 'i' } });
 
     const page = parseInt(req.query.page) || 1; 

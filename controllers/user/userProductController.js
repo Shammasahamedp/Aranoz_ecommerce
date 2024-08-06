@@ -43,8 +43,7 @@ const getProduct = async (req, res) => {
             product.discountPercentage = product.price - (product.price*offerCategory.discountPercentage/100)
                 product.offer = offerCategory
         }
-        console.log(products)
-        console.log(req.session.user)
+       
         let user
         if (req.session.user) {
             user = await User.findById(req.session.user)

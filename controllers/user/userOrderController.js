@@ -10,7 +10,6 @@ const getOrder = async (req, res) => {
   try {
     const userId = req.session.user
     const orders = await Order.find({ userId }).populate('items.productId')
-    console.log('sdfgsdfg',orders)
     res.status(200).render('orders/usersOrder', { orders })
   } catch (err) {
     console.error(err)
@@ -21,12 +20,9 @@ const getOrderDetails = async (req, res) => {
     const userId = req.session.user
     const orderId=req.params.id
     const orders1 = await Order.findOne({ userId })
-    console.log('asdfasd', orders1)
     const orders=await Order.findById(orderId).populate('items.productId')
-    console.log('asdfasdfasdf', orders)
     const addressId1 = orders.addressId
-    console.log('addressId', addressId1)
-    console.log('userId', userId)
+   
     
     const Addresses = await Address.aggregate([
       {
@@ -48,11 +44,8 @@ const getOrderDetails = async (req, res) => {
       }
     ]);
 
-    console.log('this is real address',Addresses[0].address);
     const some=Addresses[0].address
-    console.log(some)
-    console.log(Addresses[0].address[0].name)
-    console.log('this is address:', Addresses)
+   
     res.status(200).render('orders/orderDetails', { orders ,address:Addresses[0].address})
   } catch (err) {
     console.error(err)
@@ -61,7 +54,6 @@ const getOrderDetails = async (req, res) => {
 const cancelOrder=async(req,res)=>{
   try{
     const {orderId}=req.body
-    console.log(orderId)
     const userId=req.session.user
     const order=await Order.findById(orderId)
     if(order&&order.paymentStatus==='completed'){
@@ -104,6 +96,7 @@ const cancelOrder=async(req,res)=>{
         item.itemStatus='cancelled'
       })
       order.orderStatus='cancelled'
+      order.offerAmount=0
       await order.save()
       res.status(200).json({message:'Your order cancelled '})
     }else{
@@ -117,6 +110,7 @@ const cancelOrder=async(req,res)=>{
 }
 const cancelSingleProduct=async(req,res)=>{
   try{
+    console.log('this is cancel single product method')
     let  {productId,orderId}=req.body
     const userId=req.session.user
     productId=new mongoose.Types.ObjectId(productId)
@@ -130,7 +124,6 @@ const cancelSingleProduct=async(req,res)=>{
         { new: true }
     );   
      let item= order.items.find(item=>item.productId.toString() === productId.toString())
-     console.log('this is cancelled item:',item)
       quantity=item.quantity
     const allCancelled = updatedOrder.items.every(item => item.itemStatus === 'cancelled');
     const newProductDetails=await Product.findByIdAndUpdate(productId,{$inc:{stock:quantity}},{new:true})
@@ -163,24 +156,30 @@ const cancelSingleProduct=async(req,res)=>{
           }
 
     }else if(order){
+      console.log('this is order cancel')
       const updatedOrder = await Order.findOneAndUpdate(
         { _id: orderId, 'items.productId': productId },
         { $set: { 'items.$.itemStatus': 'cancelled' } },
         { new: true }
     );    
+    console.log('this is updated order',updatedOrder)
     const allCancelled = updatedOrder.items.every(item => item.itemStatus === 'cancelled');
-  
+    console.log('this is all cancelled',allCancelled)
           if (allCancelled) {
-              updatedOrder.orderStatus = 'cancelled';
+              updatedOrder.orderStatus ='cancelled';
+              updatedOrder.offerAmount=0
               await updatedOrder.save();
+              console.log('this is after saving:',updatedOrder)
           }
+          if(updatedOrder){
+            console.log('this si updatedorder part')
+              return res.status(200).json({message:"successfully cancelled the product"})
+            }else{
+              return res.status(404).json({message:'order not found'})
+            }
     }
     
-  if(updatedOrder){
-      return res.status(200).json({message:"successfully cancelled the product"})
-    }else{
-      return res.status(404).json({message:'order not found'})
-    }
+  
   }catch(err){
     console.error(err)
   }
@@ -189,7 +188,6 @@ const returnOrder=async(req,res)=>{
   try{
     const userId=req.session.user
     const  {orderId}=req.body
-    console.log(orderId)
     const order=await Order.findById(orderId)
     order.items.forEach(item=>{
       item.itemStatus='return requested'
@@ -210,7 +208,6 @@ const returnSingleProduct=async(req,res)=>{
       {$set:{'items.$.itemStatus': 'return requested'}},
       {new:true}
     )    
-    console.log(updatedOrder)
     const allReturnRequested = updatedOrder.items.every(item => item.itemStatus === 'return requested');
 
         if (allReturnRequested) {

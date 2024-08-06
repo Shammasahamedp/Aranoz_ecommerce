@@ -14,9 +14,7 @@ const razorpayInstance=new Razorpay({
 })
 
 razorpayRouter.post('/create-order',async(req,res)=>{
-    console.log('this is create order router of razorpay')
     const {amount,currency}=req.body
-    console.log(amount,currency)
     try{
         const options={
             amount:amount,
@@ -24,7 +22,6 @@ razorpayRouter.post('/create-order',async(req,res)=>{
 
         }
         const order=await razorpayInstance.orders.create(options)
-        console.log(order)
         if(!order){
             return res.status(500).json({message:'internal server error'})
         }
@@ -38,8 +35,7 @@ razorpayRouter.post('/verify-payment',async (req,res)=>{
    try{
     console.log('this is the verify payment method of razorpay')
     let {razorpay_order_id,razorpay_payment_id,razorpay_signature,orderData}=req.body
-    console.log(razorpay_order_id,razorpay_payment_id,razorpay_signature)
-    console.log('this is orderData',orderData)
+    
     
     
 
@@ -47,8 +43,7 @@ razorpayRouter.post('/verify-payment',async (req,res)=>{
     let hmac=crypto.createHmac('sha256',key_secret)
     hmac.update(razorpay_order_id+"|"+razorpay_payment_id)
     const generated_signature = hmac.digest('hex')
-    console.log('this is generated signature',generated_signature)
-    console.log('this is razorpay signature',razorpay_signature)
+    
     if(generated_signature === razorpay_signature){
         if(!orderData.addressId){
             return res.status(400).json({message:'Address is not added'})
@@ -59,23 +54,68 @@ razorpayRouter.post('/verify-payment',async (req,res)=>{
         if(!cart || cart.items.length === 0){
             return res.status(400).json({message:'your cart is empty'})
         }
+        let totalAmountWithOffers = 0;
+        let totalOfferAmount = 0;
+        let itemsWithOffers = [];
+
+        const itemsWithOffersPromises = cart.items.map(async (item) => {
+            const product = item.productId;
+            let discountedPrice = product.price;
+
+            const offer = await Offer.findOne({
+                product: product._id,
+                startDate: { $lte: new Date() },
+                endDate: { $gte: new Date() }
+            });
+
+            const offerCategory = await Offer.findOne({
+                category: product.category.id,
+                startDate: { $lte: new Date() },
+                endDate: { $gte: new Date() }
+            });
+
+            let productPrice = product.price;
+            let discountPercentage = 0;
+
+            if (offer && offerCategory) {
+                let offerDiscountedPrice = product.price - (product.price * offer.discountPercentage / 100);
+                let offerCategoryDiscountedPrice = product.price - (product.price * offerCategory.discountPercentage / 100);
+                discountPercentage = Math.max(offer.discountPercentage, offerCategory.discountPercentage);
+                productPrice = Math.min(offerDiscountedPrice, offerCategoryDiscountedPrice);
+            } else if (offer) {
+                discountPercentage = offer.discountPercentage;
+                productPrice = product.price - (product.price * offer.discountPercentage / 100);
+            } else if (offerCategory) {
+                discountPercentage = offerCategory.discountPercentage;
+                productPrice = product.price - (product.price * offerCategory.discountPercentage / 100);
+            }
+
+            totalOfferAmount += (product.price - productPrice) * item.quantity;
+            totalAmountWithOffers += productPrice * item.quantity;
+
+            return {
+                productId: product._id,
+                quantity: item.quantity,
+                price: product.price,
+                discountedPrice: productPrice,
+                totalPrice: productPrice * item.quantity
+            };
+        });
+
+         itemsWithOffers = await Promise.all(itemsWithOffersPromises);
         const orderId=randomNumberService.generateOrderId()
         orderStatus='pending'
         paymentStatus='completed'
         const order= new Order({
             userId:userId,
             orderId,
-            items:cart.items.map(item=>({
-                productId:item.productId._id,
-                quantity:item.quantity,
-                price:item.price
-    
-            })),
-            totalAmount:orderData.totalAmount,
+            items:itemsWithOffers,
+            totalAmount:Number(totalAmountWithOffers),
             addressId:address,
             paymentMethod:orderData.paymentMethod,
             paymentStatus:paymentStatus,
-            orderStatus:orderStatus
+            orderStatus:orderStatus,
+            offerAmount:totalOfferAmount
        })
        await order.save()
       

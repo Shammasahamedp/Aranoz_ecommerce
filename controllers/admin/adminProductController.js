@@ -39,14 +39,12 @@ const getAddProduct = async (req, res) => {
 const postAddProduct = async (req, res) => {
   try {
     const { name, category, price, stock, specifications } = req.body
-    console.log(specifications)
     const spec=JSON.parse(specifications).map((spec)=>{
       return {
         key:spec.key.toString(),
         value:spec.value.toString()
       }
     })
-    console.log(spec)
     const images = req.files;
     const imageUrls=images.map(image=>`/images/uploads/${image.filename}`)
     const exists=await Product.findOne({name:new RegExp(`^${name}$`, 'i')})
@@ -69,7 +67,6 @@ const postAddProduct = async (req, res) => {
           specifications:spec
         })
         const productData = await newProduct.save()
-        console.log(productData)
       } else {
         res.status(404).json({ message: 'category not found' })
       }
@@ -122,7 +119,6 @@ const postEditProduct = async (req, res) => {
   try {
     const productId = req.params.id;
     let { name, categoryId, price, stock,specifications } = req.body;
-    console.log(specifications)
     // console.log(name)
     let images = [];
     if(!specifications){
@@ -152,7 +148,6 @@ const postEditProduct = async (req, res) => {
     }
 
     let updateObject = { name, category, price, stock ,specifications};
-    console.log(updateObject)
     if (images.length > 0) {
       updateObject.imageUrl = images;
     }

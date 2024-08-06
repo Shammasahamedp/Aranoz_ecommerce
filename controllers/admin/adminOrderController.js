@@ -11,7 +11,6 @@ const getOrder=async(req,res)=>{
         const limit=5
         const orders=await Order.find().skip((page-1)*limit).limit(limit).populate('userId')
         const totalCount=await Order.countDocuments()
-        // console.log(orders)
         res.status(200).render('admin/adminOrders',{
             orders,currentPage:page,
             totalPages:Math.ceil(totalCount/limit),
@@ -55,13 +54,10 @@ const getSingleOrder=async(req,res)=>{
 }
 const changeStatus=async(req,res)=>{
     try{
-        console.log('this is change status function')
         const {itemId,statusValue,orderId}=req.body
-        console.log(itemId,statusValue,orderId)
         let order;
         let userId
         if(statusValue ==='request approved'){
-            console.log('this is new return ')
             order = await Order.findOneAndUpdate({_id:orderId,'items._id':itemId},{$set:{'items.$.itemStatus':statusValue}},{new:true})
             userId=order.userId
             const updatedOrder = order.items.every(item=>item.itemStatus==='request approved')
@@ -74,9 +70,7 @@ const changeStatus=async(req,res)=>{
             // quantity=item.quantity
             const newProduct=await Product.findByIdAndUpdate(productId,{$inc:{stock:item.quantity}},{new:true})
             walletAmount = quantity*discountedPrice
-            console.log('this is userId :',userId)
             const wallet = await Wallet.findOne({userId})
-            console.log('this is wallet',wallet)
             if(!wallet) {
                 const wallet = new Wallet({
                     userId:userId,
@@ -90,7 +84,6 @@ const changeStatus=async(req,res)=>{
 
                 }
                 wallet.transactions.push(transaction)
-                console.log('this is new wallet:',wallet)
                 await wallet.save()
             }else{
                 wallet.balance+=walletAmount
@@ -129,7 +122,6 @@ const changeStatus=async(req,res)=>{
             await order.save()
         }
         await order.save();
-        console.log('completed',order)
         res.status(200).json({message:'success'})
     }catch(err){
         console.error(err)

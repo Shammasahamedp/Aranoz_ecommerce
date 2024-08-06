@@ -13,7 +13,6 @@ const getOffer=async(req,res)=>{
             path:'product',
             // match:{offerType:'product'}
         })
-        console.log(offers)
         const totalCount = await Offer.countDocuments()
         res.render('admin/adminOffers',{
             offers,
@@ -52,7 +51,6 @@ const getProducts=async(req,res)=>{
 const addProductOffer = async (req,res)=>{
     try{
         const {startDate,endDate,offerName,discountPercentage,offerType,itemId}= req.body
-        console.log('this is add offer method',startDate,endDate,offerName,discountPercentage,offerType,itemId)
         const offer = new Offer({
             name:offerName,
             discountPercentage:discountPercentage,
@@ -65,7 +63,6 @@ const addProductOffer = async (req,res)=>{
         if(offer){
             res.status(200).json({message:'successfully added the offer'})
         }
-        console.log(offer)
     }catch(err){
         console.error(err)
     }
@@ -73,7 +70,6 @@ const addProductOffer = async (req,res)=>{
 const addCategoryOffer = async (req,res)=>{
     try{
         const {startDate,endDate,offerName,discountPercentage,offerType,itemId}= req.body
-        console.log('this is add offer method',startDate,endDate,offerName,discountPercentage,offerType,itemId)
         const offer = new Offer({
             name:offerName,
             discountPercentage:discountPercentage,

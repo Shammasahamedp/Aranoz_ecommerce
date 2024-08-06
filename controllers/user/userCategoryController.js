@@ -7,11 +7,9 @@ const getCategory = async (req, res) => {
         const limit = parseInt(req.query.limit) || 9;
         const skip = (page - 1) * limit;
         const sortBy=req.query.sort ||'name'
-        console.log(sortBy)
         const minPrice = parseInt(req.query.minPrice) || 0;
         const maxPrice = parseInt(req.query.maxPrice) || 50000;
         const categoryId = req.query.categoryId
-        console.log(categoryId)
         const searchQuery = req.query.searchQuery
         const filter = {
             price: { $gte: minPrice, $lte: maxPrice },
@@ -32,7 +30,6 @@ const getCategory = async (req, res) => {
         if (categoryId && mongoose.Types.ObjectId.isValid(categoryId)) {
             filter['category.id'] = new mongoose.Types.ObjectId(categoryId);
         }
-        console.log(filter)
         const productsQuery = Product.find(filter).sort(sorT).skip(skip).limit(limit)
         const countQuery = Product.countDocuments(filter);
         const categoryquery = Category.find({ listed: true })

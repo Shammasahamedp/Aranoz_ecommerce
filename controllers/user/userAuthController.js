@@ -21,7 +21,6 @@ const getLogin= (req,res)=>{
 const postLogin=async(req,res)=>{
     try{
         const {email,password}=req.body
-        console.log(req.body)
         const user=await User.findOne({email})
         // console.log(user)
         if(!user){
@@ -36,7 +35,6 @@ const postLogin=async(req,res)=>{
                 console.log('password error')
                 res.status(400).json({message:'incorrect email or password'})
             }
-            console.log(user.isBlocked)
         }else if(user.isBlocked){
             // console.log(user.isBlocked)
 
@@ -61,9 +59,7 @@ const getSignup=(req,res)=>{
 }
 const postSignup=async(req,res,next)=>{
     try{
-        console.log('this is postsignup')
         const {name,email,phonenumber,password}=req.body
-    console.log('asdf')
     const existingUser=await User.findOne({email})
     if(existingUser){
         return res.status(400).json({message:'User already exists'})
@@ -84,8 +80,7 @@ const postSignup=async(req,res,next)=>{
 
 const verifyOTP=async (req,res)=>{
     const {email,otp}=req.body
-    console.log(email,otp)
-    console.log(req.session)
+   
     try{
         if(req.session.email!==email){
             return res.status(400).json({message:'User not found'})
@@ -106,14 +101,8 @@ const verifyOTP=async (req,res)=>{
 }
 const resendOtp=async (req,res,next)=>{
     try{
-        console.log('first otp:',req.session.otp)
-        console.log(req.session.email)
-        console.log(req.session.name)
-        console.log(req.session.password)
-        console.log('backend')
+      
          req.session.otp=otpService.generateOtp()
-         console.log('last otp:',req.session.otp)
-    //    res.status(200).json({message:'recieved in backend'})
        next()
     }catch(err){
         res.status(200).json({message:'error in resend otp'})
@@ -121,7 +110,6 @@ const resendOtp=async (req,res,next)=>{
 }
 const postLogout=async (req,res)=>{
     try{
-        console.log('thisis logout')
       req.session.destroy((err)=>{
         if(err){
             console.error('error in logut',err)
@@ -142,19 +130,15 @@ const postLogout=async (req,res)=>{
         res.redirect('/user/login?errorMessage=User%20is%20blocked%20by%20admin')
                 
         }catch(err){
-            console.log('this is the google sign failure')
             console.error('error in login',err)
             res.redirect('/user/login')
         }
     }
     const googleAuthenticated = async (req,res)=>{
         req.session.user=req.user._id  ;
-        console.log('reached home  and we have to store something in session');
         try{
            const user=  await User.findById(req.user._id)
-           console.log(user.name,user.email,user._id)
         if(user&&user.isBlocked===false){
-            console.log('this is the google authentication method')
            res.redirect('/user/dashboard')
         }else if(user&&user.isBlocked===true){
         //    res.status(303).redirect('/user/login')
@@ -193,10 +177,8 @@ const postLogout=async (req,res)=>{
             const token=await generateToken()
             req.session.email=email
             req.session.token=token
-            console.log(token)
             resetPasswordLink=`http://localhost:3000/user/resetpassword?token=${token}`
             await sendResetPasswordEmail(email,resetPasswordLink)
-            console.log('this is post forgot method')
           return  res.status(200).json({message:'link has send to your email address'})
 
         }catch(err){
@@ -216,7 +198,6 @@ const postLogout=async (req,res)=>{
        }
        const getResetPassword=async (req,res)=>{
         try{
-            // const token=req.query.token
             return  res.status(200).render('auth/resetpassword')
            
             
@@ -227,8 +208,7 @@ const postLogout=async (req,res)=>{
        }
        const postResetPassword=async(req,res)=>{
         try{
-            console.log(req.session.token)
-            console.log(req.query)
+          
             if(req.session.token==req.query.token){
                 const password=req.body.confirmpassword
                 const email=req.session.email

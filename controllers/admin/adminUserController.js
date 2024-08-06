@@ -20,11 +20,8 @@ const getUsers=async (req,res)=>{
 }
 const toggleUser=async (req,res)=>{
     try{
-        // console.log(req)
         const userId=req.params.id
-        // console.log(userId)
         const data=await User.findById(userId)
-        // console.log(data)
         if(data){
             data.isBlocked=!data.isBlocked
             await data.save()
@@ -45,11 +42,9 @@ const searchUser=async (req,res)=>{
         const searchterm=req.query.term
        const totalCount=await User.countDocuments({name:{$regex:searchterm,$options:'i'}})
         
-        console.log(searchterm)
         const users=await User.find({$or:[{name:{$regex:searchterm,$options:'i'}},{email:{$regex:searchterm,$options:'i'}}]})
         .skip((page - 1) * limit)
             .limit(limit);
-        console.log(users)
         res.status(200).render('admin/adminUsers',{
             users,
             currentPage:page,

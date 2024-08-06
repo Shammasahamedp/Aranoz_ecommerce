@@ -40,25 +40,7 @@ const getHome = async (req, res) => {
             }
         }
         ])
-        // for (let product of products) {
-        //     const offer = await Offer.findOne({
-        //         product: product._id,
-        //         startDate: { $lte: new Date() },
-        //         endDate: { $gte: new Date() }
-        //     })
-        //     const offerCategory = await Offer.findOne({
-        //         category: product.category.id,
-        //         startDate: { $lte: new Date() },
-        //         endDate: { $gte: new Date() }
-        //     })
-        //     if (offer) {
-        //         product.discountPrice = product.price - (product.price * offer.discountPercentage / 100)
-        //         product.offer = offer
-        //     } else if (offerCategory) {
-        //         product.discountPrice = product.price - (product.price * offer.discountPrice / 100)
-        //         product.offer = offerCategory
-        //     }
-        // }
+       
         res.status(200).render('users/home', { products })
     } catch (err) {
         console.error(err)
@@ -86,7 +68,6 @@ const getAuthHome = async (req, res) => {
             }
             ])
             for (let product of products) {
-                console.log(product._id)
                 const offer = await Offer.findOne({
                     product: product._id,
                     startDate: { $lte: new Date() },
@@ -97,7 +78,6 @@ const getAuthHome = async (req, res) => {
                     startDate: { $lte: new Date() },
                     endDate: { $gte: new Date() }
                 })
-                console.log('this is offer:', offer)
                 if (offer && offerCategory) {
                     let offerDiscountedPrice = product.price - (product.price * offer.discountPercentage / 100);
                     let offerCategoryDiscountedPrice = product.price - (product.price * offerCategory.discountPercentage / 100);
@@ -113,7 +93,6 @@ const getAuthHome = async (req, res) => {
                 }
             }
 
-            // console.log(products)
             return res.render('users/dashboard', { products })
         } else {
             delete req.session.user
@@ -202,7 +181,6 @@ const getContact = async (req, res) => {
 }
 const postAddAddress = async (req, res) => {
     try {
-        console.log('this is post add address')
         const userId = req.session.user
         const { name, number, email, city, district, state, pin } = req.body
         const addressdata = await Address.findOne({ userId })
@@ -237,7 +215,6 @@ const getEditAddress = async (req, res) => {
 }
 const postEditAddress = async (req, res) => {
     try {
-        console.log('this is posteditaddress method')
         const userId = req.session.user;
         const addressId = req.params.id
         const { name, phone, email, district, city, state, pincode } = req.body
@@ -275,7 +252,6 @@ const deleteAddress = async (req, res) => {
             { $pull: { address: { _id: addressId } } },
             { new: true }
         )
-        console.log(updatedAddress)
         res.status(200).json({ message: 'Address successfully deleted' })
     } catch (err) {
         console.error(err)
@@ -365,7 +341,6 @@ const getWallet = async (req, res) => {
 }
 const razorpayCreation = async (req, res) => {
     try {
-        console.log('this is razorpay method')
         const { amount, currency } = req.body
         const options = {
             amount: amount,

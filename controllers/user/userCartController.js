@@ -2,50 +2,7 @@ const User = require('../../models/usersModel')
 const Cart = require('../../models/cartModel')
 const Product = require('../../models/productsModel')
 const Offer = require('../../models/offerModel')
-// const getCart = async (req, res) => {
-//     try {
-//         const userId = req.session.user
-//         const cart = await Cart.findOne({ userId }).populate('items.productId')
-//         let totalQuantity = 0;
-//         let totalPrice = 0;
-//         if (!cart || cart.items.length == 0) {
-//             console.log('this is without cart')
-//             let cartData = {
-//                 items: [],
-//                 totalQuantity: totalQuantity,
-//                 totalPrice: totalPrice,
-//                 breadcrumbItems: [{ name: 'Dashboard', url: '/user/dashboard' }, { name: 'cart' }]
-//             }
-//             res.status(200).render('cart/cart', { cartData, cart: '' })
-//         } else {
-//             let cartData = {
-//                 items: [],
-//                 totalQuantity: totalQuantity,
-//                 totalPrice: totalPrice,
-//                 breadcrumbItems: [{ name: 'Dashboard', url: '/user/dashboard' }, { name: 'cart' }]
-//             }
-//             cart.items.forEach(item=>{
-//                 let itemTotalPrice=item.quantity*item.productId.price;
-//                 cartData.items.push({
-//                     productId:item.productId._id,
-//                     productImage:item.productId.imageUrl[0],
-//                     productName:item.productId.name,
-//                     quantity:item.quantity,
-//                     price:item.productId.price,
-//                     totalPrice:itemTotalPrice,
-//                     totalStock:item.productId.stock
-//                 })
-//                 cartData.totalPrice+=itemTotalPrice,
-//                 cartData.totalQuantity+=item.quantity
-//             })
-           
-//         //
-//             res.status(200).render('cart/cart', { cartData, cart })
-//         }
-//     } catch (err) {
-//         console.error(err)
-//     }
-// }
+
 const getCart = async (req, res) => {
     try {
         const userId = req.session.user;
@@ -54,7 +11,6 @@ const getCart = async (req, res) => {
         let totalPrice = 0;
 
         if (!cart || cart.items.length == 0) {
-            console.log('this is without cart');
             let cartData = {
                 items: [],
                 totalQuantity: totalQuantity,
@@ -127,36 +83,7 @@ const getCart = async (req, res) => {
     }
 };
 
-// const updateCart = async (req, res) => {
-//     try {
-//         const userId = req.session.user;
-//         const { productId, newQuantity } = req.body;
-//         let cart = await Cart.findOne({ userId });
-//         if (!cart) {
-//             return res.status(404).json({ message: 'Cart not found' });
-//         }
-//         const itemIndex = cart.items.findIndex(item => item.productId.toString() === productId);
-//         if (itemIndex === -1) {
-//             return res.status(404).json({ message: 'Product not found in cart' });
-//         }
-//         if (newQuantity <= 0) {
-//             cart.items.splice(itemIndex, 1);
-//         } else {
-//             cart.items[itemIndex].quantity = newQuantity;
-//         }
-//         await cart.save();
-//         let totalQuantity = 0;
-//         let totalPrice = 0;
-//         cart.items.forEach(item => {
-//             totalQuantity += item.quantity;
-//             totalPrice += item.quantity * item.price;
-//         });
-//         res.json({ cart, totalQuantity, totalPrice });
-//     } catch (err) {
-//         console.error(err);
-//         res.status(500).json({ message: 'Server error' });
-//     }
-// };
+
 const updateCart = async (req, res) => {
     try {
         const userId = req.session.user;
