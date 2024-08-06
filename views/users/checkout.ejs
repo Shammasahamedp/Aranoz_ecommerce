@@ -938,6 +938,13 @@
                                 }).then(() => {
                                     window.location.reload()
                                 })
+                            }else if( result.status === 404){
+                                Swal.fire({
+                                    title: 'failed',
+                                    text: result.message,
+                                    icon: 'error',
+                                    confirmButtonText: 'OK'
+                                })
                             }
                             Swal.fire({
                                 title: 'failed',

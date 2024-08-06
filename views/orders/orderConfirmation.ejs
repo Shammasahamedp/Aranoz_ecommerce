@@ -112,20 +112,20 @@
             <h4>order info</h4>
             <ul>
               <li>
-                <p>order number</p><span>: 60235</span>
+                <p>order number</p><span>: <%=order.orderId%></span>
               </li>
               <li>
-                <p>date</p><span>: <%=orderData.date.toLocaleDateString()%></span>
+                <p>date</p><span>: <%=order.orderDate.toLocaleDateString()%></span>
               </li>
               <li>
-                <p>total</p><span>₹<%=orderData.totalPrice%> </span>
+                <p>total</p><span>₹<%=order.totalAmount%> </span>
               </li>
               <li>
-                <p>Payment Method</p><span>: <%=orderData.paymentMethod%></span>
+                <p>Payment Method</p><span>: <%=order.paymentMethod%></span>
               </li>
-              <%if(orderData.paymentStatus){%>
+              <%if(order.paymentStatus){%>
               <li>
-                <p>Payment Status</p><span>: <%=orderData.paymentStatus%></span>
+                <p>Payment Status</p><span>: <%=order.paymentStatus%></span>
               </li>
               <%}else{%>
                 <li>
@@ -189,7 +189,7 @@
               <tbody>
                 <%orderData.items.forEach(item=>{%>
                 <tr>
-                  <th colspan="2"><span><%=item.productName%></span></th>
+                  <th colspan="2"><span><%=item.productId.name%></span></th>
                   <th>x<%=item.quantity%></th>
                   <th> <span>$<%=item.totalPrice%></span></th>
                 </tr>
@@ -197,8 +197,10 @@
               </tbody>
               <tfoot>
                 <tr>
-                  <!-- <th scope="col" colspan="3">Quantity</th> -->
-                  <th scope="col">Total : <%=orderData.totalPrice%></th>
+                  <th></th>
+                  <th></th>
+                  <th scope="col">Total : </th>
+                  <th>₹<%=order.totalAmount%></th>
                 </tr>
               </tfoot>
             </table>

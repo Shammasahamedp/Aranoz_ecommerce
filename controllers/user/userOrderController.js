@@ -69,10 +69,10 @@ const cancelOrder=async(req,res)=>{
         item.itemStatus='cancelled'
       })
       order.orderStatus='cancelled'
-      const productIds = order.items.map(item => item.productId);
+      const productIds = order.items.map(item => ({producId:item.productId,quantity:item.quantity}));
 
         const updatePromises = productIds.map(productId => 
-            Product.findByIdAndUpdate(productId, { $inc: { stock: 1 } }, { new: true })
+            Product.findByIdAndUpdate(productId.producId, { $inc: { stock: productId.quantity } }, { new: true })
         );
 
         const updatedProducts = await Promise.all(updatePromises);
@@ -128,15 +128,18 @@ const cancelSingleProduct=async(req,res)=>{
         { _id: orderId, 'items.productId': productId },
         { $set: { 'items.$.itemStatus': 'cancelled' } },
         { new: true }
-    );    
+    );   
+     let item= order.items.find(item=>item.productId.toString() === productId.toString())
+     console.log('this is cancelled item:',item)
+      quantity=item.quantity
     const allCancelled = updatedOrder.items.every(item => item.itemStatus === 'cancelled');
-    const newProductDetails=await Product.findByIdAndUpdate(productId,{$inc:{stock:1}},{new:true})
+    const newProductDetails=await Product.findByIdAndUpdate(productId,{$inc:{stock:quantity}},{new:true})
           if (allCancelled) {
               updatedOrder.orderStatus = 'cancelled';
               await updatedOrder.save();
           } 
-          const item=updatedOrder.items.find(item=>item.productId.toString()=== productId.toString())
-          const totalAmount=item.quantity*item.price
+           item=updatedOrder.items.find(item=>item.productId.toString()=== productId.toString())
+          const totalAmount=item.quantity*item.discountedPrice
           updatedOrder.refundAmount+=totalAmount
           await updatedOrder.save()
           const wallet=await Wallet.findOne({userId})
@@ -211,7 +214,7 @@ const returnSingleProduct=async(req,res)=>{
     const allReturnRequested = updatedOrder.items.every(item => item.itemStatus === 'return requested');
 
         if (allReturnRequested) {
-            updatedOrder.orderStatus = 'return requested';
+            updatedOrder.orderStatus ='return requested';
             await updatedOrder.save();
         }
         if(updatedOrder){

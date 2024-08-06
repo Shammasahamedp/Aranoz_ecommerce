@@ -119,7 +119,13 @@
           <div class="s_product_text">
             <!-- <h5>previous <span>|</span> next</h5> -->
             <h3><%=item.productId.name%></h3>
-            <h2>₹<%=item.productId.price%></h2>
+            <%if(item.discountedPrice !== item.price){%>
+            <h2 style="display: inline;">₹<%=item.discountedPrice%></h2>
+            <h2 style="display: inline; margin-left: 65px; text-decoration: line-through;">₹<%=item.price%></h2>
+
+            <%}else{%>
+              <h2>₹<%=item.price%></h2>
+              <%}%>
             <ul class="list">
               <li>
                 <a >

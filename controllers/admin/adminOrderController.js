@@ -70,9 +70,10 @@ const changeStatus=async(req,res)=>{
                 await order.save()
             }
             item = order.items.find(item=>item._id.toString()===itemId.toString())
-            const {productId,quantity,price,itemStatus}=item
-            const newProduct=await Product.findByIdAndUpdate(productId,{$inc:{stock:1}},{new:true})
-            walletAmount = quantity*price
+            const {productId,quantity,price,itemStatus,discountedPrice}=item
+            // quantity=item.quantity
+            const newProduct=await Product.findByIdAndUpdate(productId,{$inc:{stock:item.quantity}},{new:true})
+            walletAmount = quantity*discountedPrice
             console.log('this is userId :',userId)
             const wallet = await Wallet.findOne({userId})
             console.log('this is wallet',wallet)

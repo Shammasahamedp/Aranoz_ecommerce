@@ -303,7 +303,7 @@
                                                             <h3 >$<%= product.price %>
                                                             </h3>
                                                             <%}%>
-                                                            <%if(product.stock==0){%>
+                                                            <%if(product.stock==0 || product.stock < 0 ){%>
                                                                 <h3 class="text-danger">out of stock</h3>
                                                                 <a class="add_cart"><a 
                                                                     class="like_us d-flex justify-content-center align-items-center">
@@ -358,7 +358,7 @@
                                                     <h3 >$<%= product.price %>
                                                     </h3>
                                                     <%}%>
-                                                    <%if(product.stock==0){%>
+                                                    <%if(product.stock==0 || product.stock < 0 ){%>
                                                         <h3 class="text-danger">out of stock</h3>
                                                         <a class="add_cart"><a 
                                                             class="like_us d-flex justify-content-center align-items-center">
