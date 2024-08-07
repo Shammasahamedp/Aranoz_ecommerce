@@ -7,6 +7,7 @@ const Cart = require('../../models/cartModel')
 const Order = require('../../models/ordersModel')
 const Product=require('../../models/productsModel')
 const Address = require('../../models/addressModel')
+const Offer = require('../../models/offerModel')
 const randomNumberService = require('../../utils/otpServices')
 const razorpayInstance=new Razorpay({
     key_id:process.env.RAZORPAY_KEY_ID,
