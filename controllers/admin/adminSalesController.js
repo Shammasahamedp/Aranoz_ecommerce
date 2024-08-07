@@ -19,12 +19,16 @@ const getSalesReport = async (req, res) => {
                 endDate = new Date();
             } else if (dateDivision === 'monthly') {
                 startDate = new Date();
-                startDate.setDate(startDate.getMonth() - 1);
+                startDate.setMonth(startDate.getMonth() - 1);
                 endDate = new Date();
             } else if (dateDivision === 'yearly') {
                 startDate = new Date();
-                startDate.setDate(startDate.getFullYear() - 1);
+                startDate.setFullYear(startDate.getFullYear() - 1);
                 endDate = new Date();
+            }else if(dateDivision === 'lastday'){
+                startDate = new Date()
+                startDate.setHours(startDate.getHours() - 12);
+                endDate = new Date()
             }
         }
 

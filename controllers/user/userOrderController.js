@@ -58,7 +58,9 @@ const cancelOrder=async(req,res)=>{
     const order=await Order.findById(orderId)
     if(order&&order.paymentStatus==='completed'){
       order.items.forEach(item=>{
-        item.itemStatus='cancelled'
+        if(item.itemStatus !=='request approved' &&item.itemStatus !== 'request rejected' ){
+          item.itemStatus='cancelled'
+        }
       })
       order.orderStatus='cancelled'
       const productIds = order.items.map(item => ({producId:item.productId,quantity:item.quantity}));
@@ -90,6 +92,7 @@ const cancelOrder=async(req,res)=>{
       }
       order.refundAmount=order.totalAmount
       await order.save()
+      res.status(200).json({message:'Your order cancelled '})
     }
     else if(order){
       order.items.forEach(item=>{
@@ -123,6 +126,7 @@ const cancelSingleProduct=async(req,res)=>{
         { $set: { 'items.$.itemStatus': 'cancelled' } },
         { new: true }
     );   
+    console.log('this is after checking the order status')
      let item= order.items.find(item=>item.productId.toString() === productId.toString())
       quantity=item.quantity
     const allCancelled = updatedOrder.items.every(item => item.itemStatus === 'cancelled');
@@ -178,6 +182,21 @@ const cancelSingleProduct=async(req,res)=>{
               return res.status(404).json({message:'order not found'})
             }
     }
+    console.log('this is updated order',updatedOrder)
+    const allCancelled = updatedOrder.items.every(item => item.itemStatus === 'cancelled');
+    console.log('this is all cancelled',allCancelled)
+          if (allCancelled) {
+              updatedOrder.orderStatus ='cancelled';
+              updatedOrder.offerAmount=0
+              await updatedOrder.save();
+              console.log('this is after saving:',updatedOrder)
+          }
+          if(updatedOrder){
+            console.log('this si updatedorder part')
+              return res.status(200).json({message:"successfully cancelled the product"})
+            }else{
+              return res.status(404).json({message:'order not found'})
+            }
     
   
   }catch(err){
