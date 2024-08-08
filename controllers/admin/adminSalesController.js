@@ -139,6 +139,7 @@ const getSalesReport = async (req, res) => {
         })
     } catch (err) {
         console.log(err)
+        res.status(500).render('500/500erroradmin')
     }
 }
 const getPdfReport = async (req, res) => {
@@ -208,6 +209,7 @@ const getPdfReport = async (req, res) => {
         doc.end()
     } catch (err) {
         console.error(err)
+        res.status(500).render('500/500erroradmin')
     }
 }
 const getExcelReport = async (req, res) => {
@@ -288,12 +290,67 @@ const getExcelReport = async (req, res) => {
         res.end()
     } catch (err) {
         console.error(err)
+        res.status(500).render('500/500erroradmin')
     }
 }
-
+const getData=async(req,res)=>{
+    try{
+        console.log('this is getdata method')
+            const dateDivision = req.params.id;
+            console.log('this is datedivision',dateDivision)
+            const matchCriteria = {};
+        
+            if (dateDivision) {
+                if (dateDivision === 'weekly') {
+                    startDate = new Date();
+                    startDate.setDate(startDate.getDate() - 7);
+                    endDate = new Date();
+                } else if (dateDivision === 'monthly') {
+                    startDate = new Date();
+                    startDate.setMonth(startDate.getMonth() - 1);
+                    endDate = new Date();
+                } else if (dateDivision === 'yearly') {
+                    startDate = new Date();
+                    startDate.setFullYear(startDate.getFullYear() - 1);
+                    endDate = new Date();
+                } 
+                // else if (dateDivision === 'lastday') {
+                //     startDate = new Date();
+                //     startDate.setHours(startDate.getHours() - 12);
+                //     endDate = new Date();
+                // }
+            }
+        
+            if (startDate && endDate) {
+                matchCriteria.orderDate = {
+                    $gte: startDate,
+                    $lte: endDate
+                };
+            }
+        
+            const orderData = await Order.aggregate([
+                { $match: matchCriteria },
+                { $unwind: '$items' },
+                { $group: {
+                    _id: {
+                        $dateToString: { format: "%Y-%m-%d", date: "$orderDate" }
+                    },
+                    totalSales: { $sum: '$items.totalPrice' },
+                    totalOrders: { $sum: 1 },
+                }},
+                { $sort: { _id: 1 } } // Sort by date
+            ]);
+            console.log('this is orderdata',orderData)
+            res.json(orderData);
+      
+        
+    }catch(err){
+        res.status(500).render('500/500erroradmin')
+    }
+}
 module.exports = {
     getSalesReport,
     getPdfReport,
     getExcelReport,
-   
+    getData
 }

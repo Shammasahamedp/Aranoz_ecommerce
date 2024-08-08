@@ -18,7 +18,8 @@ const redirectHome = function (req, res) {
     try {
         res.status(302).redirect('/home')
     } catch (err) {
-        res.status(500).send('Error get home')
+        // res.status(500).send('Error get home')
+        res.status(500).render('500/500error');
     }
 }
 const getHome = async (req, res) => {
@@ -44,7 +45,8 @@ const getHome = async (req, res) => {
         res.status(200).render('users/home', { products })
     } catch (err) {
         console.error(err)
-        res.status(500).send('error in get home')
+        // res.status(500).send('error in get home')
+        res.status(500).render('500/500error');
     }
 }
 const getAuthHome = async (req, res) => {
@@ -99,7 +101,8 @@ const getAuthHome = async (req, res) => {
             res.redirect('/user/login')
         }
     } catch (err) {
-        res.status(500).redirect('/user/error')
+        // res.status(500).redirect('/user/error')
+        res.status(500).render('500/500error');
     }
 }
 const getUserProfile = async (req, res) => {
@@ -109,7 +112,8 @@ const getUserProfile = async (req, res) => {
         res.render('users/profile', { profileDetails, breadcrumbItems })
     } catch (err) {
         console.error(err)
-        res.status(500).send('error in get user profile')
+        // res.status(500).send('error in get user profile')
+        res.status(500).render('500/500error');
     }
 }
 const postUserProfile = async (req, res) => {
@@ -165,7 +169,8 @@ const getAddress = async (req, res) => {
             return res.status(200).render('users/address', { addresses: addresses })
         }
     } catch (err) {
-
+        console.error(err)
+        res.status(500).render('500/500error');
     }
 }
 const getContact = async (req, res) => {
@@ -176,7 +181,8 @@ const getContact = async (req, res) => {
         }
         return res.status(200).render('contacs and about/contactus', { user: '' })
     } catch (err) {
-
+        console.error(err)
+        res.status(500).render('500/500error');
     }
 }
 const postAddAddress = async (req, res) => {
@@ -211,6 +217,7 @@ const getEditAddress = async (req, res) => {
         res.status(200).render('users/addressEdit', { addressData })
     } catch (err) {
         console.error(err)
+        res.status(500).render('500/500error');
     }
 }
 const postEditAddress = async (req, res) => {
@@ -241,6 +248,7 @@ const postEditAddress = async (req, res) => {
         }
     } catch (err) {
         console.error(err)
+        res.status(500).render('500/500error');
     }
 }
 const deleteAddress = async (req, res) => {
@@ -255,6 +263,7 @@ const deleteAddress = async (req, res) => {
         res.status(200).json({ message: 'Address successfully deleted' })
     } catch (err) {
         console.error(err)
+        res.status(500).render('500/500error');
     }
 }
 const addToWishlist = async (req, res) => {
@@ -274,6 +283,7 @@ const addToWishlist = async (req, res) => {
         res.status(200).json({ message: 'added to wishlist' })
     } catch (err) {
         console.error(err)
+        res.status(500).render('500/500error');
     }
 }
 const deleteFromWishlist = async (req, res) => {
@@ -286,6 +296,7 @@ const deleteFromWishlist = async (req, res) => {
         }
     } catch (err) {
         console.error(err)
+        res.status(500).render('500/500error');
     }
 }
 const getWishlist = async (req, res) => {
@@ -317,6 +328,7 @@ const getWishlist = async (req, res) => {
         }
     } catch (err) {
         console.error(err)
+        res.status(500).render('500/500error');
     }
 }
 const getWallet = async (req, res) => {
@@ -337,6 +349,7 @@ const getWallet = async (req, res) => {
         res.status(200).render('users/wallet', { wallet })
     } catch (err) {
         console.error(err)
+        res.status(500).render('500/500error');
     }
 }
 const razorpayCreation = async (req, res) => {
@@ -353,6 +366,7 @@ const razorpayCreation = async (req, res) => {
         res.status(200).json(order)
     } catch (err) {
         console.error(err)
+        res.status(500).render('500/500error');
     }
 }
 const razorpayVarify = async (req, res) => {
@@ -385,6 +399,7 @@ const razorpayVarify = async (req, res) => {
 
     } catch (err) {
         console.error(err)
+        res.status(500).render('500/500error');
     }
 }
 module.exports = {

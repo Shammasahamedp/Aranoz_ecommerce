@@ -1,4 +1,4 @@
-<%include('../partials/header.ejs')%>
+<% include('../partials/header.ejs') %>
 
   <link rel="stylesheet" href="/css/admindashboard.css">
   <style>
@@ -155,9 +155,6 @@
                             <td>
                               <img src="<%= item.productId.imageUrl[0] %>" style="width: 100px;height: 100px;" alt="">
                             </td>
-
-
-
                             <td>
                               <%= item.productId.name %>
                             </td>
@@ -166,25 +163,32 @@
                             </td>
 
                             <td>
-                              <select class="form-select status-dropdown" id="dropdown"
-                                onchange="changeStatus(event, '<%= item._id %>', '<%= order._id %>')"
-                                style="width: 120px;" data-item-id="<%= item._id %>">
-                                <option value="pending" <%=item.itemStatus==='pending' ? 'selected' : 'disabled' %>
-                                  >Pending</option>
-                                <option value="shipped" <%=item.itemStatus==='shipped' ? 'selected' :
-                                  (item.itemStatus==='pending' ? '' : 'disabled' ) %>>Shipped</option>
-                                <option value="delivered" <%=item.itemStatus==='delivered' ? 'selected' :
-                                  (item.itemStatus==='pending' || item.itemStatus==='shipped' ? '' : 'disabled' ) %>
-                                  >Delivered</option>
-                                <option value="cancelled" <%=item.itemStatus==='cancelled' ? 'selected' : 'disabled' %>
-                                  >Cancelled</option>
-                                <option value="return requested" <%=item.itemStatus==='return requested' ? 'selected'
-                                  : 'disabled' %>>Return Requested</option>
-                                <option value="request approved" <%=item.itemStatus==='request approved' ? 'selected' :
-                                  (item.itemStatus==='return requested' ? '' : 'disabled' ) %>>Request Approved</option>
-                                <option value="request rejected" <%=item.itemStatus==='request rejected' ? 'selected' :
-                                  (item.itemStatus==='return requested' ? '' : 'disabled' ) %>>Request Rejected</option>
-                              </select>
+                              <% const today=new Date(); const deliveryDate=item.deliveryDate ? new
+                                Date(item.deliveryDate) : null; const isDeliveryDateOld=deliveryDate && ((today -
+                                deliveryDate) / (1000 * 60 * 60 * 24))> 7;
+                                %>
+                                <select class="form-select status-dropdown" id="dropdown"
+                                  onchange="changeStatus(event, '<%= item._id %>', '<%= order._id %>')"
+                                  style="width: 120px;" data-item-id="<%= item._id %>">
+                                  <option value="pending" <%=item.itemStatus==='pending' ? 'selected' : 'disabled' %>
+                                    >Pending</option>
+                                  <option value="shipped" <%=item.itemStatus==='shipped' ? 'selected' :
+                                    (item.itemStatus==='pending' ? '' : 'disabled' ) %>>Shipped</option>
+                                  <option value="delivered" <%=item.itemStatus==='delivered' ? 'selected' :
+                                    (item.itemStatus==='pending' || item.itemStatus==='shipped' ? '' : 'disabled' ) %>
+                                    >Delivered</option>
+                                  <option value="cancelled" <%=item.itemStatus==='cancelled' ? 'selected' : 'disabled'
+                                    %>
+                                    >Cancelled</option>
+                                  <option value="return requested" <%=item.itemStatus==='return requested' ? 'selected'
+                                    : 'disabled' %>>Return Requested</option>
+                                  <option value="request approved" <%=item.itemStatus==='request approved' ? 'selected'
+                                    : (item.itemStatus==='return requested' && item.deliveryDate && !isDeliveryDateOld ? '' : 'disabled' ) %>
+                                    >Request Approved</option>
+                                  <option value="request rejected" <%=item.itemStatus==='request rejected' ? 'selected'
+                                    : (item.itemStatus==='return requested' && item.deliveryDate && isDeliveryDateOld ? '' : 'disabled' ) %>>Request Rejected
+                                  </option>
+                                </select>
                             </td>
                           </tr>
                           <% }); %>
@@ -261,7 +265,7 @@
       try {
         console.log('changed')
         const statusValue = event.target.value
-        console.log('this is status value',statusValue)
+        console.log('this is status value', statusValue)
         console.log(itemId, statusValue)
         const response = await fetch('/admin/orders/single-order/status', {
           method: 'POST',
@@ -302,4 +306,4 @@
   <!-- <script  src="/js/adminProductsScript.js"> -->
 
   </script>
-  <%include('../partials/footer.ejs')%>
+  <% include('../partials/footer.ejs') %>

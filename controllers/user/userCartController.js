@@ -79,7 +79,7 @@ const getCart = async (req, res) => {
         }
     } catch (err) {
         console.error(err);
-        res.status(500).redirect('/user/error');
+        res.status(500).render('500/500error');
     }
 };
 

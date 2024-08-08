@@ -22,6 +22,7 @@ const getOffer=async(req,res)=>{
         })
     }catch(err){
         console.error(err)
+        res.status(500).render('500/500erroradmin')
     }
 }
 const getAddOffer=async(req,res)=>{
@@ -30,6 +31,7 @@ const getAddOffer=async(req,res)=>{
         res.status(200).render('admin/adminOfferAdd')
     }catch(err){
         console.error(err)
+        res.status(500).render('500/500erroradmin')
     }
 }
 const getCategory=async(req,res)=>{
@@ -38,6 +40,7 @@ const getCategory=async(req,res)=>{
         res.status(200).json({categories})
     }catch(err){
         console.error(err)
+        res.status(500).render('500/500erroradmin')
     }
 }
 const getProducts=async(req,res)=>{
@@ -46,6 +49,7 @@ const getProducts=async(req,res)=>{
         res.status(200).json({products})
     }catch(err){
         console.error(err)
+        res.status(500).render('500/500erroradmin')
     }
 }
 const addProductOffer = async (req,res)=>{
@@ -65,6 +69,7 @@ const addProductOffer = async (req,res)=>{
         }
     }catch(err){
         console.error(err)
+        res.status(500).render('500/500erroradmin')
     }
 }
 const addCategoryOffer = async (req,res)=>{
@@ -85,6 +90,7 @@ const addCategoryOffer = async (req,res)=>{
         console.log(offer)
     }catch(err){
         console.error(err)
+        res.status(500).render('500/500erroradmin')
     }
 }
 module.exports={

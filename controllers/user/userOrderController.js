@@ -13,6 +13,7 @@ const getOrder = async (req, res) => {
     res.status(200).render('orders/usersOrder', { orders })
   } catch (err) {
     console.error(err)
+    res.status(500).render('500/500error');
   }
 }
 const getOrderDetails = async (req, res) => {
@@ -49,6 +50,7 @@ const getOrderDetails = async (req, res) => {
     res.status(200).render('orders/orderDetails', { orders ,address:Addresses[0].address})
   } catch (err) {
     console.error(err)
+    res.status(500).render('500/500error');
   }
 }
 const cancelOrder=async(req,res)=>{
@@ -109,6 +111,7 @@ const cancelOrder=async(req,res)=>{
    
   }catch(err){
     console.error(err)
+    res.status(500).render('500/500error');
   }
 }
 const cancelSingleProduct=async(req,res)=>{
@@ -201,6 +204,7 @@ const cancelSingleProduct=async(req,res)=>{
   
   }catch(err){
     console.error(err)
+    res.status(500).render('500/500error');
   }
 }
 const returnOrder=async(req,res)=>{
@@ -216,6 +220,7 @@ const returnOrder=async(req,res)=>{
     res.status(200).json({message:'order return has requested'})
   }catch(err){
     console.error(err)
+    res.status(500).render('500/500error');
   }
 }
 const returnSingleProduct=async(req,res)=>{
@@ -240,6 +245,7 @@ const returnSingleProduct=async(req,res)=>{
         }
   }catch(err){
     console.error(err)
+    res.status(500).render('500/500error');
   }
 }
 module.exports = {

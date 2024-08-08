@@ -1,4 +1,4 @@
-<%include('../partials/header.ejs')%>
+<%include('.. /partials/header.ejs')%>
 
   <link rel="stylesheet" href="/css/admindashboard.css">
   <style>
@@ -147,7 +147,6 @@
             <div class="col-12 grid-margin">
               <div class="card">
                 <div class="card-body">
-
                   <h4 class="card-title">Sales Report</h4>
                   <div class="table-responsive">
                     <div class="select-container">
@@ -159,12 +158,14 @@
                         <option value="monthly">Monthly</option>
                         <option value="yearly">Yearly</option>
                       </select>
-                      <input type="date" class="form-control" id="fromDate" style="width: 150px;" placeholder="From Date">
-                      <input type="date" class="form-control" id="toDate" style="width: 150px; margin-left: 10px;" placeholder="To Date">
-                      <button class="btn btn-primary" id="applyFilters" style="margin-left: 10px;">Apply Filters</button>
+                      <input type="date" class="form-control" id="fromDate" style="width: 150px;"
+                        placeholder="From Date">
+                      <input type="date" class="form-control" id="toDate" style="width: 150px; margin-left: 10px;"
+                        placeholder="To Date">
+                      <button class="btn btn-primary" id="applyFilters" style="margin-left: 10px;">Apply
+                        Filters</button>
                     </div>
                     <table class="table">
-                     
                       <thead>
                         <tr>
 
@@ -292,14 +293,6 @@
               </a>
             </div>
           </div>
-
-
-
-
-          <!-- content-wrapper ends -->
-          <!-- partial:partials/_footer.html -->
-
-          <!-- partial -->
         </div>
         <!-- row-offcanvas ends -->
       </div>
@@ -307,29 +300,32 @@
     </div>
     <!-- container-scroller -->
     <script>
-      document.addEventListener('DOMContentLoaded',async()=>{
-       const date = document.getElementById('dateSelect')
-       date.addEventListener('change',async (event)=>{
-       try{
-         const  dateDivision= event.target.value
-       console.log(dateDivision)
-             window.location.href=`/admin/salesreport/get/${dateDivision}`
-         
-       }catch(err){
-         console.error(err)
-       }
-       })
-       const startDate=document.getElementById('fromDate')
-       const endDate=document.getElementById('toDate')
-      
-       document.getElementById('applyFilters').addEventListener('click',async(event)=>{
-        const fromDate=startDate.value
-        const toDate=endDate.value
-         console.log('this is fromdate',fromDate,'and this is todate:',toDate)
-         window.location.href=`/admin/salesreport/getCustomdate?fromDate=${fromDate}&toDate=${toDate}`
-       })
+      document.addEventListener('DOMContentLoaded', async () => {
+        const date = document.getElementById('dateSelect')
+        date.addEventListener('change', async (event) => {
+          try {
+            const dateDivision = event.target.value
+            console.log(dateDivision)
+            window.location.href = `/admin/salesreport/get/${dateDivision}`
+
+          } catch (err) {
+            console.error(err)
+          }
+        })
+        const startDate = document.getElementById('fromDate')
+        const endDate = document.getElementById('toDate')
+
+        document.getElementById('applyFilters').addEventListener('click', async (event) => {
+          const fromDate = startDate.value
+          const toDate = endDate.value
+          console.log('this is fromdate', fromDate, 'and this is todate:', toDate)
+          window.location.href = `/admin/salesreport/getCustomdate?fromDate=${fromDate}&toDate=${toDate}`
+        })
       })
-       </script>
+    </script>
+   
+
+
     <!-- plugins:js -->
     <script src="node_modules/jquery/dist/jquery.min.js"></script>
     <script src="node_modules/popper.js/dist/umd/popper.min.js"></script>
@@ -352,4 +348,4 @@
     <script src="/js/adminProductsScript.js">
 
     </script>
-<%include('../partials/footer.ejs')%>
+    <%include('.. /partials/footer.ejs')%>

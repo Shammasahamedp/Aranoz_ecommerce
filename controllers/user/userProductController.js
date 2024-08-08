@@ -7,7 +7,7 @@ const getProduct = async (req, res) => {
         const productId = req.params.id
         const product = await Product.findById(productId)
         const category = await Category.findById(product.category.id)
-        console.log(category)
+       
         const products = await Product.aggregate([{
             $lookup: {
                 from: 'categories',
@@ -80,7 +80,8 @@ const getProduct = async (req, res) => {
         }
     } catch (err) {
         console.error(err)
-        res.status(500).send('product not found')
+        // res.status(500).send('product not found')
+        res.status(500).render('500/500error');
     }
 }
 

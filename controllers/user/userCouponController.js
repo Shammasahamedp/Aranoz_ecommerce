@@ -6,6 +6,7 @@ const getCoupon=async(req,res)=>{
         res.status(200).render('users/coupons',{coupons})
     }catch(err){
         console.error(err)
+        res.status(500).render('500/500error');
     }
 }
 const applyCoupon=async(req,res)=>{
@@ -27,6 +28,7 @@ const applyCoupon=async(req,res)=>{
         
     }catch(err){
         console.error(err)
+        res.status(500).render('500/500error');
     }
 }
 module.exports={

@@ -36,6 +36,9 @@ const orderSchema=new mongoose.Schema({
             type:String,
             enum:['pending','shipped','delivered','cancelled','return requested','request approved','request rejected'],
             default:'pending'
+        },
+        deliveryDate:{
+            type:Date
         }
     }],
     totalAmount:{
@@ -65,6 +68,7 @@ const orderSchema=new mongoose.Schema({
         type:Date,
         default:Date.now
     },
+    
     refundAmount:{
         type:Number,
         default:0

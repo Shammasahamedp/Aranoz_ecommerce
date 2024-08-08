@@ -14,6 +14,7 @@ const getCoupon = async (req, res) => {
         })
     } catch (err) {
         console.error(err)
+        res.status(500).render('500/500erroradmin')
     }
 }
 const getAddCoupon = async (req, res) => {
@@ -22,6 +23,7 @@ const getAddCoupon = async (req, res) => {
         res.status(200).render('admin/adminCouponAdd')
     } catch (err) {
         console.error(err)
+        res.status(500).render('500/500erroradmin')
     }
 }
 const postAddCoupon = async (req, res) => {
@@ -48,6 +50,7 @@ const postAddCoupon = async (req, res) => {
             }
     } catch (err) {
         console.error(err)
+        res.status(500).render('500/500erroradmin')
     }
 }
 module.exports = {

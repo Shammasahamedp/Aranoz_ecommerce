@@ -151,7 +151,7 @@
                 <!-- <a href="#"> <span>Availibility</span> : In Stock</a> -->
               </li>
               <li>
-                <a ><span id="itemstatus">Status</span> : <%=item.itemStatus%></a>
+                <a ><span id="itemstatus">Status</span> : <%=item.itemStatus%> <%if(item.deliveryDate&&item.itemStatus === 'delivered'){ %> at <%=item.deliveryDate.toLocaleDateString()%><%}%></a>
                 <!-- <a href="#"> <span>Availibility</span> : In Stock</a> -->
               </li>
             </ul>

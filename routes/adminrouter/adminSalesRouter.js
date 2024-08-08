@@ -7,4 +7,5 @@ adminSalesRouter.get('/pdf-report',adminMiddleware.isAuthenticated,adminSalesCon
 adminSalesRouter.get('/excel-report',adminMiddleware.isAuthenticated,adminSalesController.getExcelReport)
 adminSalesRouter.get('/get/:id',adminMiddleware.isAuthenticated,adminSalesController.getSalesReport)
 adminSalesRouter.get('/getCustomdate',adminMiddleware.isAuthenticated,adminSalesController.getSalesReport)
+adminSalesRouter.get('/getdata/:id',adminMiddleware.isAuthenticated,adminSalesController.getData)
 module.exports=adminSalesRouter

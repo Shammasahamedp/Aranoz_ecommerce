@@ -303,6 +303,7 @@ const orderSuccess = async (req, res) => {
             res.status(200).render('orders/orderConfirmation', { addresses, orderData, order })
     } catch (err) {
         console.error(err)
+        res.status(500).render('500/500error');
     }
 }
 module.exports = {

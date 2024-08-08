@@ -18,7 +18,8 @@ const getProducts = async (req, res) => {
     });
   } catch (err) {
     console.error('Error fetching categories:', err);
-    res.status(500).send('Internal Server Error');
+    // res.status(500).send('Internal Server Error');
+    res.status(500).render('500/500erroradmin')
   }
 }
 const getAddProduct = async (req, res) => {
@@ -33,7 +34,8 @@ const getAddProduct = async (req, res) => {
 
     }
   } catch (err) {
-    res.status(500).send('Error get add product page')
+    // res.status(500).send('Error get add product page')
+    res.status(500).render('500/500erroradmin')
   }
 }
 const postAddProduct = async (req, res) => {
@@ -112,7 +114,8 @@ const getEditProduct = async (req, res) => {
     }
   } catch (err) {
     console.error('error:', err)
-    res.status(500).send('error in get edit product')
+    // res.status(500).send('error in get edit product')
+    res.status(500).render('500/500erroradmin')
   }
 }
 const postEditProduct = async (req, res) => {

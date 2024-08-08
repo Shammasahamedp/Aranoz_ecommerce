@@ -24,7 +24,8 @@ const getCategories = async (req, res) => {
     });
   } catch (err) {
     console.error('Error fetching categories:', err);
-    res.status(500).send('Internal Server Error');
+    // res.status(500).send('Internal Server Error');
+    res.status(500).render('500/500erroradmin')
   }
   ;
 }
@@ -35,7 +36,7 @@ const getCategoryEdit = async (req, res) => {
     res.render('admin/adminCategoryEdit', { category })
   } catch (err) {
     console.log('error fetching category')
-    res.status(500).send('Error fetching category')
+    res.status(500).render('500/500erroradmin')
   }
 }
 
@@ -64,7 +65,8 @@ const postCategoryEdit = async (req, res) => {
     
   } catch (err) {
     console.error(err)
-    res.status(500).json('Error editing category')
+    // res.status(500).json('Error editing category')
+    res.status(500).render('500/500erroradmin')
   }
 }
 const getAddCategory = async (req, res) => {
@@ -72,6 +74,7 @@ const getAddCategory = async (req, res) => {
     res.status(200).render('admin/adminCategoriesAdd')
   } catch (err) {
     console.error('error occured ', err)
+    res.status(500).render('500/500erroradmin')
   }
 }
 const postAddCategory=async (req,res)=>{

@@ -15,7 +15,7 @@ const getUsers=async (req,res)=>{
 
     }catch(err){
         console.error('Error fetching categories:',err)
-        res.status(500).send('error in get userpage')
+        res.status(500).render('500/500erroradmin')
 }
 }
 const toggleUser=async (req,res)=>{
@@ -53,7 +53,8 @@ const searchUser=async (req,res)=>{
         })
     }catch(err){
         console.error('error in searching ',err)
-        res.status(500).send('error in searching')
+       
+        res.status(500).render('500/500erroradmin')
     }
 }
 module.exports={
