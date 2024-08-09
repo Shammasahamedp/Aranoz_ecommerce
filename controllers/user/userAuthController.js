@@ -70,6 +70,7 @@ const postSignup=async(req,res,next)=>{
     req.session.phone=phonenumber
     req.session.password=password
     const otp=otpService.generateOtp()
+    console.log('this is otp:',otp)
     req.session.otp=otp
     next()
     }catch(err){

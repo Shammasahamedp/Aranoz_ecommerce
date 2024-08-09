@@ -116,21 +116,28 @@
   <!-- breadcrumb start-->
 
   <!--================ confirmation part start =================-->
-  <div class="product_image_area section_padding">
+  <div style="display: flex; align-items: center;justify-content: center; margin-top: 40px;">
+    <%if(orders.paymentMethod === 'RazorPay' && orders.paymentStatus === 'pending'){%>
+    <h3>Your payment has been failed . You can pay rightnow </h3>
+    <button class="btn_3 ml-5" onclick="payNow('<%=orders.totalAmount%>','<%=orders._id%>')">Pay now</button>
+    <%}%>
+  </div>
+  
+  <div class="product_image_area section_padding" >
     <%orders.items.forEach(item=>{%>
-    <div class="container" style="padding-top: 30px;">
+    <div class="container" style="padding-top: 30px;" >
       <div class="row s_product_inner justify-content-between">
         <div class="col-lg-7 col-xl-7">
           <div class="product_slider_img">
             <div id="vertical">
               <div data-thumb="img/product/single-product/product_1.png">
-                <img src="<%=item.productId.imageUrl[0]%>" style="width: 350px;height: 350px;"/>
+                <img src="<%=item.productId.imageUrl[0]%>" style="width: 250px;height: 250px;"/>
               </div>
              
             </div>
           </div>
         </div>
-        <div class="col-lg-5 col-xl-4">
+        <div class="col-lg-5 col-xl-4" >
           <div class="s_product_text">
             <!-- <h5>previous <span>|</span> next</h5> -->
             <h3><%=item.productId.name%></h3>
@@ -148,6 +155,10 @@
               </li>
               <li>
                 <a ><span>Quantity</span> : <%=item.quantity%></a>
+                <!-- <a href="#"> <span>Availibility</span> : In Stock</a> -->
+              </li>
+              <li>
+                <a ><span>Payment</span> : <%=orders.paymentStatus%></a>
                 <!-- <a href="#"> <span>Availibility</span> : In Stock</a> -->
               </li>
               <li>
@@ -413,6 +424,77 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 
   <!-- jquery plugins here-->
   <!-- jquery -->
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+  <script>
+    async function payNow(totalAmount,orderId){
+      console.log('button has clicked')
+      try{
+        const response = await fetch('/user/online-payment/razorpay/create-order',{
+          method:'POST',
+          headers:{
+            'Content-Type':'application/json'
+          },
+          body:JSON.stringify({
+            amount:totalAmount * 100,
+            currency:'INR'
+          })
+        })
+        const order = await response.json()
+        const options = {
+                            "key": 'rzp_test_t6lNXNWWwp0wq6',
+                            "amount": (order.amount),
+                            "currency": order.currency,
+                            "name": "Aranoz",
+                            "description": " Transaction",
+                            "image": "https://yourlogo.com/logo.png",
+                            "order_id": order.id,
+                            "handler": function (response) {
+                                fetch('/user/online-payment/razorpay/paynow/verify-payment', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify({
+                                        razorpay_order_id: response.razorpay_order_id,
+                                        razorpay_payment_id: response.razorpay_payment_id,
+                                        razorpay_signature: response.razorpay_signature,
+                                        orderId
+                                    })
+                                }).then(response => response.json())
+                                    .then(data => {
+                                        if (data.message === 'verification success') {
+                                            window.location.reload()
+                                        } else {
+                                            alert('Payment verification failed');
+                                        }
+                                    }).catch(error => {
+                                        console.error(error);
+                                    });
+                            },
+                           
+                            
+                            "prefill": {
+                                "name": "Test User",
+                                "email": "test.user@example.com",
+                                "contact": "9999999999"
+                            },
+                            "notes": {
+                                "address": "Razorpay Corporate Office"
+                            },
+                            "theme": {
+                                "color": "#ff3368"
+                            },
+                            
+                        };
+
+                        const rzp1 = new Razorpay(options);
+                        rzp1.open();
+      }catch(err){
+        console.error(err)
+      }
+    }
+  </script>
   <script>
     async function retrunOneProduct(productId,orderId){
       try{
@@ -525,6 +607,39 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
       }
     }
   </script>
+   <script>
+    async function logout() {
+
+        try {
+            const response = await fetch('/user/logout', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            const data = await response.json()
+
+            if (response.ok) {
+                window.location.href = '/'
+            } else {
+                Swal.fire({
+                    title: 'failed',
+                    text: data.message,
+                    icon: 'failed',
+                    confirmButtonText: 'OK'
+                })
+            }
+        } catch (err) {
+            console.log('error in logout')
+            Swal.fire({
+                title: 'failed',
+                text: 'error in logout',
+                icon: 'failed',
+                confirmButtonText: 'OK'
+            })
+        }
+    }
+</script>
   <script src="/js/jquery-1.12.1.min.js"></script>
   <!-- popper js -->
   <script src="/js/popper.min.js"></script>

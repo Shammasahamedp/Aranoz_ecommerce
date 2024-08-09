@@ -4,6 +4,11 @@
     <link rel="icon" href="/img/favicon.png">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <!-- Toastify CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
+    <!-- Toastify JS -->
+
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="/css/usercss/bootstrap.min.css">
@@ -60,18 +65,20 @@
                                     </li>
                                     <li class="nav-item dropdown">
                                         <a class="nav-link dropdown-toggle" href="blog.html" id="navbarDropdown_3"
-                                            role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            role="button" data-toggle="dropdown" aria-haspopup="true"
+                                            aria-expanded="false">
                                             Profile
                                         </a>
                                         <div class="dropdown-menu" aria-labelledby="navbarDropdown_2">
                                             <!-- <a class="dropdown-item" href="/user/dashboard/profile"> Profile</a> -->
                                             <a class="dropdown-item" href="/user/dashboard/profile/address">Address</a>
-                                            <a class="dropdown-item" href="/user/dashboard/profile/wishlist">Wishlist </a>
+                                            <a class="dropdown-item" href="/user/dashboard/profile/wishlist">Wishlist
+                                            </a>
                                             <a class="dropdown-item" href="/user/dashboard/profile/wallet">Wallet</a>
                                             <a class="dropdown-item" href="/user/dashboard/profile/orders">Orders</a>
                                             <a class="dropdown-item" href="/user/coupons">Coupons</a>
                                             <a class="dropdown-item" onclick="logout()">Logout</a>
-    
+
                                         </div>
                                     </li>
 
@@ -160,7 +167,7 @@
                                                         data-email="<%=address.email%>" data-city="<%=address.city%>"
                                                         data-district="<%=address.district%>"
                                                         data-state="<%=address.state%>"
-                                                        data-pincode="<%=address.pincode%>">
+                                                        data-pin="<%=address.pincode%>">
                                                     <textarea class="form-control" rows="3" style="height: 200px;"
                                                         readonly>
                         Name: <%= address.name %>, 
@@ -309,9 +316,11 @@
                                             <span>Flat rate: ₹0.00</span>
                                         </a>
                                     </li>
-                                    <li> 
+                                    <li>
                                         <a href="#">Total
-                                         <span >₹<span id="totalcouponamount"><%=cartData.totalPrice%></span></span>
+                                            <span>₹<span id="totalcouponamount">
+                                                    <%=cartData.totalPrice%>
+                                                </span></span>
                                         </a>
                                     </li>
                                 </ul>
@@ -592,7 +601,7 @@
         <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
         <script>
-           
+
             async function applyCoupon(totalPrice) {
                 console.log('clicked')
 
@@ -642,7 +651,7 @@
 
             document.addEventListener('DOMContentLoaded', async () => {
 
-                let formData={}
+                let formData = {}
                 const addressList = document.getElementById('addresslist');
                 const saveAddressBtn = document.getElementById('saveAddressBtn');
                 const payForm = document.getElementById('payform');
@@ -654,7 +663,7 @@
                         console.log('this is id:', targetRadio.dataset.id)
                         const something = document.getElementById('addressId1')
                         console.log('this is addressId1', something)
-                        document.getElementById('addressId1').value = targetRadio.dataset.id
+                        document.getElementById('addressId').value = targetRadio.dataset.id
                         document.getElementById('name').value = targetRadio.dataset.name || '';
                         document.getElementById('number').value = targetRadio.dataset.phone || '';
                         document.getElementById('email').value = targetRadio.dataset.email || '';
@@ -786,10 +795,22 @@
                         if (!swalResult.isConfirmed) {
                             return
                         }
-                        const addressId = document.getElementById('addressId1').value
+                        const addressId = document.getElementById('addressId').value
+                        if (!addressId) {
+                            Toastify({
+                                text: "Address is not added",
+                                duration: 3000,
+                                close: true, 
+                                gravity: "bottom", 
+                                position: "center", 
+                                backgroundColor: "linear-gradient(to right, #ff5722, #ff8a00)", 
+                                stopOnFocus: true, 
+                            }).showToast();
+                            return
+                        }
                         console.log(addressId)
                         const cartId = document.getElementById('cartid').value
-                        const totalAmount = parseInt(document.getElementById('totalcouponamount').textContent,10)
+                        const totalAmount = parseInt(document.getElementById('totalcouponamount').textContent, 10)
                         const paymentMethod = selectedPaymentMethod
                         orderData = {
                             addressId, cartId, totalAmount, paymentMethod
@@ -835,11 +856,22 @@
                         }
                     } else if (selectedPaymentMethod === 'RazorPay') {
                         console.log('razorpay selected')
-                        const addressId = document.getElementById('addressId1').value
-                        console.log(addressId)
+                        const addressId = document.getElementById('addressId').value
+                        if (!addressId) {
+                            Toastify({
+                                text: "Address is not added",
+                                duration: 3000,
+                                close: true, 
+                                gravity: "top", 
+                                position: "center", 
+                                backgroundColor: "linear-gradient( #ff3368, #ff3368)",
+                                stopOnFocus: true, 
+                            }).showToast();
+                            return
+                        }
                         const cartId = document.getElementById('cartid').value
                         const totalAmount = document.getElementById('totalcouponamount').textContent
-                        console.log('totalamount is:',totalAmount)
+                        console.log('totalamount is:', totalAmount)
                         const paymentMethod = selectedPaymentMethod
                         console.log(formData)
                         orderData = {
@@ -852,21 +884,21 @@
                                 'Content-Type': 'application/json'
                             },
                             body: JSON.stringify({
-                                amount: totalAmount*100 ,
+                                amount: totalAmount * 100,
                                 currency: 'INR',
-                                
+
                             })
                         })
-                        const order= await response.json()
+                        const order = await response.json()
                         console.log(order.amount)
-                           const options = {
-                            "key": 'rzp_test_t6lNXNWWwp0wq6', 
-                            "amount": (order.amount), 
+                        const options = {
+                            "key": 'rzp_test_t6lNXNWWwp0wq6',
+                            "amount": (order.amount),
                             "currency": order.currency,
                             "name": "Aranoz",
                             "description": " Transaction",
                             "image": "https://yourlogo.com/logo.png",
-                            "order_id": order.id, 
+                            "order_id": order.id,
                             "handler": function (response) {
                                 fetch('/user/online-payment/razorpay/verify-payment', {
                                     method: 'POST',
@@ -882,7 +914,7 @@
                                 }).then(response => response.json())
                                     .then(data => {
                                         if (data.message === 'verification success') {
-                                            window.location.href='/user/cart/checkout/order-cashondelivery/order-success'
+                                            window.location.href = '/user/cart/checkout/order-cashondelivery/order-success'
                                         } else {
                                             alert('Payment verification failed');
                                         }
@@ -890,6 +922,8 @@
                                         console.error(error);
                                     });
                             },
+
+
                             "prefill": {
                                 "name": "Test User",
                                 "email": "test.user@example.com",
@@ -900,12 +934,38 @@
                             },
                             "theme": {
                                 "color": "#ff3368"
-                            }
+                            },
+
                         };
 
                         const rzp1 = new Razorpay(options);
                         rzp1.open();
-                    }else if(selectedPaymentMethod === 'Wallet'){
+                        rzp1.on('payment.failed', async (response) => {
+                            console.log('this is response', response)
+                            fetch('/user/online-payment/razorpay/error/verify-payment', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    razorpay_order_id: response.razorpay_order_id,
+                                    razorpay_payment_id: response.razorpay_payment_id,
+                                    razorpay_signature: response.razorpay_signature,
+                                    orderData
+                                })
+                            }).then(response => response.json())
+                                .then(data => {
+                                    if (data.message === 'verification success') {
+                                        window.location.href = '/user/cart/checkout/order-cashondelivery/order-success'
+                                    } else if (data.message === 'verification failed') {
+
+                                        alert('Payment verification failed');
+                                    }
+                                }).catch(error => {
+                                    console.error(error);
+                                });
+                        })
+                    } else if (selectedPaymentMethod === 'Wallet') {
                         const swalResult = await Swal.fire({
                             title: 'confirm',
                             text: 'Are you sure to proceed to place order ',
@@ -917,21 +977,34 @@
                         if (!swalResult.isConfirmed) {
                             return
                         }
-                        const addressId = document.getElementById('addressId1').value
+                        const addressId = document.getElementById('addressId').value
                         console.log(addressId)
+                        if (!addressId) {
+                            Toastify({
+                                text: "Address is not added",
+                                duration: 3000,
+                                close: true, 
+                                gravity: "bottom", 
+                                position: "center", 
+                                backgroundColor: "linear-gradient(to right, #ff5722, #ff8a00)",
+
+                                stopOnFocus: true, 
+                            }).showToast();
+                            return
+                        }
                         const cartId = document.getElementById('cartid').value
-                        const totalAmount = parseInt(document.getElementById('totalcouponamount').textContent,10)
+                        const totalAmount = parseInt(document.getElementById('totalcouponamount').textContent, 10)
                         const paymentMethod = selectedPaymentMethod
                         orderData = {
                             addressId, cartId, totalAmount, paymentMethod
                         }
                         console.log(orderData)
-                        const response = await fetch('/user/cart/checkout/order-wallet',{
-                            method:'POST',
-                            headers:{
-                                'Content-Type':'application/json'
+                        const response = await fetch('/user/cart/checkout/order-wallet', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
                             },
-                            body:JSON.stringify(orderData)
+                            body: JSON.stringify(orderData)
                         })
                         const result = await response.json()
                         if (response.ok) {
@@ -953,7 +1026,7 @@
                                 }).then(() => {
                                     window.location.reload()
                                 })
-                            }else if( result.status === 404){
+                            } else if (result.status === 404) {
                                 Swal.fire({
                                     title: 'failed',
                                     text: result.message,
@@ -970,13 +1043,47 @@
                         }
                     }
 
-                    
+
                 })
 
             })
         </script>
+         <script>
+            async function logout() {
+    
+                try {
+                    const response = await fetch('/user/logout', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                    const data = await response.json()
+    
+                    if (response.ok) {
+                        window.location.href = '/'
+                    } else {
+                        Swal.fire({
+                            title: 'failed',
+                            text: data.message,
+                            icon: 'failed',
+                            confirmButtonText: 'OK'
+                        })
+                    }
+                } catch (err) {
+                    console.log('error in logout')
+                    Swal.fire({
+                        title: 'failed',
+                        text: 'error in logout',
+                        icon: 'failed',
+                        confirmButtonText: 'OK'
+                    })
+                }
+            }
+        </script>
         <!-- jquery plugins here-->
         <!-- jquery -->
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
         <script src="/js/jquery-1.12.1.min.js"></script>
         <!-- popper js -->
         <script src="/js/popper.min.js"></script>

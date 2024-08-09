@@ -22,6 +22,9 @@ const getCheckout = async (req, res) => {
             totalQuantity: totalQuantity,
             totalPrice: totalPrice
         };
+        if(cart.items.length==0){
+            return res.redirect('/user/cart')
+        }
         for (let item of cart.items) {
             const product = item.productId;
             const offer = await Offer.findOne({
@@ -268,10 +271,14 @@ const orderSuccess = async (req, res) => {
     try {
         const userId = req.session.user
         const addresses = await Address.findOne({ userId })
+        console.log('this is userId:',userId)
+
         const order = await Order.findOne({ userId }).sort({ orderDate: -1 }).populate('items.productId')
+        console.log('this is order:',order)
         for (const item of order.items) {
             const updatedProduct = await Product.findByIdAndUpdate(item.productId, { $inc: { stock: -item.quantity } })
         }
+        console.log('this is order.addressId:',order.addressId)
         const orderAddress = await Address.aggregate([
             {
                 $match: {
@@ -291,9 +298,9 @@ const orderSuccess = async (req, res) => {
                 }
             }
         ]);
-
+        console.log('this is orderAddress:',orderAddress)
         const cart = await Cart.findOne({ userId }).populate('items.productId')
-
+        console.log('this is orderAddress[0]',orderAddress[0])
         cart.items = []
         await cart.save()
         let orderData = {}

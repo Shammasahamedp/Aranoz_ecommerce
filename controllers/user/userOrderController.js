@@ -20,11 +20,8 @@ const getOrderDetails = async (req, res) => {
   try {
     const userId = req.session.user
     const orderId=req.params.id
-    const orders1 = await Order.findOne({ userId })
     const orders=await Order.findById(orderId).populate('items.productId')
     const addressId1 = orders.addressId
-   
-    
     const Addresses = await Address.aggregate([
       {
         $match: {
@@ -45,7 +42,6 @@ const getOrderDetails = async (req, res) => {
       }
     ]);
 
-    const some=Addresses[0].address
    
     res.status(200).render('orders/orderDetails', { orders ,address:Addresses[0].address})
   } catch (err) {

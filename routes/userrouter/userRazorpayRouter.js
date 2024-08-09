@@ -15,6 +15,7 @@ const razorpayInstance=new Razorpay({
 })
 
 razorpayRouter.post('/create-order',async(req,res)=>{
+    console.log('this is create order method in the failure method ')
     const {amount,currency}=req.body
     try{
         const options={
@@ -36,10 +37,6 @@ razorpayRouter.post('/verify-payment',async (req,res)=>{
    try{
     console.log('this is the verify payment method of razorpay')
     let {razorpay_order_id,razorpay_payment_id,razorpay_signature,orderData}=req.body
-    
-    
-    
-
     const key_secret=process.env.RAZORPAY_KEY_SECRET
     let hmac=crypto.createHmac('sha256',key_secret)
     hmac.update(razorpay_order_id+"|"+razorpay_payment_id)
@@ -50,6 +47,7 @@ razorpayRouter.post('/verify-payment',async (req,res)=>{
             return res.status(400).json({message:'Address is not added'})
         }
         const address=new mongoose.Types.ObjectId(orderData.addressId)
+        console.log('this is address in the verify payment',address)
         const userId=new mongoose.Types.ObjectId(req.session.user)
         const cart=await Cart.findOne({userId}).populate('items.productId')
         if(!cart || cart.items.length === 0){
@@ -58,11 +56,9 @@ razorpayRouter.post('/verify-payment',async (req,res)=>{
         let totalAmountWithOffers = 0;
         let totalOfferAmount = 0;
         let itemsWithOffers = [];
-
         const itemsWithOffersPromises = cart.items.map(async (item) => {
             const product = item.productId;
             let discountedPrice = product.price;
-
             const offer = await Offer.findOne({
                 product: product._id,
                 startDate: { $lte: new Date() },
@@ -130,5 +126,125 @@ razorpayRouter.post('/verify-payment',async (req,res)=>{
    }
 })
 
-
+razorpayRouter.post('/error/verify-payment',async (req,res)=>{
+    try{
+        console.log('this is the error verify payment method of razorpay')
+        let {orderData}=req.body
+        // const key_secret=process.env.RAZORPAY_KEY_SECRET
+        // let hmac=crypto.createHmac('sha256',key_secret)
+        // hmac.update(razorpay_order_id+"|"+razorpay_payment_id)
+        // const generated_signature = hmac.digest('hex')
+        console.log('this is the error verify payment method of razorpay1')
+        // console.log(generated_signature,razorpay_signature)
+        // if(generated_signature === razorpay_signature){
+            console.log('this is the error verify payment method of razorpay1address')
+            if(!orderData.addressId){
+                return res.status(400).json({message:'Address is not added'})
+            }
+            console.log('this is the error verify payment method of razorpay12')
+            const address=new mongoose.Types.ObjectId(orderData.addressId)
+            const userId=new mongoose.Types.ObjectId(req.session.user)
+            console.log('this is the error verify payment method of razorpay13')
+            const cart=await Cart.findOne({userId}).populate('items.productId')
+            if(!cart || cart.items.length === 0){
+                console.log('this is the error verify payment method of razorpay14')
+                return res.status(400).json({message:'your cart is empty'})
+            }
+            console.log('this is the error verify payment method of razorpay15')
+            let totalAmountWithOffers = 0;
+            let totalOfferAmount = 0;
+            let itemsWithOffers = [];
+            console.log('this is the error verify payment method of razorpay2')
+            const itemsWithOffersPromises = cart.items.map(async (item) => {
+                const product = item.productId;
+                let discountedPrice = product.price;
+    
+                const offer = await Offer.findOne({
+                    product: product._id,
+                    startDate: { $lte: new Date() },
+                    endDate: { $gte: new Date() }
+                });
+    
+                const offerCategory = await Offer.findOne({
+                    category: product.category.id,
+                    startDate: { $lte: new Date() },
+                    endDate: { $gte: new Date() }
+                });
+    
+                let productPrice = product.price;
+                let discountPercentage = 0;
+    
+                if (offer && offerCategory) {
+                    let offerDiscountedPrice = product.price - (product.price * offer.discountPercentage / 100);
+                    let offerCategoryDiscountedPrice = product.price - (product.price * offerCategory.discountPercentage / 100);
+                    discountPercentage = Math.max(offer.discountPercentage, offerCategory.discountPercentage);
+                    productPrice = Math.min(offerDiscountedPrice, offerCategoryDiscountedPrice);
+                } else if (offer) {
+                    discountPercentage = offer.discountPercentage;
+                    productPrice = product.price - (product.price * offer.discountPercentage / 100);
+                } else if (offerCategory) {
+                    discountPercentage = offerCategory.discountPercentage;
+                    productPrice = product.price - (product.price * offerCategory.discountPercentage / 100);
+                }
+                console.log('this is the error verify payment method of razorpay3')
+                totalOfferAmount += (product.price - productPrice) * item.quantity;
+                totalAmountWithOffers += productPrice * item.quantity;
+    
+                return {
+                    productId: product._id,
+                    quantity: item.quantity,
+                    price: product.price,
+                    discountedPrice: productPrice,
+                    totalPrice: productPrice * item.quantity
+                };
+            });
+            console.log('this is the error verify payment method of razorpay4')
+             itemsWithOffers = await Promise.all(itemsWithOffersPromises);
+            const orderId=randomNumberService.generateOrderId()
+            orderStatus='pending'
+            paymentStatus='pending'
+            const order= new Order({
+                userId:userId,
+                orderId,
+                items:itemsWithOffers,
+                totalAmount:Number(totalAmountWithOffers),
+                addressId:address,
+                paymentMethod:orderData.paymentMethod,
+                paymentStatus:paymentStatus,
+                orderStatus:orderStatus,
+                offerAmount:totalOfferAmount
+           })
+           console.log('this is the error verify payment method of razorpay5')
+           await order.save()
+           console.log('this is order:',order)
+           return  res.status(200).json({message:'verification failed'})
+       }catch(err){
+        console.error(err)
+        res.status(500).render('500/500error')
+       }
+})
+razorpayRouter.post('/paynow/verify-payment',async (req,res)=>{
+    try{
+        console.log('this is the pay now verify payment method of razorpay')
+        let {razorpay_order_id,razorpay_payment_id,razorpay_signature,orderId}=req.body
+        const key_secret=process.env.RAZORPAY_KEY_SECRET
+        let hmac=crypto.createHmac('sha256',key_secret)
+        hmac.update(razorpay_order_id+"|"+razorpay_payment_id)
+        const generated_signature = hmac.digest('hex')
+        
+        if(generated_signature === razorpay_signature){
+            paymentStatus='completed'
+            const order = await Order.findById(orderId)
+            order.paymentStatus='completed'
+           await order.save()
+          
+            res.status(200).json({message:'verification success'})
+            console.log('this is after rendering statement')
+        }else{
+            res.status(500).json({message:'verification failed'})
+        }
+       }catch(err){
+        console.error(err)
+       }
+})
 module.exports=razorpayRouter
