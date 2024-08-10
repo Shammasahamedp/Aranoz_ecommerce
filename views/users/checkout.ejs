@@ -166,8 +166,7 @@
                                                         data-name="<%=address.name%>" data-phone="<%=address.phone%>"
                                                         data-email="<%=address.email%>" data-city="<%=address.city%>"
                                                         data-district="<%=address.district%>"
-                                                        data-state="<%=address.state%>"
-                                                        data-pin="<%=address.pincode%>">
+                                                        data-state="<%=address.state%>" data-pin="<%=address.pincode%>">
                                                     <textarea class="form-control" rows="3" style="height: 200px;"
                                                         readonly>
                         Name: <%= address.name %>, 
@@ -192,7 +191,7 @@
                                         <h3>Address for Delivery</h3>
                                         <%if(addresses){%>
                                             <form class="row contact_form" action="" method="post" id="addressform">
-                                                <input type="hidden" id="addressId1" name="addressId"
+                                                <input type="hidden" id="addressId" name="addressId"
                                                     value="<%=addresses.address[0]._id%>" />
 
                                                 <div class="col-md-6 form-group p_star">
@@ -410,7 +409,7 @@
 
                         <%if(addresses){%>
                             <form class="row contact_form" action="" method="post" id="addressform">
-                                <input type="hidden" id="addressId" name="addressId" value="<%=addresses._id%>" />
+                                <!-- <input type="hidden" id="addressId" name="addressId" value="<%=addresses._id%>" /> -->
 
                                 <div class="col-md-6 form-group p_star">
                                     <input type="text" class="form-control" id="modalName" name="name"
@@ -663,6 +662,7 @@
                         console.log('this is id:', targetRadio.dataset.id)
                         const something = document.getElementById('addressId1')
                         console.log('this is addressId1', something)
+                        console.log('this is dataset.pin', targetRadio.dataset.pin)
                         document.getElementById('addressId').value = targetRadio.dataset.id
                         document.getElementById('name').value = targetRadio.dataset.name || '';
                         document.getElementById('number').value = targetRadio.dataset.phone || '';
@@ -678,18 +678,72 @@
 
                 document.getElementById('saveAddressBtn').addEventListener('click', async (event) => {
                     event.preventDefault()
-                    const name = document.getElementById('modalName').value;
-                    const number = document.getElementById('modalPhone').value;
-                    const email = document.getElementById('modalEmail').value;
-                    const city = document.getElementById('modalCity').value;
-                    const district = document.getElementById('modalDistrict').value;
-                    const state = document.getElementById('modalState').value;
-                    const pin = document.getElementById('modalPincode').value;
-                    formData = {
-                        name, number, email, city, district, state, pin
+                    function validateForm() {
+                        const name = document.getElementById('modalName').value;
+                        const number = document.getElementById('modalPhone').value;
+                        const email = document.getElementById('modalEmail').value;
+                        const city = document.getElementById('modalCity').value;
+                        const district = document.getElementById('modalDistrict').value;
+                        const state = document.getElementById('modalState').value;
+                        const pin = document.getElementById('modalPincode').value;
+
+                        let errors = [];
+
+                        if (!name) {
+                            errors.push("Name is required.");
+                        }
+
+                        if (!/^\d{10}$/.test(number)) {
+                            errors.push("Number must be exactly 10 digits.");
+                        }
+
+                        const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+                        if (!emailPattern.test(email)) {
+                            errors.push("Invalid email format.");
+                        }
+
+                        if (!city) {
+                            errors.push("City is required.");
+                        }
+
+                        if (!district) {
+                            errors.push("District is required.");
+                        }
+
+                        if (!state) {
+                            errors.push("State is required.");
+                        }
+
+                        if (!/^\d{6}$/.test(pin)) {
+                            errors.push("Pin code must be exactly 6 digits.");
+                        }
+
+                        if (errors.length > 0) {
+                            alert(errors.join("\n"));
+                            return false;
+                        }
+
+                        // Form is valid
+                        return true;
                     }
-                    console.log(formData)
-                    const response = await fetch('/user/dashboard/profile/address/addaddress', {
+                   
+                    name = document.getElementById('modalName').value;
+                     number = document.getElementById('modalPhone').value;
+                     email = document.getElementById('modalEmail').value;
+                     city = document.getElementById('modalCity').value;
+                     district = document.getElementById('modalDistrict').value;
+                     state = document.getElementById('modalState').value;
+                     pin = document.getElementById('modalPincode').value;
+                    formData = {
+                        name, number, email, city, district, state,pin
+                    }
+                    console.log('this is formdata:', formData)
+                    if(!validateForm()){
+                        return 
+                    }
+                    
+                    console.log('before fetch')
+                     response = await fetch('/user/dashboard/profile/address/addaddress', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -709,7 +763,7 @@
                             const newAddress = `
                     <div class="col-md-6">
                         <div class="address-item mb-3 d-flex align-items-start">
-                            <input type="radio" name="selectedAddress" value="${addressId}" class="mr-2" data-id="${addressId}" data-name="${name}" data-phone="${number}" data-email="${email}" data-city="${city}" data-district="${district}" data-state="${state}" data-pincode="${pin}">
+                            <input type="radio" name="selectedAddress" value="${addressId}" class="mr-2" data-id="${addressId}" data-name="${name}" data-phone="${number}" data-email="${email}" data-city="${city}" data-district="${district}" data-state="${state}" data-pin="${pin}">
                             <textarea class="form-control" rows="3" style="height: 200px;" readonly>
                                 Name: ${name}, 
                                 Phone: ${number}, 
@@ -800,11 +854,11 @@
                             Toastify({
                                 text: "Address is not added",
                                 duration: 3000,
-                                close: true, 
-                                gravity: "bottom", 
-                                position: "center", 
-                                backgroundColor: "linear-gradient(to right, #ff5722, #ff8a00)", 
-                                stopOnFocus: true, 
+                                close: true,
+                                gravity: "bottom",
+                                position: "center",
+                                backgroundColor: "linear-gradient(to right, #ff5722, #ff8a00)",
+                                stopOnFocus: true,
                             }).showToast();
                             return
                         }
@@ -861,11 +915,11 @@
                             Toastify({
                                 text: "Address is not added",
                                 duration: 3000,
-                                close: true, 
-                                gravity: "top", 
-                                position: "center", 
+                                close: true,
+                                gravity: "top",
+                                position: "center",
                                 backgroundColor: "linear-gradient( #ff3368, #ff3368)",
-                                stopOnFocus: true, 
+                                stopOnFocus: true,
                             }).showToast();
                             return
                         }
@@ -958,8 +1012,9 @@
                                     if (data.message === 'verification success') {
                                         window.location.href = '/user/cart/checkout/order-cashondelivery/order-success'
                                     } else if (data.message === 'verification failed') {
-
-                                        alert('Payment verification failed');
+                                        alert('verification failed')
+                                        window.location.href = '/user/dashboard/profile/orders'
+                                        
                                     }
                                 }).catch(error => {
                                     console.error(error);
@@ -983,12 +1038,12 @@
                             Toastify({
                                 text: "Address is not added",
                                 duration: 3000,
-                                close: true, 
-                                gravity: "bottom", 
-                                position: "center", 
+                                close: true,
+                                gravity: "bottom",
+                                position: "center",
                                 backgroundColor: "linear-gradient(to right, #ff5722, #ff8a00)",
 
-                                stopOnFocus: true, 
+                                stopOnFocus: true,
                             }).showToast();
                             return
                         }
@@ -1048,9 +1103,9 @@
 
             })
         </script>
-         <script>
+        <script>
             async function logout() {
-    
+
                 try {
                     const response = await fetch('/user/logout', {
                         method: 'POST',
@@ -1059,7 +1114,7 @@
                         }
                     })
                     const data = await response.json()
-    
+
                     if (response.ok) {
                         window.location.href = '/'
                     } else {

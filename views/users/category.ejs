@@ -220,7 +220,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="row align-items-center latest_product_inner">
                         <% products.forEach(product=> { %>
                             <div class="col-lg-4 col-sm-6">
@@ -231,8 +230,14 @@
                                             <h4>
                                                 <%= product.name %>
                                             </h4>
-                                            <h3>$<%= product.price %>
+                                            <%if(product.discountPercentage){%>
+                                            <h3 style="display: inline;">₹<%=product.discountPercentage%></h3>
+                                            <h3 style="text-decoration: line-through;display: inline;margin-left: 65px;">$<%=product.price %>
                                             </h3>
+                                            <%}else{%>
+                                            <h3 >$<%= product.price %>
+                                            </h3>
+                                            <%}%>
                                             <% if (user && product.stock!==0) { %>
                                                 <!-- <div>hello</div> -->
                                                 <a class="add_cart" onclick="addToCart(`<%= product._id %>`)">
@@ -247,7 +252,7 @@
                                                     class="like_us d-flex justify-content-center align-items-center">
                                                     <i class="bi bi-heart-fill" onclick="addToWishlist('<%=product._id%>')"></i>
                                                 </a>
-                                                <% } else if(product.stock==0){ %>
+                                                <% } else if(product.stock==0 || product.stock < 0 ){ %>
                                                     <!-- <div>no user</div> -->
                                                     <h3 class="text-danger">out of stock</h3>
                                                     <!-- <a class="add_cart" href="/user/login">
@@ -257,7 +262,15 @@
                                                         class="like_us d-flex justify-content-center align-items-center">
                                                         <i class="bi bi-heart-fill"></i>
                                                     </a>
-                                                    <% } %>
+                                                    <% }else if(!user && product.stock!==0){ %>
+                                                        <a href="/user/login" class="add_cart" >
+                                                            + add to cart
+                                                        </a>
+                                                        <a href="/user/login"
+                                                        class="like_us d-flex justify-content-center align-items-center">
+                                                        <i class="bi bi-heart-fill"></i>
+                                                    </a>
+                                                        <%}%>
                                         </div>
                                     </a>
                                 </div>
@@ -530,7 +543,7 @@
                     $inputTo = $(".js-input-to"),
                     instance,
                     min = 0,
-                    max = 50000,
+                    max = 70000,
                     from = 10,
                     to = 100;
 

@@ -90,6 +90,10 @@ const cashOnDelivery = async (req, res) => {
         let totalAmountWithOffers = 0;
         let totalOfferAmount = 0;
         let itemsWithOffers = [];
+        if(cart.couponApplied){
+                couponPercentage= cart.couponApplied.discount
+                amountDifference=(totalAmount*couponPercentage)/100
+        }
 
         const itemsWithOffersPromises = cart.items.map(async (item) => {
             const product = item.productId;
@@ -125,12 +129,15 @@ const cashOnDelivery = async (req, res) => {
 
             totalOfferAmount += (product.price - productPrice) * item.quantity;
             totalAmountWithOffers += productPrice * item.quantity;
-
+             if(cart.couponApplied){
+                couponOffer = (productPrice/totalAmount)*amountDifference
+             }
+            // console.log('this is couponOffer',couponOffer,'this is productPrice',productPrice,'this is totalAmount:',totalAmount,'this is amount difference:',amountDifference,'this is productPrice+couponOffer',productPrice-couponOffer)
             return {
                 productId: product._id,
                 quantity: item.quantity,
                 price: product.price,
-                discountedPrice: productPrice,
+                discountedPrice: productPrice-couponOffer,
                 totalPrice: productPrice * item.quantity
             };
         });
@@ -139,18 +146,35 @@ const cashOnDelivery = async (req, res) => {
         const orderId = randomNumberService.generateOrderId()
         orderStatus = 'pending'
         paymentStatus = 'pending'
-        const order = new Order({
-            userId: user,
-            orderId,
-            items:itemsWithOffers,
-            totalAmount: Number(totalAmountWithOffers),
-            addressId: address,
-            paymentMethod: paymentMethod,
-            paymentStatus:paymentStatus,
-            orderStatus: orderStatus,
-            offerAmount:totalOfferAmount
-        });
-        await order.save()
+        if(cart.couponApplied){
+
+            const order= new Order({
+                userId:userId,
+                orderId,
+                items:itemsWithOffers,
+                totalAmount:Number(totalAmount),
+                addressId:address,
+                paymentMethod:paymentMethod,
+                paymentStatus:paymentStatus,
+                orderStatus:orderStatus,
+                offerAmount:totalOfferAmount,
+                coupon:cart.couponApplied.discount
+           })  
+           await order.save()   
+        }else{
+            const order= new Order({
+                userId:userId,
+                orderId,
+                items:itemsWithOffers,
+                totalAmount:Number(totalAmount),
+                addressId:address,
+                paymentMethod:paymentMethod,
+                paymentStatus:paymentStatus,
+                orderStatus:orderStatus,
+                offerAmount:totalOfferAmount
+           })
+           await order.save()
+        }
         res.status(201).json({ message: 'Order has successfully placed' })
     } catch (err) {
         console.error(err)
@@ -194,7 +218,10 @@ const walletOrder = async (req, res) => {
         let totalAmountWithOffers = 0;
         let totalOfferAmount = 0;
         let itemsWithOffers = [];
-
+        if(cart.couponApplied){
+            couponPercentage= cart.couponApplied.discount
+            amountDifference=(totalAmount*couponPercentage)/100
+    }
         const itemsWithOffersPromises = cart.items.map(async (item) => {
             const product = item.productId;
             let discountedPrice = product.price;
@@ -229,7 +256,9 @@ const walletOrder = async (req, res) => {
 
             totalOfferAmount += (product.price - productPrice) * item.quantity;
             totalAmountWithOffers += productPrice * item.quantity;
-
+            if(cart.couponApplied){
+                couponOffer = (productPrice/totalAmount)*amountDifference
+             }
             return {
                 productId: product._id,
                 quantity: item.quantity,
@@ -243,20 +272,35 @@ const walletOrder = async (req, res) => {
 
         const orderId = randomNumberService.generateOrderId();
         const orderStatus = 'pending';
+        if(cart.couponApplied){
 
-        const order = new Order({
-            userId: user,
-            orderId,
-            items: itemsWithOffers,
-            totalAmount: Number(totalAmountWithOffers),
-            addressId: address,
-            paymentMethod: paymentMethod,
-            paymentStatus: 'completed',
-            orderStatus: orderStatus,
-            offerAmount: totalOfferAmount
-        });
-
-        await order.save();
+            const order= new Order({
+                userId:userId,
+                orderId,
+                items:itemsWithOffers,
+                totalAmount:Number(orderData.totalAmount),
+                addressId:address,
+                paymentMethod:orderData.paymentMethod,
+                paymentStatus:paymentStatus,
+                orderStatus:orderStatus,
+                offerAmount:totalOfferAmount,
+                coupon:cart.couponApplied.discount
+           })  
+           await order.save()   
+        }else{
+            const order= new Order({
+                userId:userId,
+                orderId,
+                items:itemsWithOffers,
+                totalAmount:Number(totalAmount),
+                addressId:address,
+                paymentMethod:orderData.paymentMethod,
+                paymentStatus:paymentStatus,
+                orderStatus:orderStatus,
+                offerAmount:totalOfferAmount
+           })
+           await order.save()
+        }
 
         res.status(201).json({ message: 'Order has been successfully placed' });
 

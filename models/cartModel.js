@@ -20,6 +20,10 @@ const cartSchema=mongoose.Schema({
             required:true
         }
     }],
+    couponApplied:{
+        code:String,
+        discount:Number
+    }
    
 },{timestamps:true})
 

@@ -69,6 +69,7 @@ const getAuthHome = async (req, res) => {
                 }
             }
             ])
+            console.log('these are products:',products)
             for (let product of products) {
                 const offer = await Offer.findOne({
                     product: product._id,
@@ -101,7 +102,6 @@ const getAuthHome = async (req, res) => {
             res.redirect('/user/login')
         }
     } catch (err) {
-        // res.status(500).redirect('/user/error')
         res.status(500).render('500/500error');
     }
 }
@@ -206,7 +206,7 @@ const postAddAddress = async (req, res) => {
         }
     } catch (err) {
         console.error(err)
-        res.status(200).json({ message: 'Server error ' })
+        res.status(500).json({ message: 'Server error ' })
     }
 }
 const getEditAddress = async (req, res) => {
@@ -308,10 +308,38 @@ const getWishlist = async (req, res) => {
         const userId = req.session.user
         const wishlist = await WishList.findOne({ userId }).populate('items.productId').skip(skip).limit(limit)
         if (wishlist) {
-            const products = wishlist.items
+            const items = wishlist.items
+            // console.log('this is products',products)
+            
+            for (let item of items) {
+                console.log('this is one product:',item)
+                const offer = await Offer.findOne({
+                    product: item.productId._id,
+                    startDate: { $lte: new Date() },
+                    endDate: { $gte: new Date() }
+                })
+                const offerCategory = await Offer.findOne({
+                    category: item.productId.category.id,
+                    startDate: { $lte: new Date() },
+                    endDate: { $gte: new Date() }
+                })
+                if (offer && offerCategory) {
+                    let offerDiscountedPrice = item.price - (item.productId.price * offer.discountPercentage / 100);
+                    let offerCategoryDiscountedPrice = item.productId.price - (item.productId.price * offerCategory.discountPercentage / 100);
+                    item.productId.discountPercentage = Math.max(offer.discountPercentage, offerCategory.discountPercentage);
+                    item.productId.offer = offerDiscountedPrice <= offerCategoryDiscountedPrice ? offer : offerCategory;
+                } else if (offer) {
+                    item.productId.discountPercentage = item.productId.price - (item.productId.price * offer.discountPercentage / 100)
+                    item.productId.offer = offer
+
+                } else if (offerCategory) {
+                    item.productId.discountPercentage = item.productId.price - (item.productId.price * offerCategory.discountPercentage / 100)
+                    item.productId.offer = offerCategory
+                }
+            }
             let totalProducts = wishlist.items.length
             res.status(200).render('users/wishlist', {
-                products,
+                items,
                 currentPage: page,
                 totalPages: Math.ceil(totalProducts / limit),
                 totalProducts

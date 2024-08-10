@@ -7,7 +7,7 @@ const getProduct = async (req, res) => {
         const productId = req.params.id
         const product = await Product.findById(productId)
         const category = await Category.findById(product.category.id)
-       
+        
         const products = await Product.aggregate([{
             $lookup: {
                 from: 'categories',
@@ -58,6 +58,7 @@ const getProduct = async (req, res) => {
         }
         if (req.session.user && !user.isBlocked && product.isListed && category.listed) {
             res.status(200).render('products/product', {
+                user,
                 product,
                 products,
                 pageTitle: product.name,
@@ -67,6 +68,7 @@ const getProduct = async (req, res) => {
             })
         } else if (!req.session.user) {
             res.status(200).render('products/product', {
+                user:'',
                 product,
                 products,
                 pageTitle: product.name,

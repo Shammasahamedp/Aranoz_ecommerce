@@ -1,4 +1,4 @@
-const mongoose=require('mongoose')
+ const mongoose=require('mongoose')
 const orderSchema=new mongoose.Schema({
     userId:{
         type:mongoose.Schema.Types.ObjectId,
@@ -74,6 +74,10 @@ const orderSchema=new mongoose.Schema({
         default:0
     },
     offerAmount:{
+        type:Number,
+        default:0
+    },
+    coupon:{
         type:Number,
         default:0
     }
