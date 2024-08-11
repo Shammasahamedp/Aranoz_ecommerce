@@ -348,6 +348,7 @@ const getWishlist = async (req, res) => {
             totalProducts = 1
             limit = 1
             res.status(200).render('users/wishlist', {
+                items:[],
                 products: [],
                 currentPage: page,
                 totalPages: Math.ceil(totalProducts / limit),

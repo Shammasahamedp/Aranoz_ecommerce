@@ -4,6 +4,7 @@ const sendOtpMiddleware=async (req,res)=>{
     const otp=req.session.otp
     try{
         await sendOTP(email,otp);
+        console.log('this is otp:',otp)
         res.status(200).json({message:'OTP send to email'})
     }catch(err){
         console.error('Error sending OTP:',err)

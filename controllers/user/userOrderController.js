@@ -98,6 +98,7 @@ const cancelOrder=async(req,res)=>{
       })
       order.orderStatus='cancelled'
       order.offerAmount=0
+      order.paymentStatus='refund'
       await order.save()
       res.status(200).json({message:'Your order cancelled '})
     }else{

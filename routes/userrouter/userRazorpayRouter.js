@@ -92,13 +92,14 @@ razorpayRouter.post('/verify-payment', async (req, res) => {
                 }
                 if(cart.couponApplied){
                     couponOffer = (productPrice/orderData.totalAmount)*amountDifference
+                 }else{
+                    couponOffer=0
                  }
                 totalOfferAmount += (product.price - productPrice) * item.quantity;
                 // totalAmountWithOffers += productPrice * item.quantity;
                 console.log('this is cartData.totalAmount:', orderData.totalAmount)
-                if(cart.couponApplied){
-                    couponOffer = (productPrice/orderData.totalAmount)*amountDifference
-                 }
+                
+                 
                 return {
                     productId: product._id,
                     quantity: item.quantity,
@@ -109,10 +110,7 @@ razorpayRouter.post('/verify-payment', async (req, res) => {
             });
 
             itemsWithOffers = await Promise.all(itemsWithOffersPromises);
-            //  if(cart.couponApplied){
-
-            //  }
-            
+           
             const orderId = randomNumberService.generateOrderId()
             orderStatus = 'pending'
             paymentStatus = 'completed'
@@ -224,12 +222,14 @@ razorpayRouter.post('/error/verify-payment', async (req, res) => {
             // totalAmountWithOffers += productPrice * item.quantity;
             if(cart.couponApplied){
                 couponOffer = (productPrice/orderData.totalAmount)*amountDifference
+             }else{
+                couponOffer=0
              }
             return {
                 productId: product._id,
                 quantity: item.quantity,
                 price: product.price,
-                discountedPrice: productPrice,
+                discountedPrice: productPrice-couponOffer,
                 totalPrice: productPrice * item.quantity
             };
         });

@@ -131,6 +131,8 @@ const cashOnDelivery = async (req, res) => {
             totalAmountWithOffers += productPrice * item.quantity;
              if(cart.couponApplied){
                 couponOffer = (productPrice/totalAmount)*amountDifference
+             }else{
+                couponOffer=0
              }
             // console.log('this is couponOffer',couponOffer,'this is productPrice',productPrice,'this is totalAmount:',totalAmount,'this is amount difference:',amountDifference,'this is productPrice+couponOffer',productPrice-couponOffer)
             return {
@@ -258,12 +260,14 @@ const walletOrder = async (req, res) => {
             totalAmountWithOffers += productPrice * item.quantity;
             if(cart.couponApplied){
                 couponOffer = (productPrice/totalAmount)*amountDifference
+             }else{
+                couponOffer=0
              }
             return {
                 productId: product._id,
                 quantity: item.quantity,
                 price: product.price,
-                discountedPrice: productPrice,
+                discountedPrice: productPrice-couponOffer,
                 totalPrice: productPrice * item.quantity
             };
         });
@@ -278,10 +282,10 @@ const walletOrder = async (req, res) => {
                 userId:userId,
                 orderId,
                 items:itemsWithOffers,
-                totalAmount:Number(orderData.totalAmount),
+                totalAmount:Number(totalAmount),
                 addressId:address,
-                paymentMethod:orderData.paymentMethod,
-                paymentStatus:paymentStatus,
+                paymentMethod:paymentMethod,
+                paymentStatus:'completed',
                 orderStatus:orderStatus,
                 offerAmount:totalOfferAmount,
                 coupon:cart.couponApplied.discount
@@ -294,8 +298,8 @@ const walletOrder = async (req, res) => {
                 items:itemsWithOffers,
                 totalAmount:Number(totalAmount),
                 addressId:address,
-                paymentMethod:orderData.paymentMethod,
-                paymentStatus:paymentStatus,
+                paymentMethod:paymentMethod,
+                paymentStatus:'completed',
                 orderStatus:orderStatus,
                 offerAmount:totalOfferAmount
            })

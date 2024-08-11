@@ -85,11 +85,11 @@
               <a id="search_1" href="javascript:void(0)"><i class="ti-search"></i></a>
               <a href=""><i class="ti-heart"></i></a>
               <div class="dropdown cart"> -->
-                <!-- <a class="dropdown-toggle" href="#" id="navbarDropdown3" role="button" data-toggle="dropdown"
+            <!-- <a class="dropdown-toggle" href="#" id="navbarDropdown3" role="button" data-toggle="dropdown"
                   aria-haspopup="true" aria-expanded="false">
                   <i class="fas fa-cart-plus"></i>
                 </a> -->
-              <!-- </div>
+            <!-- </div>
             </div> -->
           </nav>
         </div>
@@ -325,12 +325,12 @@
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
- 
+
   <script>
-    
+
     async function displayResend() {
       const resendLink = document.getElementById('resendlink')
-    const countDown = document.getElementById('countdown')
+      const countDown = document.getElementById('countdown')
       console.log('this is display resend fucntion')
       resendLink.style.display = 'none'
       let num = 30
@@ -348,7 +348,7 @@
     }
     async function resendOtp() {
       console.log('this is resedn otp function')
-    //  await displayResend()
+      //  await displayResend()
 
       const response = await fetch('/user/resendotp', {
         method: 'POST',
@@ -377,7 +377,7 @@
     }
     document.addEventListener('DOMContentLoaded', () => {
       const form = document.getElementById('registerform')
-      
+
       // const resendlink=document.getElementById('resendlink')
       form.addEventListener('submit', async (event) => {
         event.preventDefault()
@@ -474,6 +474,29 @@
           }
         });
       });
+      document.querySelectorAll('.otp-input').forEach((input, index, inputs) => {
+        input.addEventListener('keyup', (e) => {
+          if (e.key === 'Backspace' && index > 0 && e.target.value.length === 0) {
+            inputs[index - 1].focus();
+          } else if (e.target.value.length === 1 && index < inputs.length - 1) {
+            inputs[index + 1].focus();
+          }
+        });
+
+        input.addEventListener('paste', (e) => {
+          const pastedData = e.clipboardData.getData('text');
+          if (pastedData.length === inputs.length) {
+            inputs.forEach((input, i) => {
+              input.value = pastedData[i] || ''; 
+              if (input.value.length === 1 && i < inputs.length - 1) {
+                inputs[i + 1].focus();
+              }
+            });
+            e.preventDefault(); 
+          }
+        });
+      });
+
       document.getElementById('verifyOtpButton').addEventListener('click', async (event) => {
         event.preventDefault()
         console.log('button clicked')
@@ -536,7 +559,7 @@
 
     })
   </script>
- 
+
 
   <!--::footer_part end::-->
 

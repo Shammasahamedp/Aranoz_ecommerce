@@ -118,19 +118,19 @@
     <!--================Category Product Area =================-->
     <section class="cat_product_area section_padding">
         <div class="container">
-            <div class="row" style="display: flex; align-items: center;">
+            <div class="row" >
                 
-                <div class="col-lg-10">
+                <div class="col-lg-12">
                     
 
                     <div class="row align-items-center latest_product_inner">
                         
                         <%orders.forEach((order,index)=>{%>
                             <div class="col-lg-4 col-sm-6">
-                                <div class="single_product_item">
+                                <div class="single_product_item" style="width: 300px; height: 400px;">
                                    
                                     <a href="/user/dashboard/profile/orders/<%=order._id%>">
-                                        <div class="single_product_text">
+                                        <div class="single_product_text" >
                                             <h4>Order : <%=index+1%></h4>
                                 
                                             <h4>Order Status : <%=order.orderStatus%></h4>
