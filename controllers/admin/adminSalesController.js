@@ -8,10 +8,11 @@ const getSalesReport = async (req, res) => {
         const skip = (page - 1) * limit
         const dateDivision = req.params.id
         console.log(dateDivision)
-        console.log('this is req.query',req.query)
+        console.log('this is req.query', req.query)
         let startDate = req.query.fromDate || null
         let endDate = req.query.toDate || null
-        
+        console.log('this is start date', startDate)
+        console.log('this is endDate:', endDate)
         if (dateDivision) {
             if (dateDivision === 'weekly') {
                 startDate = new Date();
@@ -25,7 +26,7 @@ const getSalesReport = async (req, res) => {
                 startDate = new Date();
                 startDate.setFullYear(startDate.getFullYear() - 1);
                 endDate = new Date();
-            }else if(dateDivision === 'lastday'){
+            } else if (dateDivision === 'lastday') {
                 startDate = new Date()
                 startDate.setHours(startDate.getHours() - 12);
                 endDate = new Date()
@@ -33,16 +34,18 @@ const getSalesReport = async (req, res) => {
         }
 
         if (startDate && endDate) {
+            startDate = new Date(startDate);
+            endDate = new Date(endDate);
             matchCriteria.orderDate = {
-              $gte: startDate,
-              $lte: endDate
+                $gte: startDate,
+                $lte: endDate
             };
-          }else{
-            matchCriteria={}
-          }
-          console.log('this is start date',startDate,'and this is end date',endDate)
+        } else {
+            matchCriteria = {}
+        }
+        console.log('this is start date', startDate, 'and this is end date', endDate)
         const order = await Order.aggregate([
-            {$match : matchCriteria},
+            { $match: matchCriteria },
             { $unwind: '$items' },
             {
                 $lookup: {
@@ -85,7 +88,7 @@ const getSalesReport = async (req, res) => {
 
         ])
         const orders = await Order.aggregate([
-            {$match : matchCriteria},
+            { $match: matchCriteria },
             { $unwind: '$items' },
             {
                 $lookup: {
@@ -130,7 +133,7 @@ const getSalesReport = async (req, res) => {
         ])
         const totalCount = order.length
         console.log('total count:', totalCount)
-       
+
         res.status(200).render('admin/adminSalesReport', {
             orders,
             currentPage: page,
@@ -293,58 +296,60 @@ const getExcelReport = async (req, res) => {
         res.status(500).render('500/500erroradmin')
     }
 }
-const getData=async(req,res)=>{
-    try{
+const getData = async (req, res) => {
+    try {
         console.log('this is getdata method')
-            const dateDivision = req.params.id;
-            console.log('this is datedivision',dateDivision)
-            const matchCriteria = {};
-        
-            if (dateDivision) {
-                if (dateDivision === 'weekly') {
-                    startDate = new Date();
-                    startDate.setDate(startDate.getDate() - 7);
-                    endDate = new Date();
-                } else if (dateDivision === 'monthly') {
-                    startDate = new Date();
-                    startDate.setMonth(startDate.getMonth() - 1);
-                    endDate = new Date();
-                } else if (dateDivision === 'yearly') {
-                    startDate = new Date();
-                    startDate.setFullYear(startDate.getFullYear() - 1);
-                    endDate = new Date();
-                } 
-                // else if (dateDivision === 'lastday') {
-                //     startDate = new Date();
-                //     startDate.setHours(startDate.getHours() - 12);
-                //     endDate = new Date();
-                // }
+        const dateDivision = req.params.id;
+        console.log('this is datedivision', dateDivision)
+        const matchCriteria = {};
+
+        if (dateDivision) {
+            if (dateDivision === 'weekly') {
+                startDate = new Date();
+                startDate.setDate(startDate.getDate() - 7);
+                endDate = new Date();
+            } else if (dateDivision === 'monthly') {
+                startDate = new Date();
+                startDate.setMonth(startDate.getMonth() - 1);
+                endDate = new Date();
+            } else if (dateDivision === 'yearly') {
+                startDate = new Date();
+                startDate.setFullYear(startDate.getFullYear() - 1);
+                endDate = new Date();
             }
-        
-            if (startDate && endDate) {
-                matchCriteria.orderDate = {
-                    $gte: startDate,
-                    $lte: endDate
-                };
-            }
-        
-            const orderData = await Order.aggregate([
-                { $match: matchCriteria },
-                { $unwind: '$items' },
-                { $group: {
+            // else if (dateDivision === 'lastday') {
+            //     startDate = new Date();
+            //     startDate.setHours(startDate.getHours() - 12);
+            //     endDate = new Date();
+            // }
+        }
+
+        if (startDate && endDate) {
+            matchCriteria.orderDate = {
+                $gte: startDate,
+                $lte: endDate
+            };
+        }
+
+        const orderData = await Order.aggregate([
+            { $match: matchCriteria },
+            { $unwind: '$items' },
+            {
+                $group: {
                     _id: {
                         $dateToString: { format: "%Y-%m-%d", date: "$orderDate" }
                     },
                     totalSales: { $sum: '$items.totalPrice' },
                     totalOrders: { $sum: 1 },
-                }},
-                { $sort: { _id: 1 } } // Sort by date
-            ]);
-            console.log('this is orderdata',orderData)
-            res.json(orderData);
-      
-        
-    }catch(err){
+                }
+            },
+            { $sort: { _id: 1 } } // Sort by date
+        ]);
+        console.log('this is orderdata', orderData)
+        res.json(orderData);
+
+
+    } catch (err) {
         res.status(500).render('500/500erroradmin')
     }
 }

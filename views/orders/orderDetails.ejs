@@ -83,7 +83,7 @@
                     <div class="hearer_icon d-flex">
                         <a id="search_1" href="javascript:void(0)"><i class="bi bi-search"></i></a>
                         <a href="/user/dashboard/profile/wishlist"><i class="bi bi-heart"></i></a>
-                        <div class="dropdown cart">
+                        <!-- <div class="dropdown cart"> -->
                           
                         <a href="/user/cart"><i class="bi bi-cart"></i></a>
                             
@@ -195,7 +195,7 @@
         <button class="btn_3" onclick="returnAllProduct('<%=orders._id%>')">Return all</button>
        
     <% } else if (orders.orderStatus === 'cancelled') { %>
-        <h3>Your order has been cancelled . If you have paid it will refund in your wallet today</h3>
+        <h3>Your order has been cancelled . If you have paid it will refund in your wallet </h3>
     <% } else if(orders.orderStatus === 'return requested'){%>
       <h3>Your order has requested to return</h3>
       <%}else if(orders.orderStatus === 'request rejected'){%>

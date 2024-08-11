@@ -90,7 +90,8 @@ razorpayRouter.post('/verify-payment', async (req, res) => {
                     discountPercentage = offerCategory.discountPercentage;
                     productPrice = product.price - (product.price * offerCategory.discountPercentage / 100);
                 }
-                if(cart.couponApplied){
+                if(cart.couponApplied && cart.couponApplied.code && cart.couponApplied.discount){
+                    console.log('this is inside the couponApplied')
                     couponOffer = (productPrice/orderData.totalAmount)*amountDifference
                  }else{
                     couponOffer=0
@@ -98,7 +99,7 @@ razorpayRouter.post('/verify-payment', async (req, res) => {
                 totalOfferAmount += (product.price - productPrice) * item.quantity;
                 // totalAmountWithOffers += productPrice * item.quantity;
                 console.log('this is cartData.totalAmount:', orderData.totalAmount)
-                
+                console.log('this is couponOffer:',couponOffer)
                  
                 return {
                     productId: product._id,

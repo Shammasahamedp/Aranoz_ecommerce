@@ -350,6 +350,8 @@ const orderSuccess = async (req, res) => {
         const cart = await Cart.findOne({ userId }).populate('items.productId')
         console.log('this is orderAddress[0]',orderAddress[0])
         cart.items = []
+        cart.couponApplied.code = null
+        cart.couponApplied.discount = 0
         await cart.save()
         let orderData = {}
         orderData.items = order.items
