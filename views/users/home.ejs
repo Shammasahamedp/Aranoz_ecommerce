@@ -102,53 +102,19 @@
                             <div class="col-lg-5 col-md-8">
                                 <div class="banner_text">
                                     <div class="banner_text_iner">
-                                        <h1>Wood & Cloth
-                                            Sofa</h1>
-                                        <p>Incididunt ut labore et dolore magna aliqua quis ipsum
-                                            suspendisse ultrices gravida. Risus commodo viverra</p>
-                                        <a href="#" class="btn_2">buy now</a>
+                                        <h1>Wood & Massage
+                                            Chairs</h1>
+                                        <p>Discover premium chairs crafted for comfort and style. Elevate your space with our curated selection, perfect for any home or office</p>
+                                        <a href="/home/shopcategory" class="btn_2">buy now</a>
                                     </div>
                                 </div>
                             </div>
                             <div class="banner_img d-none d-lg-block">
-                                <img src="img/banner_img.png" alt="">
-                            </div>
-                        </div>
-                    </div><div class="single_banner_slider">
-                        <div class="row">
-                            <div class="col-lg-5 col-md-8">
-                                <div class="banner_text">
-                                    <div class="banner_text_iner">
-                                        <h1>Cloth & Wood
-                                            Sofa</h1>
-                                        <p>Incididunt ut labore et dolore magna aliqua quis ipsum
-                                            suspendisse ultrices gravida. Risus commodo viverra</p>
-                                        <a href="#" class="btn_2">buy now</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="banner_img d-none d-lg-block">
-                                <img src="img/banner_img.png" alt="">
-                            </div>
-                        </div>
-                    </div><div class="single_banner_slider">
-                        <div class="row">
-                            <div class="col-lg-5 col-md-8">
-                                <div class="banner_text">
-                                    <div class="banner_text_iner">
-                                        <h1>Wood & Cloth
-                                            Sofa</h1>
-                                        <p>Incididunt ut labore et dolore magna aliqua quis ipsum
-                                            suspendisse ultrices gravida. Risus commodo viverra</p>
-                                        <a href="#" class="btn_2">buy now</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="banner_img d-none d-lg-block">
-                                <img src="img/banner_img.png" alt="">
+                                <img src="img/massage.png"  style="object-fit: contain; width: 700px; height: 500px;" alt="">
                             </div>
                         </div>
                     </div>
+                    
                     
                 </div>
                 <div class="slider-counter"></div>
@@ -169,36 +135,37 @@
             </div>
         </div>
         <div class="row align-items-center justify-content-between">
-            <div class="col-lg-7 col-sm-6">
+            <div class="col-lg-6 col-sm-6">
                 <div class="single_feature_post_text">
-                    <p>Premium Quality</p>
-                    <h3>Latest foam Sofa</h3>
-                    <a href="#" class="feature_btn">EXPLORE NOW <i class="fas fa-play"></i></a>
-                    <img src="img/feature/feature_1.png" alt="">
+                    <h3><%=product[0].name%></h3>
+                    <h4><%=product[0].categoryDetails.description%></h4>
+                    <a href="/user/product/<%=product[0]._id%>" class="feature_btn">EXPLORE NOW <i class="fas fa-play"></i></a>
+                    <img src="<%=product[0].imageUrl[0]%>" style="width: 250px; height: 250px;" alt="">
+                </div>
+            </div>
+         
+            <div class="col-lg-5 col-sm-6">
+                <div class="single_feature_post_text">
+                    <h3><%=product[1].name%></h3>
+                    <h4><%=product[1].categoryDetails.description%></h4>
+                    <a href="/user/product/<%=product[1]._id%>" class="feature_btn">EXPLORE NOW <i class="fas fa-play"></i></a>
+                    <img src="<%=product[1].imageUrl[0]%>" style="width: 250px; height: 250px;" alt="">
                 </div>
             </div>
             <div class="col-lg-5 col-sm-6">
                 <div class="single_feature_post_text">
-                    <p>Premium Quality</p>
-                    <h3>Latest foam Sofa</h3>
-                    <a href="#" class="feature_btn">EXPLORE NOW <i class="fas fa-play"></i></a>
-                    <img src="img/feature/feature_2.png" alt="">
-                </div>
-            </div>
-            <div class="col-lg-5 col-sm-6">
-                <div class="single_feature_post_text">
-                    <p>Premium Quality</p>
-                    <h3>Latest foam Sofa</h3>
-                    <a href="#" class="feature_btn">EXPLORE NOW <i class="fas fa-play"></i></a>
-                    <img src="img/feature/feature_3.png" alt="">
+                    <h3><%=product[2].name%></h3>
+                    <h4><%=product[2].categoryDetails.description%></h4>
+                    <a href="/user/product/<%=product[2]._id%>" class="feature_btn">EXPLORE NOW <i class="fas fa-play"></i></a>
+                    <img src="<%=product[2].imageUrl[0]%>" style="width: 250px; height: 250px;" alt="">
                 </div>
             </div>
             <div class="col-lg-7 col-sm-6">
                 <div class="single_feature_post_text">
-                    <p>Premium Quality</p>
-                    <h3>Latest foam Sofa</h3>
-                    <a href="#" class="feature_btn">EXPLORE NOW <i class="fas fa-play"></i></a>
-                    <img src="img/feature/feature_4.png" alt="">
+                    <h3><%=product[3].name%></h3>
+                    <h4><%=product[3].categoryDetails.description%></h4>
+                    <a href="/user/product/<%=product[3]._id%>" class="feature_btn">EXPLORE NOW <i class="fas fa-play"></i></a>
+                    <img src="<%=product[3].imageUrl[0]%>" style="width: 250px; height: 250px;" alt="">
                 </div>
             </div>
         </div>
@@ -248,11 +215,9 @@
                                     <% if (count === 5) { %>
                                         </div> <!-- close the first row -->
                                     </div> <!-- close the first single_product_list_slider -->
-                                    <!-- start a new single_product_list_slider for the second section -->
                                     <div class="single_product_list_slider">
                                         <div class="row align-items-center justify-content-between">
                                     <% } %>
-                                    <!-- add the remaining products to the second section -->
                                     <div class="col-lg-3 col-sm-6">
                                         <div class="single_product_item">
                                             <a href="/user/product/<%=product._id%>">
@@ -282,9 +247,7 @@
         </div>
     </div>
 </section>
-<!-- product_list part start-->
 
-<!-- awesome_shop start-->
 <section class="our_offer section_padding">
     <div class="container">
         <div class="row align-items-center justify-content-between">
@@ -321,61 +284,12 @@
 
 <!-- product_list part start-->
 <section class="product_list best_seller section_padding">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-12">
-                <div class="section_tittle text-center">
-                    <h2>Best Sellers <span>shop</span></h2>
-                </div>
-            </div>
-        </div>
-        <div class="row align-items-center justify-content-between">
-            <div class="col-lg-12">
-                <div class="best_product_slider owl-carousel">
-                    <div class="single_product_item">
-                        <img src="img/product/product_1.png" alt="">
-                        <div class="single_product_text">
-                            <h4>Quartz Belt Watch</h4>
-                            <h3>$150.00</h3>
-                        </div>
-                    </div>
-                    <div class="single_product_item">
-                        <img src="img/product/product_2.png" alt="">
-                        <div class="single_product_text">
-                            <h4>Quartz Belt Watch</h4>
-                            <h3>$150.00</h3>
-                        </div>
-                    </div>
-                    <div class="single_product_item">
-                        <img src="img/product/product_3.png" alt="">
-                        <div class="single_product_text">
-                            <h4>Quartz Belt Watch</h4>
-                            <h3>$150.00</h3>
-                        </div>
-                    </div>
-                    <div class="single_product_item">
-                        <img src="img/product/product_4.png" alt="">
-                        <div class="single_product_text">
-                            <h4>Quartz Belt Watch</h4>
-                            <h3>$150.00</h3>
-                        </div>
-                    </div>
-                    <div class="single_product_item">
-                        <img src="img/product/product_5.png" alt="">
-                        <div class="single_product_text">
-                            <h4>Quartz Belt Watch</h4>
-                            <h3>$150.00</h3>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    
 </section>
 <!-- product_list part end-->
 
 <!-- subscribe_area part start-->
-<section class="subscribe_area section_padding">
+<!-- <section class="subscribe_area section_padding">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-7">
@@ -394,7 +308,7 @@
             </div>
         </div>
     </div>
-</section>
+</section> -->
 <!--::subscribe_area part end::-->
 
 <!-- subscribe_area part start-->

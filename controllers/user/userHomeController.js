@@ -18,7 +18,6 @@ const redirectHome = function (req, res) {
     try {
         res.status(302).redirect('/home')
     } catch (err) {
-        // res.status(500).send('Error get home')
         res.status(500).render('500/500error');
     }
 }
@@ -41,11 +40,27 @@ const getHome = async (req, res) => {
             }
         }
         ])
-       
-        res.status(200).render('users/home', { products })
+        const product = await Product.aggregate([{
+            $lookup: {
+                from: 'categories',
+                localField: 'category.id',
+                foreignField: '_id',
+                as: 'categoryDetails'
+            }
+        }, {
+            $unwind: '$categoryDetails'
+        }, {
+            $match: {
+                'isListed': true,
+                'categoryDetails.listed': true
+            }
+        },
+        {$sort:{stock:-1}},
+        {$limit:4}
+        ])
+        res.status(200).render('users/home', { products,product })
     } catch (err) {
         console.error(err)
-        // res.status(500).send('error in get home')
         res.status(500).render('500/500error');
     }
 }
@@ -85,11 +100,20 @@ const getAuthHome = async (req, res) => {
                 },
                 
             },
+
             {$sort:{stock:-1}},
             {$limit:4}
             ])
-            console.log('this is product',product)
-            console.log('these are products:',products)
+            const offer= await Offer.aggregate([
+                {$sort:{discountPercentage:-1}},
+                {$match:{offerType:'product'}},
+                {$limit:1}
+            ])  
+            if(offer){
+                let productId=offer[0].product
+                 item=await Product.find({_id:productId})
+            }          
+            const offerPercentage=offer[0].discountPercentage
             for (let product of products) {
                 const offer = await Offer.findOne({
                     product: product._id,
@@ -115,13 +139,14 @@ const getAuthHome = async (req, res) => {
                     product.offer = offerCategory
                 }
             }
-
-            return res.render('users/dashboard', { products,product })
+           
+            return res.render('users/dashboard', { products,product,item,offerPercentage})
         } else {
             delete req.session.user
             res.redirect('/user/login')
         }
     } catch (err) {
+        console.error(err)
         res.status(500).render('500/500error');
     }
 }
