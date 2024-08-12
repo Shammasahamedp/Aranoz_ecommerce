@@ -8,6 +8,8 @@ const getSalesReport = async (req, res) => {
         const skip = (page - 1) * limit
         const dateDivision = req.params.id
         console.log(dateDivision)
+        const theOrder= await Order.find({})
+        const totalOrders = await  Order.countDocuments()
         console.log('this is req.query', req.query)
         let startDate = req.query.fromDate || null
         let endDate = req.query.toDate || null
@@ -133,12 +135,21 @@ const getSalesReport = async (req, res) => {
         ])
         const totalCount = order.length
         console.log('total count:', totalCount)
+        let totalSale=0
+        let totalDiscount = 0
+        theOrder.forEach(order=>{
+            totalSale+=order.totalAmount
+            totalDiscount+=order.offerAmount
+        })
 
         res.status(200).render('admin/adminSalesReport', {
             orders,
             currentPage: page,
             totalPages: Math.ceil(totalCount / limit),
-            searchterm: ''
+            searchterm: '',
+            totalSale,
+            totalOrders,
+            totalDiscount
         })
     } catch (err) {
         console.log(err)
@@ -190,7 +201,16 @@ const getPdfReport = async (req, res) => {
             },
 
         ])
-        const doc = new pdfDocument()
+        const order=await Order.find({})
+        let totalSale=0
+        let totalOffer=0
+        order.forEach(order=>{
+            console.log('this is totalAmount:',order.totalAmount)
+            totalSale+=order.totalAmount
+            totalOffer+=order.offerAmount
+        })
+        const totalCount=await Order.countDocuments()
+       const doc = new pdfDocument()
         res.setHeader('Content-Type', 'application/pdf')
         res.setHeader('Content-Disposition', 'attachment; filename=sales_report.pdf')
         doc.pipe(res)
@@ -209,6 +229,9 @@ const getPdfReport = async (req, res) => {
             doc.moveDown()
 
         })
+        doc.fontSize(15).text(`Total Sale : ${totalSale}`)
+        doc.fontSize(15).text(`Total Orders : ${totalCount}`)
+        doc.fontSize(15).text(`Total Offer given : ${totalOffer}`)
         doc.end()
     } catch (err) {
         console.error(err)
@@ -298,30 +321,34 @@ const getExcelReport = async (req, res) => {
 }
 const getData = async (req, res) => {
     try {
-        console.log('this is getdata method')
         const dateDivision = req.params.id;
-        console.log('this is datedivision', dateDivision)
         const matchCriteria = {};
+        let startDate, endDate;
+        let groupByFormat;
 
-        if (dateDivision) {
-            if (dateDivision === 'weekly') {
-                startDate = new Date();
-                startDate.setDate(startDate.getDate() - 7);
-                endDate = new Date();
-            } else if (dateDivision === 'monthly') {
-                startDate = new Date();
-                startDate.setMonth(startDate.getMonth() - 1);
-                endDate = new Date();
-            } else if (dateDivision === 'yearly') {
-                startDate = new Date();
-                startDate.setFullYear(startDate.getFullYear() - 1);
-                endDate = new Date();
-            }
-            // else if (dateDivision === 'lastday') {
-            //     startDate = new Date();
-            //     startDate.setHours(startDate.getHours() - 12);
-            //     endDate = new Date();
-            // }
+        if (dateDivision === 'daily') {
+            startDate = new Date();
+            startDate.setDate(startDate.getDate() - 1);
+            endDate = new Date();
+            groupByFormat = "%Y-%m-%d"; 
+
+        } else if (dateDivision === 'weekly') {
+            startDate = new Date();
+            startDate.setDate(startDate.getDate() - 7);
+            endDate = new Date();
+            groupByFormat = "%Y-%m-%d"; 
+
+        } else if (dateDivision === 'monthly') {
+            startDate = new Date();
+            startDate.setMonth(startDate.getMonth() - 12); 
+            endDate = new Date();
+            groupByFormat = "%Y-%m"; 
+
+        } else if (dateDivision === 'yearly') {
+            startDate = new Date();
+            startDate.setFullYear(startDate.getFullYear() - 10); 
+            endDate = new Date();
+            groupByFormat = "%Y"; 
         }
 
         if (startDate && endDate) {
@@ -337,22 +364,23 @@ const getData = async (req, res) => {
             {
                 $group: {
                     _id: {
-                        $dateToString: { format: "%Y-%m-%d", date: "$orderDate" }
+                        $dateToString: { format: groupByFormat, date: "$orderDate" }
                     },
                     totalSales: { $sum: '$items.totalPrice' },
                     totalOrders: { $sum: 1 },
                 }
             },
-            { $sort: { _id: 1 } } // Sort by date
+            { $sort: { _id: 1 } } 
         ]);
-        console.log('this is orderdata', orderData)
+
         res.json(orderData);
 
-
     } catch (err) {
-        res.status(500).render('500/500erroradmin')
+        console.error('Error in getData:', err);
+        res.status(500).render('500/500erroradmin');
     }
-}
+};
+
 module.exports = {
     getSalesReport,
     getPdfReport,

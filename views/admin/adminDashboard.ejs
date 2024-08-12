@@ -545,71 +545,83 @@
   </div>
  
     <script>
-      document.addEventListener('DOMContentLoaded', function () {
-        const ctx = document.getElementById('myChart').getContext('2d');
-        let myChart;
+     document.addEventListener('DOMContentLoaded', function () {
+    const ctx = document.getElementById('myChart').getContext('2d');
+    let myChart;
 
-        function updateChart(data) {
-          console.log('this is data:',data)
-          const labels = data.map(d => d._id);
-          const salesData = data.map(d => d.totalSales);
+    function updateChart(data, period) {
+        const labels = data.map(d => d._id);
+        const salesData = data.map(d => d.totalSales);
 
-          if (myChart) {
+        if (myChart) {
             myChart.destroy();
-          }
+        }
 
-          myChart = new Chart(ctx, {
-            type: 'pie',  
+        const chartTitleMap = {
+            'lastday': 'Daily Sales Report',
+            'weekly': 'Weekly Sales Report',
+            'monthly': 'Monthly Sales Report',
+            'yearly': 'Yearly Sales Report'
+        };
+
+        const xAxisLabelMap = {
+            'lastday': 'Date',
+            'weekly': 'Date',
+            'monthly': 'Month',
+            'yearly': 'Year'
+        };
+
+        myChart = new Chart(ctx, {
+            type: 'line', 
             data: {
-              labels: labels,
-              datasets: [{
-                label: 'Sales Report',
-                data: salesData,
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                borderColor: 'rgba(75, 192, 192, 1)',
-                borderWidth: 1
-              }]
+                labels: labels,
+                datasets: [{
+                    label: chartTitleMap[period],
+                    data: salesData,
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
             },
             options: {
-              scales: {
-                x: {
-                  title: {
-                    display: true,
-                    text: 'Date'
-                  }
-                },
-                y: {
-                  beginAtZero: true,
-                  title: {
-                    display: true,
-                    text: 'Sales Amount'
-                  }
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: xAxisLabelMap[period]
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Sales Amount'
+                        }
+                    }
                 }
-              }
             }
-          });
-        }
+        });
+    }
 
-        function fetchSalesData(period) {
-          console.log('this is inside the fetch the period is:',period)
-          fetch(`/admin/salesreport/getdata/${period}`)
+    function fetchSalesData(period) {
+        fetch(`/admin/salesreport/getdata/${period}`)
             .then(response => response.json())
             .then(data => {
-              updateChart(data);
+                updateChart(data, period);
             })
             .catch(error => {
-              console.error('Error fetching data:', error);
+                console.error('Error fetching data:', error);
             });
-        }
+    }
 
-        fetchSalesData('monthly');
+    fetchSalesData('monthly');
 
-        document.getElementById('reportPeriod').addEventListener('change', function () {
-          const selectedPeriod = this.value;
-          console.log('this is selected period',selectedPeriod)
-          fetchSalesData(selectedPeriod);
-        });
-      });
+    document.getElementById('reportPeriod').addEventListener('change', function () {
+        const selectedPeriod = this.value;
+        fetchSalesData(selectedPeriod);
+    });
+});
+
     </script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 

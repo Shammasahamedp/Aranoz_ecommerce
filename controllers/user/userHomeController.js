@@ -69,6 +69,26 @@ const getAuthHome = async (req, res) => {
                 }
             }
             ])
+            const product = await Product.aggregate([{
+                $lookup: {
+                    from: 'categories',
+                    localField: 'category.id',
+                    foreignField: '_id',
+                    as: 'categoryDetailes'
+                }
+            }, {
+                $unwind: '$categoryDetailes'
+            }, {
+                $match: {
+                    'isListed': true,
+                    'categoryDetailes.listed': true
+                },
+                
+            },
+            {$sort:{stock:-1}},
+            {$limit:4}
+            ])
+            console.log('this is product',product)
             console.log('these are products:',products)
             for (let product of products) {
                 const offer = await Offer.findOne({
@@ -96,7 +116,7 @@ const getAuthHome = async (req, res) => {
                 }
             }
 
-            return res.render('users/dashboard', { products })
+            return res.render('users/dashboard', { products,product })
         } else {
             delete req.session.user
             res.redirect('/user/login')
@@ -112,7 +132,7 @@ const getUserProfile = async (req, res) => {
         res.render('users/profile', { profileDetails, breadcrumbItems })
     } catch (err) {
         console.error(err)
-        // res.status(500).send('error in get user profile')
+        
         res.status(500).render('500/500error');
     }
 }
