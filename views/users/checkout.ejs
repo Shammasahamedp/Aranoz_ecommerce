@@ -969,8 +969,9 @@
                                     .then(data => {
                                         if (data.message === 'verification success') {
                                             window.location.href = '/user/cart/checkout/order-cashondelivery/order-success'
-                                        } else {
+                                        } else if(data.message === 'verification failed'){
                                             alert('Payment verification failed');
+                                              window.location.href = '/user/dashboard/profile/orders'
                                         }
                                     }).catch(error => {
                                         console.error(error);

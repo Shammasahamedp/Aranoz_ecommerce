@@ -158,13 +158,9 @@ razorpayRouter.post('/error/verify-payment', async (req, res) => {
     try {
         console.log('this is the error verify payment method of razorpay')
         let { orderData } = req.body
-        // const key_secret=process.env.RAZORPAY_KEY_SECRET
-        // let hmac=crypto.createHmac('sha256',key_secret)
-        // hmac.update(razorpay_order_id+"|"+razorpay_payment_id)
-        // const generated_signature = hmac.digest('hex')
+       
         console.log('this is the error verify payment method of razorpay1')
-        // console.log(generated_signature,razorpay_signature)
-        // if(generated_signature === razorpay_signature){
+       
         console.log('this is the error verify payment method of razorpay1address')
         if (!orderData.addressId) {
             return res.status(400).json({ message: 'Address is not added' })
@@ -220,7 +216,6 @@ razorpayRouter.post('/error/verify-payment', async (req, res) => {
             }
             console.log('this is the error verify payment method of razorpay3')
             totalOfferAmount += (product.price - productPrice) * item.quantity;
-            // totalAmountWithOffers += productPrice * item.quantity;
             if(cart.couponApplied){
                 couponOffer = (productPrice/orderData.totalAmount)*amountDifference
              }else{
@@ -268,7 +263,7 @@ razorpayRouter.post('/error/verify-payment', async (req, res) => {
             })
             await order.save()
         }
-        console.log('this is order:', order)
+        // console.log('this is order:', order)
         cart.items = []
         await cart.save()
         return res.status(200).json({ message: 'verification failed' })

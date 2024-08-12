@@ -22,12 +22,7 @@
             <form class="d-flex align-items-stretch h-100"id="formsearch" action="/admin/users/search?term=<%=searchterm%>">
               <div class="input-group">
                 <input type="text" class="form-control bg-transparent border-0" id="searchinput" placeholder="Search" value="<%=searchterm%>">
-                <!-- <div class="input-group-btn">
-                  <button type="button" class="btn bg-transparent dropdown-toggle px-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <i class="mdi mdi-earth"></i>
-                  </button>
-                 
-                </div> -->
+               
                 <div class="input-group-addon bg-transparent border-0 search-button">
                   <button type="submit" id="searchbutton"  class="btn btn-sm btn-success px-3">
                     <i class="mdi mdi-magnify">search </i>
@@ -202,13 +197,7 @@
                   </div>
                 </div>
               </div>
-              
-                
-            
-          <!-- content-wrapper ends -->
-          <!-- partial:partials/_footer.html -->
        
-          <!-- partial -->
         </div>
         <!-- row-offcanvas ends -->
       </div>
@@ -218,7 +207,6 @@
   
     <!-- plugins:js -->
      <script>
-      // /admin/users/search?term=<%=searchterm%>
       const form=document.getElementById('formsearch')
       const searchTerm=document.getElementById('searchInput').value.trim()
       form.addEventListener('submit',async (event)=>{
@@ -237,8 +225,7 @@
     <script src="node_modules/popper.js/dist/umd/popper.min.js"></script>
     <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="node_modules/perfect-scrollbar/dist/js/perfect-scrollbar.jquery.min.js"></script>
-    <!-- endinject -->
-    <!-- Plugin js for this page-->
+   
     <script src="node_modules/chart.js/dist/Chart.min.js"></script>
     <!-- End plugin js for this page-->
     <!-- inject:js -->

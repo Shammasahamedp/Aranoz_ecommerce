@@ -22,12 +22,7 @@
             <form class="d-flex align-items-stretch h-100" action="/admin/categories/search" id="searchform" method="get">
               <div class="input-group">
                 <input type="text" id="inputsearch" class="form-control bg-transparent border-0" placeholder="Search"  value="<%= searchterm%>">
-                <!-- <div class="input-group-btn">
-                  <button type="button" class="btn bg-transparent dropdown-toggle px-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <i class="mdi mdi-earth"></i>
-                  </button>
-                 
-                </div> -->
+               
                 <div class="input-group-addon bg-transparent border-0 search-button">
                  
                     <button type="submit" class="btn btn-sm btn-success px-3 searchbtn">
@@ -163,7 +158,6 @@
                                 <td>
                                     <button type="button" class="btn btn-icons btn-rounded btn-success"><a href="/admin/categories/edit/<%=category._id%>">Edit</a> </button>
                                     <button type="button" class="btn btn-icons btn-rounded  <%= category.listed?'btn-warning':'btn-danger'%> categoryToggleBtn" data-id="<%=category._id%>"><%=category.listed?'unlist':'list'%> </button>
-                                    <!-- <button type="button" class="btn btn-icons btn-rounded btn-danger"><a href="/admin/categories/delete/<%=category._id%>">Delete</a></button> -->
                                   </td>
                               </tr>
                             <% }); %>
@@ -209,9 +203,7 @@
                 </div>
               </div>
                 
-            
-          <!-- content-wrapper ends -->
-          <!-- partial:partials/_footer.html -->
+        
        
           <!-- partial -->
         </div>

@@ -155,15 +155,12 @@
               </li>
               <li>
                 <a ><span>Quantity</span> : <%=item.quantity%></a>
-                <!-- <a href="#"> <span>Availibility</span> : In Stock</a> -->
               </li>
               <li>
                 <a ><span>Payment</span> : <%=orders.paymentStatus%></a>
-                <!-- <a href="#"> <span>Availibility</span> : In Stock</a> -->
               </li>
               <li>
                 <a ><span id="itemstatus">Status</span> : <%=item.itemStatus%> <%if(item.deliveryDate&&item.itemStatus === 'delivered'){ %> at <%=item.deliveryDate.toLocaleDateString()%><%}%></a>
-                <!-- <a href="#"> <span>Availibility</span> : In Stock</a> -->
               </li>
             </ul>
            
@@ -177,7 +174,6 @@
                   <button class="btn_3" onclick="retrunOneProduct('<%=item.productId._id%>','<%=orders._id%>')">Return item</button>
                   <%}%>
                
-              <!-- <a href="#" class="like_us"> <i class="ti-heart"></i> </a> -->
             </div>
           </div>
         </div>
