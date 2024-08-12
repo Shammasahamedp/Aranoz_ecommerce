@@ -37,8 +37,7 @@ connectDB().then(async () => {
 const port = process.env.PORT
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
-// app.use(bodyParser.json())
-// app.use(bodyParser.urlencoded({ extended: true }))
+
 app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'ejs')
 app.use(express.static(path.join(__dirname, 'public')))
@@ -67,7 +66,6 @@ passport.use(new GoogleStrategy({
                 isBlocked: false
             })
             await user.save()
-            // req.session.user=profile.id
             console.log(user)
             console.log('this is passport callback')
         }
@@ -107,7 +105,7 @@ app.use('/user/cart',userCheckoutRouter)
 app.use('/user/coupons',userCouponRouter)
 app.use('/user/online-payment/razorpay',userRazorpayRouter)
 app.use('/', unAuthUserRouter)
-// app.get('*', (req, res) => {
-//     res.render('404/404error')
-// })
+app.get('*', (req, res) => {
+    res.render('404/404error')
+})
 app.listen(port, () => { console.log('The server has started at http://localhost:3000') })

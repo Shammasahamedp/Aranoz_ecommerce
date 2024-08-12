@@ -296,4 +296,7 @@ razorpayRouter.post('/paynow/verify-payment', async (req, res) => {
         console.error(err)
     }
 })
+razorpayRouter.get('*',(req,res)=>{
+    res.render('404/404usererror')
+  })
 module.exports = razorpayRouter

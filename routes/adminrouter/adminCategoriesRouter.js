@@ -10,4 +10,7 @@ adminCategoriesRouter.get('/add',adminMiddleware.isAuthenticated,adminCategories
 adminCategoriesRouter.post('/add',adminMiddleware.isAuthenticated,adminCategoriesController.postAddCategory)
 adminCategoriesRouter.post('/toggle/:id',adminMiddleware.isAuthenticated,adminCategoriesController.toggleCategory)
 adminCategoriesRouter.get('/search',adminMiddleware.isAuthenticated,adminCategoriesController.getSearch)
+adminCategoriesRouter.get('*',(req,res)=>{
+    res.render('404/404adminerror')
+  })
 module.exports=adminCategoriesRouter

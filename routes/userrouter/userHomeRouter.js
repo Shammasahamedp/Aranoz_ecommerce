@@ -25,4 +25,7 @@ userHomeRouter.post('/profile/wallet/add-balance',userMiddleware.isUserAuthentic
 userHomeRouter.post('/profile/wallet/add-balance/verifyrazorpay',userMiddleware.isUserAuthenticated,userHomeController.razorpayVarify)
 userHomeRouter.post('/profile/orders/return-order',userMiddleware.isUserAuthenticated,userOrderController.returnOrder)
 userHomeRouter.post('/profile/orders/return-order-single',userMiddleware.isUserAuthenticated,userOrderController.returnSingleProduct)
+userHomeRouter.get('*',(req,res)=>{
+    res.render('404/404usererror')
+  })
 module.exports=userHomeRouter

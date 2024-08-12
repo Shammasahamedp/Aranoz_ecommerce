@@ -26,4 +26,7 @@ userAuthRouter.get('/forgotpassword',userMiddleware.isUserNotAuthenticated,userA
 userAuthRouter.post('/forgotpassword',userMiddleware.isUserNotAuthenticated,userAuthController.postForgotPassword)
 userAuthRouter.get('/resetpassword',userMiddleware.isUserNotAuthenticated,userAuthController.getResetPassword)
 userAuthRouter.post('/resetpassword',userMiddleware.isUserNotAuthenticated,userAuthController.postResetPassword)
+userAuthRouter.get('*',(req,res)=>{
+    res.render('404/404usererror')
+  })
 module.exports=userAuthRouter

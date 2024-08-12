@@ -8,4 +8,7 @@ adminOfferRouter.post('/addproductoffer',adminMiddleware.isAuthenticated,adminOf
 adminOfferRouter.post('/addcategoryoffer',adminMiddleware.isAuthenticated,adminOfferController.addCategoryOffer)
 adminOfferRouter.get('/addoffer/getcategories',adminMiddleware.isAuthenticated,adminOfferController.getCategory)
 adminOfferRouter.get('/addoffer/getproducts',adminMiddleware.isAuthenticated,adminOfferController.getProducts)
+adminOfferRouter.get('*',(req,res)=>{
+    res.render('404/404adminerror')
+  })
 module.exports=adminOfferRouter
