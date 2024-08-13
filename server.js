@@ -105,8 +105,8 @@ app.use('/user/cart',userCheckoutRouter)
 app.use('/user/coupons',userCouponRouter)
 app.use('/user/online-payment/razorpay',userRazorpayRouter)
 app.use('/', unAuthUserRouter)
-// app.use('*', (req, res) => {
-//     console.log('this is path:',req.path)
-//     res.render('404/404error')
-// })
+app.use('*', (req, res) => {
+    console.log('this is path:',req.path)
+    res.render('404/404error')
+})
 app.listen(port, () => { console.log('The server has started at http://localhost:3000') })

@@ -142,7 +142,6 @@ const postLogout=async (req,res)=>{
         if(user&&user.isBlocked===false){
            res.redirect('/user/dashboard')
         }else if(user&&user.isBlocked===true){
-        //    res.status(303).redirect('/user/login')
         req.logout(function (err){
             if(err){
                 console.error('error in login',err)
