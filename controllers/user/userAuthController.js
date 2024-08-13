@@ -176,9 +176,10 @@ const postLogout=async (req,res)=>{
                 return res.status(404).json({message:'user not found'})
             }
             const token=await generateToken()
+            console.log('this is token',token)
             req.session.email=email
             req.session.token=token
-            resetPasswordLink=`http://localhost:3000/user/resetpassword?token=${token}`
+            resetPasswordLink = `http://localhost:3000/user/resetpassword?token=${encodeURIComponent(token)}`;
             await sendResetPasswordEmail(email,resetPasswordLink)
           return  res.status(200).json({message:'link has send to your email address'})
 
