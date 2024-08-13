@@ -27,7 +27,5 @@ adminProductRouter.get('/search',adminMiddleware.isAuthenticated,adminProductCon
 adminProductRouter.get('/edit/:id',adminMiddleware.isAuthenticated,adminProductController.getEditProduct)
 adminProductRouter.post('/edit/:id',adminMiddleware.isAuthenticated,upload.any(),adminProductController.postEditProduct)
 adminProductRouter.post('/toggle/:id',adminMiddleware.isAuthenticated,adminProductController.toggleProduct)
-adminProductRouter.get('*',(req,res)=>{
-  res.render('404/404adminerror')
-})
+
 module.exports= adminProductRouter

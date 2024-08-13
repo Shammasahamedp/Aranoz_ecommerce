@@ -8,7 +8,5 @@ adminSalesRouter.get('/excel-report',adminMiddleware.isAuthenticated,adminSalesC
 adminSalesRouter.get('/get/:id',adminMiddleware.isAuthenticated,adminSalesController.getSalesReport)
 adminSalesRouter.get('/getCustomdate',adminMiddleware.isAuthenticated,adminSalesController.getSalesReport)
 adminSalesRouter.get('/getdata/:id',adminMiddleware.isAuthenticated,adminSalesController.getData)
-adminSalesRouter.get('*',(req,res)=>{
-    res.render('404/404adminerror')
-  })
+
 module.exports=adminSalesRouter

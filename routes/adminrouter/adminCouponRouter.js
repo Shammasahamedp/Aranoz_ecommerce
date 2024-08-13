@@ -5,7 +5,5 @@ const adminCouponController=require('../../controllers/admin/adminCopounControll
 adminCouponRouter.get('/',adminMiddleware.isAuthenticated,adminCouponController.getCoupon)
 adminCouponRouter.get('/add',adminMiddleware.isAuthenticated,adminCouponController.getAddCoupon)
 adminCouponRouter.post('/add',adminMiddleware.isAuthenticated,adminCouponController.postAddCoupon)
-adminCouponRouter.get('*',(req,res)=>{
-    res.render('404/404adminerror')
-  })
+
 module.exports=adminCouponRouter

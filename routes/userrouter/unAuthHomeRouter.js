@@ -7,7 +7,5 @@ userHomeRouter.get('/',userMiddleware.isUserNotAuthenticated,userHomeController.
 userHomeRouter.get('/home',userMiddleware.isUserNotAuthenticated,userHomeController.getHome)
 userHomeRouter.get('/home/shopcategory',userCategoryController.getCategory)
 userHomeRouter.get('/contact',userHomeController.getContact)
-userHomeRouter.get('*',(req,res)=>{
-    res.render('404/404usererror')
-  })
+
 module.exports=userHomeRouter

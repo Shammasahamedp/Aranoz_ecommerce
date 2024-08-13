@@ -8,9 +8,7 @@ adminAuthRouter.get('/login',adminMiddleware.isNotAuthenticated,adminAuthControl
 adminAuthRouter.post('/login',adminAuthController.adminLogin)
 adminAuthRouter.get('/dashboard',adminMiddleware.isAuthenticated,adminAuthController.getDashboard)
 adminAuthRouter.get('/logout',adminAuthController.adminLogout)
-adminAuthRouter.get('*',(req,res)=>{
-    res.render('404/404adminerror')
-})
+
 
 
 module.exports=adminAuthRouter

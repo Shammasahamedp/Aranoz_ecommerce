@@ -31,6 +31,22 @@ const adminLogin= async function (req,res){
 const getDashboard=async (req,res)=>{
     try{
         const orders=await Order.find({})
+        const order=await Order.aggregate([
+            
+            {$unwind:'$items'},
+            {
+                $lookup:{
+                    from:'products',
+                    localField:'items.productId',
+                    foreignField:'_id',
+                    as:'productDetails'
+                }
+            },
+            {$group:{_id:'$items.productId',totalQuantity:{$sum:'$items.quantity'},name:{$first:'$productDetails.name'},category:{$first:'$productDetails.category.name'},image:{$first:'$productDetails.imageUrl'}}},
+            {$sort:{totalQuantity:-1}},
+            {$limit:5}
+        ])
+       
         if(orders){
             const count=await Order.countDocuments()
             let totalAmount=0;
@@ -39,7 +55,7 @@ const getDashboard=async (req,res)=>{
                 totalAmount+=order.totalAmount
                 totalOfferGiven+=order.offerAmount
             })
-          return  res.render('admin/adminDashboard',{totalAmount,totalOfferGiven,count})
+          return  res.render('admin/adminDashboard',{totalAmount,totalOfferGiven,count,order})
         }
         res.render('admin/adminDashboard')
     }catch(err){
