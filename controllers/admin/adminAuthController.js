@@ -46,7 +46,21 @@ const getDashboard=async (req,res)=>{
             {$sort:{totalQuantity:-1}},
             {$limit:5}
         ])
-       
+        const orderCategory=await Order.aggregate([
+            {$unwind:'$items'},
+            {
+                $lookup:{
+                    from:'products',
+                    localField:'items.productId',
+                    foreignField:'_id',
+                    as:'productDetails'
+                }
+            },
+            {$group:{_id:'$productDetails.category.name',totalQuantity:{$sum:'$items.quantity'},name:{$first:'$productDetails.category.name'}}},
+            {$sort:{totalQuantity:-1}},
+            
+        ])
+        console.log('this is orderCategory:',orderCategory)
         if(orders){
             const count=await Order.countDocuments()
             let totalAmount=0;
@@ -55,7 +69,7 @@ const getDashboard=async (req,res)=>{
                 totalAmount+=order.totalAmount
                 totalOfferGiven+=order.offerAmount
             })
-          return  res.render('admin/adminDashboard',{totalAmount,totalOfferGiven,count,order})
+          return  res.render('admin/adminDashboard',{totalAmount,totalOfferGiven,count,order,orderCategory})
         }
         res.render('admin/adminDashboard')
     }catch(err){
