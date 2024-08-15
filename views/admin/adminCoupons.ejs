@@ -166,6 +166,12 @@
                             <td>
                               <%= coupon.expiryDate.toLocaleDateString() %>
                             </td>
+                             <td>
+                              <td>
+                                <button type="button" class="btn btn-icons btn-rounded btn-success"><a
+                                    href="/admin/coupons/edit/<%=coupon._id%>">Edit</a> </button>
+                              </td>
+                             </td>
                           </tr>
                           <% }); %>
                       </tbody>

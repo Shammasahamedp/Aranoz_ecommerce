@@ -1,0 +1,278 @@
+<% include('../partials/header.ejs') %>
+
+  <!-- Include Bootstrap CSS -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Include SweetAlert2 CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+  <!-- Include Cropper.js CSS -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" rel="stylesheet">
+
+  <!-- Your custom CSS -->
+  <link rel="stylesheet" href="/css/admindashboard.css">
+
+  <style>
+    input::placeholder,
+    textarea::placeholder {
+      color: rgb(147, 145, 145);
+    }
+
+    /* Center the form and adjust the width */
+    .form-container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f9f9f9;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .image-group {
+  text-align: center; 
+  margin: 10px; 
+}
+
+.image-group img {
+  display: block; 
+  margin: 0 auto;
+}
+
+.image-group button {
+  margin-top: 10px; 
+  display: block;
+  width: 100%;
+}
+  </style>
+
+  <div class="container-scroller">
+    <!-- partial:partials/_navbar.html -->
+    <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row" style="background-color: #6a008a;">
+      <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center"
+        style="background-color: #6a008a;">
+        <div style="background-color: #6a008a;">Purple</div>
+      </div>
+      <div class="navbar-menu-wrapper d-flex align-items-stretch">
+        <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button"
+          data-toggle="offcanvas">
+          <span class="mdi mdi-menu"></span>
+        </button>
+      </div>
+    </nav>
+    <!-- partial -->
+    <div class="container-fluid page-body-wrapper">
+      <div class="row row-offcanvas row-offcanvas-right">
+        <!-- partial:partials/_sidebar.html -->
+        <nav class="sidebar sidebar-offcanvas" id="sidebar">
+          <ul class="nav">
+            <li class="nav-item">
+              <a class="nav-link" href="/admin/dashboard">
+                <span class="menu-title">Dashboard</span>
+                <span class="menu-sub-title">( 2 new updates )</span>
+                <i class="mdi mdi-home menu-icon"></i>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" data-toggle="collapse" href="/admin/users" aria-expanded="false" aria-controls="ui-basic">
+                <span class="menu-title">Users</span>
+                <i class="menu-arrow"></i>
+                <i class="mdi mdi-crosshairs-gps menu-icon"></i>
+              </a>
+             
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/admin/products">
+                <span class="menu-title">Products</span>
+                <i class="mdi mdi-contacts menu-icon"></i>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/admin/categories">
+                <span class="menu-title">Categories</span>
+                <i class="mdi mdi-format-list-bulleted menu-icon"></i>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/admin/orders">
+                <span class="menu-title">Orders</span>
+                <i class="mdi mdi-chart-bar menu-icon"></i>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/admin/coupons">
+                <span class="menu-title">Coupons</span>
+                <i class="mdi mdi-table-large menu-icon"></i>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/admin/offers">
+                <span class="menu-title">Offers</span>
+                <i class="mdi mdi-table-large menu-icon"></i>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/admin/salesreport">
+                <span class="menu-title">Sales Report</span>
+                <i class="mdi mdi-table-large menu-icon"></i>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" data-toggle="collapse" href="/admin/logout" aria-expanded="false" aria-controls="auth">
+                <span class="menu-title">Logout</span>
+                <i class="menu-arrow"></i>
+                <i class="mdi mdi-lock menu-icon"></i>
+              </a>
+              
+            </li>
+          </ul>
+         
+         
+         
+        </nav>
+        <!-- partial -->
+        <div class="content-wrapper">
+          <!-- Add the form for adding a new product -->
+          <div class="card-body">
+            <div class="form-container">
+              <h4 class="card-title">Edit Coupon</h4>
+              <form id="couponAddForm" enctype="multipart/form-data">
+                <!-- Name Field -->
+                <div class="form-group">
+                  <label for="productName">Coupon Code</label>
+                  <input type="hidden" value="<%=coupon._id%>" id="couponId">
+                  <input type="text" id="couponcode" name="" value="<%=coupon.couponCode%>" class="form-control" placeholder="Enter Coupon Code"
+                    required>
+                  <div id="validateCode" class="text-danger"></div>
+                </div>
+                <!-- Upload Button -->
+                
+
+
+                <!-- Category Field -->
+                <div class="form-group">
+                  <label for="productCategory">Discount percentage</label>
+                  <input type="number" name="" class="form-control" value="<%=coupon.discountPercentage%>" id="discountpercent" placeholder="Enter discount percentage">
+                  
+                  <div id="validateCategory" class="text-danger"></div>
+                </div>
+                <!-- Price Field -->
+                <div class="form-group">
+                  <label for="productPrice">Maximum Purchase Amount</label>
+                  <input type="number" id="maxdiscount" value="<%=coupon.maxPurchaseAmount%>" name="price" class="form-control"
+                    placeholder="Enter  maximum discount amount" required>
+                  <div id="validateStock" class="text-danger"></div>
+                </div>
+                <!-- Quantity Field -->
+                <div class="form-group">
+                  <label for="productQuantity">Minimum Purchase Amount</label>
+                  <input type="number" id="mindiscount" value="<%=coupon.minPurchaseAmount%>" name="quantity" class="form-control"
+                    placeholder="Enter minmum discount amount" required>
+                  <div id="validatePrice" class="text-danger"></div>
+                </div>
+                <div class="form-group">
+                    <label for="productQuantity">Expiry Date</label>
+                    <input type="date" id="expirydate" value="<%= coupon.expiryDate.toISOString().split('T')[0] %>" name="quantity" class="form-control"
+                      placeholder="Enter expiry date" required>
+                    <div id="validatePrice" class="text-danger"></div>
+                  </div>
+
+               
+                <!-- Save Button -->
+                <div class="col-12 text-center">
+                  <button type="submit" class="btn btn-primary">Save Coupon</button>
+                  <button class="btn btn-primary">
+                    <a href="/admin/coupons" style="color: white;">Back</a>
+                  </button>
+                </div>
+              </form>
+              <script>
+                document.addEventListener('DOMContentLoaded',async()=>{
+                   try{
+                    const form=document.getElementById('couponAddForm')
+                    console
+                    form.addEventListener('submit',async(event)=>{
+                      console.log('button clicked')
+                        event.preventDefault()
+                        const couponId=document.getElementById('couponId')
+                        const couponCode=document.getElementById('couponcode').value
+                        const discountPercentage=parseInt(document.getElementById('discountpercent').value,10)
+                        const maxPurchaseAmount=parseInt(document.getElementById('maxdiscount').value,10)
+                        const minPurchaseAmount=parseInt(document.getElementById('mindiscount').value,10)
+                        const expiryDate=document.getElementById('expirydate').value
+                        console.log('max purchase amount:',maxPurchaseAmount)
+                        if(discountPercentage<1||discountPercentage>99){
+                            alert('percentage should between 1 and 100 and amount never be negetive')
+                            return 
+                        }else if(maxPurchaseAmount<1||minPurchaseAmount<1||minPurchaseAmount+1000>maxPurchaseAmount){
+                          alert('check the minimum and maximum purchase amount carefully!')
+                          return 
+                        }
+                        const formData={
+                            couponCode,
+                            discountPercentage,
+                            maxPurchaseAmount,
+                            minPurchaseAmount,
+                            expiryDate,
+                        }
+                        console.log(formData)
+                        const response=await fetch(`/admin/coupons/edit/${couponId.value}`,{
+                            method:'POST',
+                            headers:{
+                                'Content-Type':'application/json'
+                            },
+                            body:JSON.stringify(formData)
+                        })
+                        const result=await response.json()
+                        if(response.ok){
+                            Swal.fire({
+                              title:'succeess',
+                              text :result.message,
+                              icon:'success',
+                              confirmButtonText:'OK'
+                            }).then(()=>{
+                              window.location.href='/admin/coupons'
+                            })
+                        }else{
+                            Swal.fire({
+                                title:'failed',
+                                text:result.message,
+                                icon:'error',
+                                confirmButtonText:'OK'
+                            })
+                        }
+                    })
+                   }catch(err){
+                    console.error(err)
+                   }
+                    
+                })
+              </script>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <!-- row-offcanvas ends -->
+    </div>
+    <!-- page-body-wrapper ends -->
+  </div>
+
+  <!-- Modal for Cropping -->
+ 
+ 
+  <!-- Include jQuery -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+  <!-- Include Bootstrap JS -->
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Include SweetAlert2 JS -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <!-- Include Cropper.js JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+
+  <!-- <script src="/js/adminProductsAddScript.js"> -->
+
+  </script>
+
+  <% include('../partials/footer.ejs') %>
