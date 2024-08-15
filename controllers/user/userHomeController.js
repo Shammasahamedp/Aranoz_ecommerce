@@ -108,12 +108,16 @@ const getAuthHome = async (req, res) => {
                 {$sort:{discountPercentage:-1}},
                 {$match:{offerType:'product'}},
                 {$limit:1}
-            ])  
-            if(offer){
+            ]) 
+            let item; 
+            if(offer.length>0){
                 let productId=offer[0].product
                  item=await Product.find({_id:productId})
             }          
-            const offerPercentage=offer[0].discountPercentage
+            let offerPercentage;
+             if(offer.length>0){
+              offerPercentage=  offer[0].discountPercentage
+             }
             for (let product of products) {
                 const offer = await Offer.findOne({
                     product: product._id,
@@ -140,7 +144,11 @@ const getAuthHome = async (req, res) => {
                 }
             }
            
-            return res.render('users/dashboard', { products,product,item,offerPercentage})
+            if(item){
+                return res.render('users/dashboard', { products,product,item,offerPercentage})
+            }else {
+                return res.render('users/dashboard', { products,product,item:null,offerPercentage})
+            }
         } else {
             delete req.session.user
             res.redirect('/user/login')

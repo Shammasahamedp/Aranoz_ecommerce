@@ -8,5 +8,6 @@ adminOfferRouter.post('/addproductoffer',adminMiddleware.isAuthenticated,adminOf
 adminOfferRouter.post('/addcategoryoffer',adminMiddleware.isAuthenticated,adminOfferController.addCategoryOffer)
 adminOfferRouter.get('/addoffer/getcategories',adminMiddleware.isAuthenticated,adminOfferController.getCategory)
 adminOfferRouter.get('/addoffer/getproducts',adminMiddleware.isAuthenticated,adminOfferController.getProducts)
-
+adminOfferRouter.get('/edit/:id',adminMiddleware.isAuthenticated,adminOfferController.getEditOffer)
+adminOfferRouter.post('/editproductoffer',adminMiddleware.isAuthenticated,adminOfferController.editProductOffer)
 module.exports=adminOfferRouter

@@ -291,37 +291,39 @@
     <!-- product_list part start-->
 
     <!-- awesome_shop start-->
-    <section class="our_offer section_padding">
-        <div class="container">
-            <div class="row align-items-center justify-content-between">
-                <div class="col-lg-6 col-md-6">
-                    <div class="offer_img">
-                        <img src="<%=item[0].imageUrl[0]%>" alt="">
-                    </div>
-                </div>
-                <div class="col-lg-6 col-md-6">
-                    <div class="offer_text">
-                        <h2>Special Sale on
-                            <%=offerPercentage%>% Off on the item <%=item[0].name%></h2>
-                        <div class="date_countdown">
-                            <div id="timer">
-                                <div id="days" class="date"></div>
-                                <div id="hours" class="date"></div>
-                                <div id="minutes" class="date"></div>
-                                <div id="seconds" class="date"></div>
-                            </div>
+    <%if(item){%>
+        <section class="our_offer section_padding">
+            <div class="container">
+                <div class="row align-items-center justify-content-between">
+                    <div class="col-lg-6 col-md-6">
+                        <div class="offer_img">
+                            <img src="<%=item[0].imageUrl[0]%>" alt="">
                         </div>
-                        <div class="input-group">
-                           
-                            <div class="input-group-append">
-                                <a href="/user/product/<%=item[0]._id%>" class="input-group-text btn_2" id="basic-addon2">Shop now</a>
+                    </div>
+                    <div class="col-lg-6 col-md-6">
+                        <div class="offer_text">
+                            <h2>Special Sale on
+                                <%=offerPercentage%>% Off on the item <%=item[0].name%></h2>
+                            <div class="date_countdown">
+                                <div id="timer">
+                                    <div id="days" class="date"></div>
+                                    <div id="hours" class="date"></div>
+                                    <div id="minutes" class="date"></div>
+                                    <div id="seconds" class="date"></div>
+                                </div>
+                            </div>
+                            <div class="input-group">
+                               
+                                <div class="input-group-append">
+                                    <a href="/user/product/<%=item[0]._id%>" class="input-group-text btn_2" id="basic-addon2">Shop now</a>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
+        <%}%>
   
     <section class="client_logo padding_top">
         <div class="container">

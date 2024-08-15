@@ -170,12 +170,13 @@
                             </td>
                             <%if(offer.product){%>
                               <td>
-                                <%= offer.product.name %>
+                              <%=offer.product.name%>
                               </td>
+                              
                               <%}else if(offer.category){%>
                                 <td>
-                                  <%= offer.category.name %>
-                                </td>
+                                <%=offer.category.name%>
+                              </td>
                                 <%}%>
                           
                             <td>
@@ -194,7 +195,7 @@
 
                             <td>
                               <button type="button" class="btn btn-icons btn-rounded btn-success"><a
-                                  href="/admin/Products/edit/<%=offer._id%>">Edit</a> </button>
+                                  href="/admin/offers/edit/<%=offer._id%>">Edit</a> </button>
                             </td>
 
 
