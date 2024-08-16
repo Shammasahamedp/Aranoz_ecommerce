@@ -2,23 +2,27 @@ const Product = require('../../models/productsModel')
 const Category = require('../../models/categoriesModel');
 const { search } = require('../../routes/adminrouter/adminAuthRouter');
 const getProducts = async (req, res) => {
-  const page = parseInt(req.query.page) || 1;
+  let page = parseInt(req.query.page) || 1;
   const limit = 5;
+  const searchterm=req.query.search || ''
   try {
-    const products = await Product.find({})
-      .skip((page - 1) * limit)
-      .limit(limit)
-      // console.log(products)
-    const totalCount = await Product.countDocuments();
+    const product=await Product.find({ name: { $regex: searchterm, $options: 'i' } })
+    const totalCount = product.length
+    const totalPages= Math.ceil(totalCount / limit)
+    if(page>totalPages&&totalPages>0){
+      page=totalPages
+    }
+    const products = await Product.find({ name: { $regex: searchterm, $options: 'i' } }).skip((page-1)*limit).limit(limit)
+    
+    console.log('this is totalcount',totalCount)
     res.render('admin/adminProducts', {
       products,
-      searchterm: '',
-      currentPage: page,
-      totalPages: Math.ceil(totalCount / limit)
+      searchterm:searchterm,
+      page: page,
+      totalPages:totalPages
     });
   } catch (err) {
     console.error('Error fetching categories:', err);
-    // res.status(500).send('Internal Server Error');
     res.status(500).render('500/500erroradmin')
   }
 }
@@ -34,7 +38,6 @@ const getAddProduct = async (req, res) => {
 
     }
   } catch (err) {
-    // res.status(500).send('Error get add product page')
     res.status(500).render('500/500erroradmin')
   }
 }
@@ -80,25 +83,7 @@ const postAddProduct = async (req, res) => {
     res.status(500).json({ message: err.message })
   }
 }
-const getSearch = async (req, res) => {
-  try {
-    const page = parseInt(req.query.page) || 1;
-    const limit = 5
 
-    const searchterm = req.query.term
-    const products = await Product.find({ name: { $regex: searchterm, $options: 'i' } })
-    totalCount = products.length
-    res.status(200).render('admin/adminProducts',
-      {
-        products,
-        searchterm,
-        currentPage: page,
-        totalPages: Math.ceil(totalCount / limit)
-      })
-  } catch (err) {
-    res.status(500).send('error in search products')
-  }
-}
 const getEditProduct = async (req, res) => {
   try {
     const categories = await Category.find({listed:true})
@@ -188,7 +173,6 @@ module.exports = {
   getProducts,
   getAddProduct,
   postAddProduct,
-  getSearch,
   getEditProduct,
   postEditProduct,
   toggleProduct

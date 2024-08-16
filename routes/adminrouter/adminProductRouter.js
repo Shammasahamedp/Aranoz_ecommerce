@@ -23,7 +23,6 @@ const storage = multer.diskStorage({
 adminProductRouter.get('/',adminMiddleware.isAuthenticated,adminProductController.getProducts)
 adminProductRouter.get('/addproduct',adminMiddleware.isAuthenticated,adminProductController.getAddProduct)
 adminProductRouter.post('/addproduct',adminMiddleware.isAuthenticated,upload.any(), adminProductController.postAddProduct)
-adminProductRouter.get('/search',adminMiddleware.isAuthenticated,adminProductController.getSearch)
 adminProductRouter.get('/edit/:id',adminMiddleware.isAuthenticated,adminProductController.getEditProduct)
 adminProductRouter.post('/edit/:id',adminMiddleware.isAuthenticated,upload.any(),adminProductController.postEditProduct)
 adminProductRouter.post('/toggle/:id',adminMiddleware.isAuthenticated,adminProductController.toggleProduct)

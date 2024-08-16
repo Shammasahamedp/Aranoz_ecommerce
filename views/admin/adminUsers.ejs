@@ -19,9 +19,10 @@
         </div>
         <div class="navbar-menu-wrapper d-flex align-items-stretch">
           <div class="search-field ml-4 d-none d-md-block">
-            <form class="d-flex align-items-stretch h-100"id="formsearch" action="/admin/users/search?term=<%=searchterm%>">
+            <form class="d-flex align-items-stretch h-100"id="formsearch" action="#">
+             <input type="hidden"  id="page" value="<%=page%>">
               <div class="input-group">
-                <input type="text" class="form-control bg-transparent border-0" id="searchinput" placeholder="Search" value="<%=searchterm%>">
+                <input type="text" class="form-control bg-transparent border-0" id="searchterm" placeholder="Search" value="<%=searchterm%>">
                
                 <div class="input-group-addon bg-transparent border-0 search-button">
                   <button type="submit" id="searchbutton"  class="btn btn-sm btn-success px-3">
@@ -161,27 +162,27 @@
                           </tbody>
                           <nav aria-label="Page navigation">
                             <ul class="pagination">
-                              <% if (currentPage > 1) { %>
+                              <% if (page > 1) { %>
                                 <li class="page-item">
-                                  <a class="page-link" href="?page=1">First</a>
+                                  <a class="page-link" href="?page=1&search=<%=searchterm%>">First</a>
                                 </li>
                                 <li class="page-item">
-                                  <a class="page-link" href="?page=<%= currentPage - 1 %>">Previous</a>
+                                  <a class="page-link" href="?page=<%= page - 1 %>&search=<%=searchterm%>">Previous</a>
                                 </li>
                               <% } %>
                   
                               <% for (let i = 1; i <= totalPages; i++) { %>
-                                <li class="page-item <%= i === currentPage ? 'active' : '' %>">
-                                  <a class="page-link" href="?page=<%= i %>"><%= i %></a>
+                                <li class="page-item <%= i === page ? 'active' : '' %>">
+                                  <a class="page-link" href="?page=<%= i %>&search=<%=searchterm%>"><%= i %></a>
                                 </li>
                               <% } %>
                   
-                              <% if (currentPage < totalPages) { %>
+                              <% if (page < totalPages) { %>
                                 <li class="page-item">
-                                  <a class="page-link" href="?page=<%= currentPage + 1 %>">Next</a>
+                                  <a class="page-link" href="?page=<%= page + 1 %>&search=<%=searchterm%>">Next</a>
                                 </li>
                                 <li class="page-item">
-                                  <a class="page-link" href="?page=<%= totalPages %>">Last</a>
+                                  <a class="page-link" href="?page=<%= totalPages %>&search=<%=searchterm%>">Last</a>
                                 </li>
                               <% } %>
                             </ul>
@@ -199,23 +200,26 @@
       <!-- page-body-wrapper ends -->
     </div>
     <!-- container-scroller -->
-  
+    <script>
+      console.log(document.getElementById('formsearch').action)
+     const form=document.getElementById('formsearch')
+     const page=document.getElementById('page')
+     const searchTerm=document.getElementById('searchterm')
+     form.addEventListener('submit',async(event)=>{
+      event.preventDefault()
+      console.log('button clicked')
+      try{
+        pageNum=page.value 
+        searchTermval=searchTerm.value
+        window.location.href=`/admin/users/?search=${searchTermval}&page=${pageNum}`
+      }catch(err){
+        console.error(err)
+      }
+      
+     })
+    </script>
     <!-- plugins:js -->
-     <script>
-      const form=document.getElementById('formsearch')
-      const searchTerm=document.getElementById('searchInput').value.trim()
-      form.addEventListener('submit',async (event)=>{
-        event.preventDefault()
-        const response=await fetch(`/admin/users/search?term=${searchTerm}`,{
-          method:'POST',
-          headers:{
-            'Content-Type':'application/json'
-          }
-        })
-        
-
-      })
-     </script>
+   
     <script src="node_modules/jquery/dist/jquery.min.js"></script>
     <script src="node_modules/popper.js/dist/umd/popper.min.js"></script>
     <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>

@@ -1,16 +1,19 @@
 const User=require('../../models/usersModel')
 const getUsers=async (req,res)=>{
+    console.log('this is get user method ')
     const page=parseInt(req.query.page)||1;
     const limit=5
+    const searchterm=req.query.search || ''
     try{
-        const users=await User.find({})
-        .skip((page-1)*limit)
-        .limit(limit)
+        console.log('this is searchterm:',searchterm)
+      const  users=await User.find({$or:[{name:{$regex:searchterm,$options:'i'}},{email:{$regex:searchterm,$options:'i'}}]})
+        .skip((page - 1) * limit)
+            .limit(limit);
         const totalCount=await User.countDocuments()
          res.render('admin/adminUsers',{
-            users,currentPage:page,
+            users,page,
             totalPages:Math.ceil(totalCount/limit),
-            searchterm:''
+            searchterm:searchterm
         })
 
     }catch(err){
@@ -40,16 +43,21 @@ const searchUser=async (req,res)=>{
         const limit = 5; 
     
         const searchterm=req.query.term
+        console.log('this is searchterm',searchterm)
        const totalCount=await User.countDocuments({name:{$regex:searchterm,$options:'i'}})
-        
-        const users=await User.find({$or:[{name:{$regex:searchterm,$options:'i'}},{email:{$regex:searchterm,$options:'i'}}]})
+        let users
+        if(searchterm){
+             users=await User.find({$or:[{name:{$regex:searchterm,$options:'i'}},{email:{$regex:searchterm,$options:'i'}}]})
         .skip((page - 1) * limit)
             .limit(limit);
+        }else{
+            users=await User.find({}).skip((page-1)*limit).limit(limit)
+        }
         res.status(200).render('admin/adminUsers',{
             users,
             currentPage:page,
             totalPages:Math.ceil(totalCount/limit),
-            searchterm:searchterm
+            searchterm:''
         })
     }catch(err){
         console.error('error in searching ',err)

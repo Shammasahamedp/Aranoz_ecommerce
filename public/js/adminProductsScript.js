@@ -1,9 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('searchform').addEventListener('submit', (event) => {
-      event.preventDefault()
-      const inputValue = document.getElementById('inputsearch').value
-      window.location.href = `/admin/products/search?term=${inputValue}`
-    })
+   
     const toggleButtons = document.getElementsByClassName('toggleButton')
     try {
      Array.from( toggleButtons).forEach(toggleButton => {

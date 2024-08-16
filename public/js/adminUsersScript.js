@@ -1,18 +1,7 @@
 document.addEventListener('DOMContentLoaded',async (event)=>{
     event.preventDefault()
     const buttons=document.querySelectorAll('.togglebutton')
-    const formSearch=document.getElementById('formsearch')
-    
-    formSearch.addEventListener('submit',async (event)=>{
-      event.preventDefault()
-      const searchinput=document.getElementById('searchinput').value
-      console.log(searchinput)
-      try{
-        window.location.href=`/admin/users/search?term=${searchinput}`
-      }catch(err){
-        console.log('error in search')
-      }
-    })
+   
    buttons.forEach((button)=>{
     button.addEventListener('click',async (event)=>{
       console.log('button clicked')

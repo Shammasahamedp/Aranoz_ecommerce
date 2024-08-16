@@ -5,7 +5,6 @@ const { find } = require('../../models/adminModel');
 const { options } = require('../../routes/adminrouter/adminAuthRouter');
 const getCategories = async (req, res) => {
 
-// console.log('hello')
   const page = parseInt(req.query.page) || 1; 
   const limit = 5; 
 
@@ -124,10 +123,11 @@ const toggleCategory=async (req,res)=>{
 const getSearch = async (req, res) => {
   try {
     const searchTerm = req.query.term;
-    const categories = await Category.find({ name: { $regex: searchTerm, $options: 'i' } });
-
     const page = parseInt(req.query.page) || 1; 
     const limit = 5; 
+    const categories = await Category.find({ name: { $regex: searchTerm, $options: 'i' } }).skip((page-1)*limit).limit(limit)
+
+    
 
    
     const totalCount = categories.length; 
