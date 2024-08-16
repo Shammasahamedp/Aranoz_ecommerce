@@ -5,21 +5,24 @@ const { find } = require('../../models/adminModel');
 const { options } = require('../../routes/adminrouter/adminAuthRouter');
 const getCategories = async (req, res) => {
 
-  const page = parseInt(req.query.page) || 1; 
+  let page = parseInt(req.query.page) || 1; 
   const limit = 5; 
-
+  const searchTerm=req.query.search || ''
   try {
-    const categories = await Category.find({})
-      .skip((page - 1) * limit) 
-      .limit(limit); 
+    const category=await Category.find({ name: { $regex: searchTerm, $options: 'i' } })
+    const totalCount=category.length
+    const totalPages=Math.ceil(totalCount / limit)
 
-    const totalCount = await Category.countDocuments(); 
+    if(page>totalPages&&totalPages>0){
+      page=totalPages
+    }
+    const categories = await Category.find({ name: { $regex: searchTerm, $options: 'i' } }).skip((page-1)*limit).limit(limit)
 
     res.render('admin/adminCategories', {
       categories,
-      currentPage: page,
-      totalPages: Math.ceil(totalCount / limit),
-      searchterm:''
+      page: page,
+      totalPages:totalPages ,
+      searchterm:searchTerm
     });
   } catch (err) {
     console.error('Error fetching categories:', err);
@@ -125,7 +128,6 @@ const getSearch = async (req, res) => {
     const searchTerm = req.query.term;
     const page = parseInt(req.query.page) || 1; 
     const limit = 5; 
-    const categories = await Category.find({ name: { $regex: searchTerm, $options: 'i' } }).skip((page-1)*limit).limit(limit)
 
     
 

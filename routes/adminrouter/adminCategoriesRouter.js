@@ -9,6 +9,5 @@ adminCategoriesRouter.post('/edit/:id',adminMiddleware.isAuthenticated,adminCate
 adminCategoriesRouter.get('/add',adminMiddleware.isAuthenticated,adminCategoriesController.getAddCategory)
 adminCategoriesRouter.post('/add',adminMiddleware.isAuthenticated,adminCategoriesController.postAddCategory)
 adminCategoriesRouter.post('/toggle/:id',adminMiddleware.isAuthenticated,adminCategoriesController.toggleCategory)
-adminCategoriesRouter.get('/search',adminMiddleware.isAuthenticated,adminCategoriesController.getSearch)
 
 module.exports=adminCategoriesRouter

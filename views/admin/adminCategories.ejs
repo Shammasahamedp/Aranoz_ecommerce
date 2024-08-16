@@ -19,7 +19,8 @@
         </div>
         <div class="navbar-menu-wrapper d-flex align-items-stretch">
           <div class="search-field ml-4 d-none d-md-block">
-            <form class="d-flex align-items-stretch h-100" action="/admin/categories/search" id="searchform" method="get">
+            <form class="d-flex align-items-stretch h-100" id="searchform" method="get">
+              <input type="hidden" id="page" value="<%=page%>">
               <div class="input-group">
                 <input type="text" id="inputsearch" class="form-control bg-transparent border-0" placeholder="Search"  value="<%= searchterm%>">
                
@@ -159,27 +160,27 @@
                           </tbody>
                           <nav aria-label="Page navigation">
                             <ul class="pagination">
-                              <% if (currentPage > 1) { %>
+                              <% if (page > 1) { %>
                                 <li class="page-item">
-                                  <a class="page-link" href="?page=1">First</a>
+                                  <a class="page-link" href="?page=1&search=<%=searchterm%>">First</a>
                                 </li>
                                 <li class="page-item">
-                                  <a class="page-link" href="?page=<%= currentPage - 1 %>">Previous</a>
+                                  <a class="page-link" href="?page=<%= page - 1 %>&search=<%=searchterm%>">Previous</a>
                                 </li>
                               <% } %>
                   
                               <% for (let i = 1; i <= totalPages; i++) { %>
-                                <li class="page-item <%= i === currentPage ? 'active' : '' %>">
-                                  <a class="page-link" href="?page=<%= i %>"><%= i %></a>
+                                <li class="page-item <%= i === page ? 'active' : '' %>">
+                                  <a class="page-link" href="?page=<%= i %>&search=<%=searchterm%>"><%= i %></a>
                                 </li>
                               <% } %>
                   
-                              <% if (currentPage < totalPages) { %>
+                              <% if (page < totalPages) { %>
                                 <li class="page-item">
-                                  <a class="page-link" href="?page=<%= currentPage + 1 %>">Next</a>
+                                  <a class="page-link" href="?page=<%= page + 1 %>&search=<%=searchterm%>">Next</a>
                                 </li>
                                 <li class="page-item">
-                                  <a class="page-link" href="?page=<%= totalPages %>">Last</a>
+                                  <a class="page-link" href="?page=<%= totalPages %>&search=<%=searchterm%>">Last</a>
                                 </li>
                               <% } %>
                             </ul>
@@ -197,17 +198,21 @@
                   </a>
                 </div>
               </div>
-                
-        
-       
-          <!-- partial -->
+            
         </div>
-        <!-- row-offcanvas ends -->
       </div>
-      <!-- page-body-wrapper ends -->
     </div>
     <!-- container-scroller -->
-  
+    <script>
+      const form=document.getElementById('searchform')
+      const page=document.getElementById('page')
+      const search=document.getElementById('inputsearch')
+      form.addEventListener('submit',async(event)=>{
+        event.preventDefault()
+        console.log('button has clicked')
+        window.location.href=`/admin/categories?page=${page.value}&search=${search.value}`
+      })
+    </script>
     <!-- plugins:js -->
     <script src="node_modules/jquery/dist/jquery.min.js"></script>
     <script src="node_modules/popper.js/dist/umd/popper.min.js"></script>

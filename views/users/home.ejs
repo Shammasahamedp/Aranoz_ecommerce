@@ -191,7 +191,7 @@
                         <div class="row align-items-center justify-content-between">
                             <% let count = 0; %>
                             <% products.forEach((product, index) => { %>
-                                <% if (count < 5) { %>
+                                <% if (count < 8) { %>
                                     <div class="col-lg-3 col-sm-6">
                                         <div class="single_product_item">
                                             <a href="/user/product/<%=product._id%>">
@@ -212,7 +212,7 @@
                                         </div>
                                     </div>
                                 <% } else { %>
-                                    <% if (count === 5) { %>
+                                    <% if (count === 8) { %>
                                         </div> <!-- close the first row -->
                                     </div> <!-- close the first single_product_list_slider -->
                                     <div class="single_product_list_slider">

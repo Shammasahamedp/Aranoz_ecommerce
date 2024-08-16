@@ -1,24 +1,5 @@
 document.addEventListener('DOMContentLoaded',()=>{
     const buttons=document.getElementsByClassName('categoryToggleBtn')
-    const formSearch=document.getElementById('searchform')
-    formSearch.addEventListener('submit',async (event)=>{
-      event.preventDefault()
-      const inputValue=document.getElementById('inputsearch').value
-      window.location.href=`/admin/categories/search?term=${inputValue}`
-      if(response.ok){
-        const data=await response.json()
-        console.log(data)
-        window.location.reload()
-      }else{
-        const data=await response.json()
-        Swal.fire({
-          title:'failed',
-          text:data.message,
-          icon:'error',
-          confirmButtonText:'OK'
-        })
-      }
-    })
     Array.from(buttons).forEach((button)=>{
       button.addEventListener('click', async (event) => {
     event.preventDefault()
