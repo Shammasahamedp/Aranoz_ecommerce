@@ -3,6 +3,7 @@ const Order = require('../../models/ordersModel')
 const Address = require('../../models/addressModel')
 const Wallet=require('../../models/walletModel')
 const Product=require('../../models/productsModel')
+const pdfDocument = require('pdfkit')
 const mongoose = require('mongoose')
 const { findOneAndUpdate } = require('../../models/adminModel')
 const { truncate } = require('lodash')
@@ -245,11 +246,96 @@ const returnSingleProduct=async(req,res)=>{
     res.status(500).render('500/500error');
   }
 }
+const getInvoice=async (req,res)=>{
+
+    try {
+        const { id } = req.params;
+        const userId=req.session.user
+        const order = await Order.findById(id).populate('items.productId');
+        if (!order) {
+            return res.status(404).send('Order not found');
+        }
+
+        const address = await Address.aggregate([
+            {
+                $match: {
+                    userId: new mongoose.Types.ObjectId(userId),
+                    'address._id': new mongoose.Types.ObjectId(order.addressId)
+                }
+            },
+            {
+                $project: {
+                    address: {
+                        $filter: {
+                            input: "$address",
+                            as: "add",
+                            cond: { $eq: ["$$add._id", new mongoose.Types.ObjectId(order.addressId)] }
+                        }
+                    }
+                }
+            }
+        ]);
+
+        if (!address || address.length === 0) {
+            return res.status(404).send('Address not found');
+        }
+
+        const userAddress = address[0].address[0];
+        console.log('this is useraddress',userAddress)
+        const doc = new pdfDocument();
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', `attachment; filename=invoice_${order.orderId}.pdf`);
+        doc.pipe(res);
+
+        doc.fontSize(20).text('Invoice', { align: 'center' });
+        doc.moveDown();
+        doc.fontSize(14).text(`Order Id: ${order.orderId}`);
+        doc.text(`Order Date: ${order.orderDate.toDateString()}`);
+        doc.text(`Payment Method: ${order.paymentMethod}`);
+        doc.text(`Order Status: ${order.orderStatus}`);
+        doc.moveDown();
+
+        doc.fontSize(14).text('Shipping Address:');
+        doc.fontSize(12).text(`${userAddress.phone}, ${userAddress.city},`);
+        doc.text(`${userAddress.district}, ${userAddress.pincode}, ${userAddress.state}`);
+        doc.moveDown();
+
+        doc.fontSize(14).text('Product Details:');
+        const tableTop = doc.y + 20;
+        const itemSpacing = 30;
+
+        doc.fontSize(12)
+            .text('Product Name', 100, tableTop)
+            .text('Quantity', 200, tableTop)
+            .text('Price', 280, tableTop)
+            .text('Total Price', 350, tableTop);
+
+        let position = tableTop + 15;
+
+        order.items.forEach(item => {
+            doc.text(item.productId.name, 100, position)
+                .text(item.quantity, 200, position)
+                .text(item.price, 280, position)
+                .text(item.totalPrice, 350, position);
+            position += itemSpacing;
+        });
+
+        doc.moveDown();
+        doc.fontSize(14).text(`Total Amount: ${order.totalAmount}`);
+
+        doc.end();
+    
+
+  }catch(err){
+    console.error(err)
+  }
+}
 module.exports = {
   getOrder,
   getOrderDetails,
   cancelOrder,
   cancelSingleProduct,
   returnOrder,
-  returnSingleProduct
+  returnSingleProduct,
+  getInvoice
 }

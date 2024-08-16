@@ -121,6 +121,9 @@
     <h3>Your payment has been failed . You can pay rightnow </h3>
     <button class="btn_3 ml-5" onclick="payNow('<%=orders.totalAmount%>','<%=orders._id%>')">Pay now</button>
     <%}%>
+    <%if(orders.paymentStatus==='refund'||orders.paymentStatus==='completed'){%>
+      <a class="btn_3 ml-5" href="/user/dashboard/profile/orders/get-invoice/<%=orders._id%>" >Download invoice</a>
+      <%}%>
   </div>
   
   <div class="product_image_area section_padding" >
@@ -423,6 +426,13 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
   <script>
+    async function download(orderId){
+      try{
+
+      }catch(err){
+        console.error(err)
+      }
+    }
     async function payNow(totalAmount,orderId){
       console.log('button has clicked')
       try{
