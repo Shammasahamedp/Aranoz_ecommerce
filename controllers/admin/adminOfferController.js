@@ -128,7 +128,8 @@ const editProductOffer=async(req,res)=>{
             startDate:new Date(startDate),
             endDate:new Date(endDate),
             offerType:offerType,
-            product:itemId
+            product:itemId,
+            category:null
         })
         if(newOffer){
             return res.status(200).json({message:'successfully updated the offer'})
@@ -150,7 +151,8 @@ const editCategoryOffer=async (req,res)=>{
             startDate:new Date(startDate),
             endDate:new Date(endDate),
             offerType:offerType,
-            category:itemId
+            category:itemId,
+            product:null
         })
         if(newOffer){
             return res.status(200).json({message:'offer successfully updated'})

@@ -23,7 +23,7 @@ const offerSchema=new mongoose.Schema({
         enum:['category','product'],
         required:true
     }
-})
-
+},{timestamps:true})
+offerSchema.index({endDate:1},{expireAfterSeconds:0})
 const Offer = mongoose.model('Offer',offerSchema)
 module.exports=Offer

@@ -4,7 +4,12 @@ const Cart = require('../../models/cartModel')
 const getCoupon=async(req,res)=>{
     try{
         const userId = req.session.user
-        const cart=await Cart.findOne({userId})
+        let cart=await Cart.findOne({userId})
+        if(!cart){
+             cart = new Cart({
+                userId,items:[]
+             })
+        }
         const coupons=await Coupon.find({})
         res.status(200).render('users/coupons',{coupons,cart,userId})
     }catch(err){

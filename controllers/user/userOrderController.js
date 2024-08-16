@@ -246,90 +246,121 @@ const returnSingleProduct=async(req,res)=>{
     res.status(500).render('500/500error');
   }
 }
-const getInvoice=async (req,res)=>{
 
-    try {
-        const { id } = req.params;
-        const userId=req.session.user
-        const order = await Order.findById(id).populate('items.productId');
-        if (!order) {
-            return res.status(404).send('Order not found');
-        }
+const getInvoice = async (req, res) => {
+  try {
+      const { id } = req.params;
+      const userId = req.session.user;
+      const order = await Order.findById(id).populate('items.productId');
+      if (!order) {
+          return res.status(404).send('Order not found');
+      }
 
-        const address = await Address.aggregate([
-            {
-                $match: {
-                    userId: new mongoose.Types.ObjectId(userId),
-                    'address._id': new mongoose.Types.ObjectId(order.addressId)
-                }
-            },
-            {
-                $project: {
-                    address: {
-                        $filter: {
-                            input: "$address",
-                            as: "add",
-                            cond: { $eq: ["$$add._id", new mongoose.Types.ObjectId(order.addressId)] }
-                        }
-                    }
-                }
-            }
-        ]);
+      const address = await Address.aggregate([
+          {
+              $match: {
+                  userId: new mongoose.Types.ObjectId(userId),
+                  'address._id': new mongoose.Types.ObjectId(order.addressId)
+              }
+          },
+          {
+              $project: {
+                  address: {
+                      $filter: {
+                          input: "$address",
+                          as: "add",
+                          cond: { $eq: ["$$add._id", new mongoose.Types.ObjectId(order.addressId)] }
+                      }
+                  }
+              }
+          }
+      ]);
 
-        if (!address || address.length === 0) {
-            return res.status(404).send('Address not found');
-        }
+      if (!address || address.length === 0) {
+          return res.status(404).send('Address not found');
+      }
 
-        const userAddress = address[0].address[0];
-        console.log('this is useraddress',userAddress)
-        const doc = new pdfDocument();
-        res.setHeader('Content-Type', 'application/pdf');
-        res.setHeader('Content-Disposition', `attachment; filename=invoice_${order.orderId}.pdf`);
-        doc.pipe(res);
+      const userAddress = address[0].address[0];
 
-        doc.fontSize(20).text('Invoice', { align: 'center' });
-        doc.moveDown();
-        doc.fontSize(14).text(`Order Id: ${order.orderId}`);
-        doc.text(`Order Date: ${order.orderDate.toDateString()}`);
-        doc.text(`Payment Method: ${order.paymentMethod}`);
-        doc.text(`Order Status: ${order.orderStatus}`);
-        doc.moveDown();
+      const doc = new pdfDocument({
+          size: 'A4',
+          margin: 40
+      });
 
-        doc.fontSize(14).text('Shipping Address:');
-        doc.fontSize(12).text(`${userAddress.phone}, ${userAddress.city},`);
-        doc.text(`${userAddress.district}, ${userAddress.pincode}, ${userAddress.state}`);
-        doc.moveDown();
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', `attachment; filename=invoice_${order.orderId}.pdf`);
+      doc.pipe(res);
 
-        doc.fontSize(14).text('Product Details:');
-        const tableTop = doc.y + 20;
-        const itemSpacing = 30;
+      doc.image('C:/Users/LENOVO/OneDrive/Desktop/aranoz_ecommerce/public/images/img-01.png', 50, 45, { width: 50 })
+          .fontSize(20)
+          .fillColor('#444444')
+          .text('Aranoz', 110, 57)
+          .fontSize(10)
+          .text('Chennai', 200, 65, { align: 'right' })
+          .text('Phone: (123) 456-7890', 200, 80, { align: 'right' })
+          .moveDown();
 
-        doc.fontSize(12)
-            .text('Product Name', 100, tableTop)
-            .text('Quantity', 200, tableTop)
-            .text('Price', 280, tableTop)
-            .text('Total Price', 350, tableTop);
+      doc.fontSize(20).text('INVOICE', { align: 'center' })
+          .moveDown();
+      doc.fontSize(14).text(`Order Id: ${order.orderId}`, { align: 'left' });
+      doc.text(`Order Date: ${order.orderDate.toDateString()}`, { align: 'left' });
+      doc.text(`Payment Method: ${order.paymentMethod}`, { align: 'left' });
+      doc.text(`Order Status: ${order.orderStatus}`, { align: 'left' });
+      doc.moveDown();
 
-        let position = tableTop + 15;
+      doc.fontSize(14).text('Shipping Address:', { underline: true })
+          .moveDown(0.5);
+      doc.fontSize(12).text(`${userAddress.phone}, ${userAddress.city},`, { align: 'left' })
+          .text(`${userAddress.district}, ${userAddress.pincode}, ${userAddress.state}`, { align: 'left' })
+          .moveDown();
 
-        order.items.forEach(item => {
-            doc.text(item.productId.name, 100, position)
-                .text(item.quantity, 200, position)
-                .text(item.price, 280, position)
-                .text(item.totalPrice, 350, position);
-            position += itemSpacing;
-        });
+      doc.fontSize(14).text('Product Details:', { underline: true })
+          .moveDown(0.5);
 
-        doc.moveDown();
-        doc.fontSize(14).text(`Total Amount: ${order.totalAmount}`);
+      const tableTop = doc.y;
+      doc.fontSize(12)
+          .fillColor('#444444')
+          .text('Product Name', 50, tableTop)
+          .text('Quantity', 200, tableTop)
+          .text('Price', 280, tableTop)
+          .text('Total Price', 450, tableTop);
 
-        doc.end();
-    
+      doc.moveTo(50, tableTop + 15)
+          .lineTo(550, tableTop + 15)
+          .stroke();
 
-  }catch(err){
-    console.error(err)
+      let position = tableTop + 20;
+
+      order.items.forEach(item => {
+          doc.fontSize(12)
+              .fillColor('#000000')
+              .text(item.productId.name, 50, position)
+              .text(item.quantity, 200, position)
+              .text(`$${item.price.toFixed(2)}`, 280, position)
+              .text(`$${item.totalPrice.toFixed(2)}`, 450, position);
+
+          position += 20;
+
+          doc.moveTo(50, position)
+              .lineTo(550, position)
+              .stroke();
+
+          position += 5;
+      });
+
+      doc.moveDown();
+      doc.fontSize(14).fillColor('#000000').text(`Total Amount: $${order.totalAmount.toFixed(2)}`, { align: 'right', bold: true });
+      
+      doc.fontSize(10).fillColor('#888888')
+          .text('Thank you for your purchase!', 50, 780, { align: 'center', width: 500 });
+
+      doc.end();
+  } catch (err) {
+      console.error(err);
+      res.status(500).render('500/500erroradmin');
   }
-}
+};
+
 module.exports = {
   getOrder,
   getOrderDetails,

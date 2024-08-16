@@ -105,10 +105,11 @@ const getAuthHome = async (req, res) => {
             {$limit:4}
             ])
             const offer= await Offer.aggregate([
-                {$sort:{discountPercentage:-1}},
-                {$match:{offerType:'product'}},
+                {$sort:{createdAt:-1}},
+                {$match:{offerType:'product',startDate:{$lte:new Date()},endDate:{$gte:new Date()}}},
                 {$limit:1}
             ]) 
+            console.log('this is offer:',offer)
             let item; 
             if(offer.length>0){
                 let productId=offer[0].product

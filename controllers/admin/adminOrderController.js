@@ -9,7 +9,7 @@ const getOrder=async(req,res)=>{
     try{
         const page=parseInt(req.query.page)||1
         const limit=5
-        const orders=await Order.find().skip((page-1)*limit).limit(limit).populate('userId')
+        const orders=await Order.find().sort({createdAt:-1}).skip((page-1)*limit).limit(limit).populate('userId')
         const totalCount=await Order.countDocuments()
         res.status(200).render('admin/adminOrders',{
             orders,currentPage:page,
