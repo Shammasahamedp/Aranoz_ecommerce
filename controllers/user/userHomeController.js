@@ -437,6 +437,8 @@ const getWalletData=async (req,res)=>{
     try{
         const userId=req.session.user 
         let wallet=await Wallet.findOne({userId})
+        wallet.transactions.sort((a,b)=>new Date(b.date)-new Date(a.date))
+        console.log('this is wallet',wallet)
         res.status(200).json({wallet})
     }catch(err){
         console.error(err)

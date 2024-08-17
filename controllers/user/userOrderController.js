@@ -16,7 +16,7 @@ const getOrder = async (req, res) => {
     const order=await Order.find({userId})
     const totalCount=order.length
     totalPages=Math.ceil(totalCount/limit)
-    const orders = await Order.find({ userId }).populate('items.productId').skip(skip).limit(limit)
+    const orders = await Order.find({ userId }).sort({createdAt:-1}).populate('items.productId').skip(skip).limit(limit)
 
     res.status(200).render('orders/usersOrder', { 
       orders ,
