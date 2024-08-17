@@ -36,7 +36,15 @@ const getProduct = async (req, res) => {
             startDate: { $lte: new Date() },
             endDate: { $gte: new Date() }
         })
-        if(offer){
+        if(offer && offerCategory){
+            let offerDiscountedPrice = product.price - (product.price * offer.discountPercentage / 100);
+            let offerCategoryDiscountedPrice = product.price - (product.price * offerCategory.discountPercentage / 100);
+            console.log('this is offerDiscounted price:',offerDiscountedPrice,'and this is offerCategoryDiscounted price:',offerCategoryDiscountedPrice)
+            product.discountPercentage = Math.min(offerDiscountedPrice, offerCategoryDiscountedPrice);
+            console.log('this is:',product.discountPercentage)
+            product.offer = offerDiscountedPrice <= offerCategoryDiscountedPrice ? offer : offerCategory;
+        }
+       else if(offer){
             product.discountPercentage = product.price - (product.price*offer.discountPercentage/100)
                 product.offer = offer
         }else if(offerCategory){

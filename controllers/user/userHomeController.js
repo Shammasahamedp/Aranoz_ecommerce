@@ -133,7 +133,8 @@ const getAuthHome = async (req, res) => {
                 if (offer && offerCategory) {
                     let offerDiscountedPrice = product.price - (product.price * offer.discountPercentage / 100);
                     let offerCategoryDiscountedPrice = product.price - (product.price * offerCategory.discountPercentage / 100);
-                    product.discountPercentage = Math.max(offer.discountPercentage, offerCategory.discountPercentage);
+                    console.log('this is offerDiscounted price:',offerDiscountedPrice,'and this is offerCategoryDiscounted price:',offerCategoryDiscountedPrice)
+                    product.discountPercentage = Math.min(offerDiscountedPrice, offerCategoryDiscountedPrice);
                     product.offer = offerDiscountedPrice <= offerCategoryDiscountedPrice ? offer : offerCategory;
                 } else if (offer) {
                     product.discountPercentage = product.price - (product.price * offer.discountPercentage / 100)
@@ -378,9 +379,12 @@ const getWishlist = async (req, res) => {
                     endDate: { $gte: new Date() }
                 })
                 if (offer && offerCategory) {
-                    let offerDiscountedPrice = item.price - (item.productId.price * offer.discountPercentage / 100);
+                    let offerDiscountedPrice = item.productId.price - (item.productId.price * offer.discountPercentage / 100);
                     let offerCategoryDiscountedPrice = item.productId.price - (item.productId.price * offerCategory.discountPercentage / 100);
-                    item.productId.discountPercentage = Math.max(offer.discountPercentage, offerCategory.discountPercentage);
+                    console.log('this is offerdiscount:',offerDiscountedPrice)
+                    console.log('this is offercategorydiscountprice:',offerCategoryDiscountedPrice)
+                    item.productId.discountPercentage = Math.min(offerDiscountedPrice,offerCategoryDiscountedPrice );
+                    console.log('this is item productid.discountpercentage:',item.productId.discountPercentage)
                     item.productId.offer = offerDiscountedPrice <= offerCategoryDiscountedPrice ? offer : offerCategory;
                 } else if (offer) {
                     item.productId.discountPercentage = item.productId.price - (item.productId.price * offer.discountPercentage / 100)
