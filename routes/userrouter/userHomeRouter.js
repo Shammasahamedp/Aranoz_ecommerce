@@ -22,6 +22,7 @@ userHomeRouter.get('/profile/wishlist',userMiddleware.isUserAuthenticated,userHo
 userHomeRouter.post('/profile/wishlist/remove',userMiddleware.isUserAuthenticated,userHomeController.deleteFromWishlist)
 userHomeRouter.post('/add-to-wishlist',userMiddleware.isUserAuthenticated,userHomeController.addToWishlist)
 userHomeRouter.get('/profile/wallet',userMiddleware.isUserAuthenticated,userHomeController.getWallet)
+userHomeRouter.get('/profile/getwallet',userMiddleware.isUserAuthenticated,userHomeController.getWalletData)
 userHomeRouter.post('/profile/wallet/add-balance',userMiddleware.isUserAuthenticated,userHomeController.razorpayCreation)
 userHomeRouter.post('/profile/wallet/add-balance/verifyrazorpay',userMiddleware.isUserAuthenticated,userHomeController.razorpayVarify)
 userHomeRouter.post('/profile/orders/return-order',userMiddleware.isUserAuthenticated,userOrderController.returnOrder)

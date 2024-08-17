@@ -9,9 +9,22 @@ const { findOneAndUpdate } = require('../../models/adminModel')
 const { truncate } = require('lodash')
 const getOrder = async (req, res) => {
   try {
+    const page = parseInt(req.query.page)||1;
+    const limit = parseInt(req.query.limit)||9
+    const skip = (page - 1) * limit;
     const userId = req.session.user
-    const orders = await Order.find({ userId }).populate('items.productId')
-    res.status(200).render('orders/usersOrder', { orders })
+    const order=await Order.find({userId})
+    const totalCount=order.length
+    totalPages=Math.ceil(totalCount/limit)
+    const orders = await Order.find({ userId }).populate('items.productId').skip(skip).limit(limit)
+
+    res.status(200).render('orders/usersOrder', { 
+      orders ,
+      currentPage:page,
+      totalPages,
+      
+
+    })
   } catch (err) {
     console.error(err)
     res.status(500).render('500/500error');

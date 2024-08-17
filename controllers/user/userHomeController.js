@@ -416,9 +416,7 @@ const getWishlist = async (req, res) => {
 }
 const getWallet = async (req, res) => {
     try {
-        let page = parseInt(req.query.page) || 1
-        let limit = parseInt(req.query.limit) || 5
-        let skip = (page - 1) * limit
+        
         const userId = req.session.user
         let wallet = await Wallet.findOne({ userId })
         if (!wallet) {
@@ -429,8 +427,18 @@ const getWallet = async (req, res) => {
             })
             await wallet.save()
         }
-        res.status(200).render('users/wallet', { wallet })
+        res.status(200).render('users/wallet',{wallet})
     } catch (err) {
+        console.error(err)
+        res.status(500).render('500/500error');
+    }
+}
+const getWalletData=async (req,res)=>{
+    try{
+        const userId=req.session.user 
+        let wallet=await Wallet.findOne({userId})
+        res.status(200).json({wallet})
+    }catch(err){
         console.error(err)
         res.status(500).render('500/500error');
     }
@@ -502,6 +510,7 @@ module.exports = {
     addToWishlist,
     deleteFromWishlist,
     getWallet,
+    getWalletData,
     razorpayCreation,
     razorpayVarify
 }
