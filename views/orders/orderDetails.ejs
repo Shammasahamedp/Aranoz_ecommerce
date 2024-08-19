@@ -298,17 +298,30 @@
                 <tr>
                   <th colspan="2"><span><%=item.productId.name%></span></th>
                   <th>x<%=item.quantity%></th>
-                  <th> <span>$<%=item.price%></span></th>
+                  <th> <span>₹ <%=item.price%></span></th>
                 </tr>
               <%})%>
               </tbody>
               <tfoot>
+                <%let total = 0
+                  orders.items.forEach(item=>{
+                    total+=(item.quantity*item.price)
+                  })
+                %>
+                <tr>
+                  <th></th>
+                  <th></th>
+                  <!-- <th scope="col" colspan="3">Quantity</th> -->
+                  <th scope="col">Off : </th>
+                  <th>₹ <%=
+                           total - orders.totalAmount%></th>
+                </tr>
                 <tr>
                   <th></th>
                   <th></th>
                   <!-- <th scope="col" colspan="3">Quantity</th> -->
                   <th scope="col">Total : </th>
-                  <th><%=orders.totalAmount%></th>
+                  <th>₹ <%=orders.totalAmount%></th>
                 </tr>
               </tfoot>
             </table>

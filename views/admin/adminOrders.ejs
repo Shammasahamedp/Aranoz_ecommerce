@@ -20,25 +20,20 @@
       </div>
       <div class="navbar-menu-wrapper d-flex align-items-stretch">
         <div class="search-field ml-4 d-none d-md-block">
-          <form class="d-flex align-items-stretch h-100" action="/admin/products/search" id="searchform" method="get">
+          <!-- <form class="d-flex align-items-stretch h-100"  id="searchform" method="get"> -->
             <div class="input-group">
               <input type="text" class="form-control bg-transparent border-0" placeholder="Search"
                 value="<%= searchterm%>" id="inputsearch">
-              <div class="input-group-btn">
-                  <button type="button" class="btn bg-transparent dropdown-toggle px-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <i class="mdi mdi-earth"></i>
+                <div class="input-group-btn">
+                  <button type="submit" onclick="searchTerm()" class="btn btn-sm btn-success px-3 py-2 searchbtn">
+                    <i class="mdi mdi-magnify">Search</i>
                   </button>
                  
                 </div>
-              <div class="input-group-addon bg-transparent border-0 search-button">
-
-                <button type="submit" class="btn btn-sm btn-success px-3 searchbtn">
-                  <i class="mdi mdi-magnify">Search</i>
-                </button>
-
-              </div>
+              
             </div>
-          </form>
+          <!-- </form> -->
+         
         </div>
 
         <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button"
@@ -172,7 +167,7 @@
                             
                           
                             <td>
-                              <%= order.userId.name %>
+                              <%= order.userId[0].name %>
                             </td>
                             <td>
                               <%= order.orderDate.toLocaleDateString() %>
@@ -250,7 +245,14 @@
       <!-- page-body-wrapper ends -->
     </div>
     <!-- container-scroller -->
-
+    <script>
+      const text=document.getElementById('inputsearch')
+      async function searchTerm() {
+        const search=text.value
+        console.log('this is search',search)
+        window.location.href=`?search=${encodeURIComponent(search)}`
+      }
+    </script>
     <!-- plugins:js -->
     <script src="node_modules/jquery/dist/jquery.min.js"></script>
     <script src="node_modules/popper.js/dist/umd/popper.min.js"></script>

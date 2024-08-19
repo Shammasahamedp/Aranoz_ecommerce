@@ -178,59 +178,7 @@
                     </table>
                     <div id="pagination"></div>
                 </div>
-                <script>
-                    document.addEventListener('DOMContentLoaded', async (event) => {
-                        try {
-                            const response = await fetch('/user/dashboard/profile/getwallet',{
-                                method: 'GET',
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                }
-                            })
-                            let data;
-                            if (response.ok) {
-                                console.log('this is response',response)
-                                datas=await response.json()
-                                data=datas.wallet.transactions
-                                console.log('this is data',datas)
-                                const rowsPerPage = 5;
-                                let currentPage = 1;
-
-                                function displayTable(page) {
-                                    const tableBody = document.getElementById('data-table').getElementsByTagName('tbody')[0];
-                                    tableBody.innerHTML = '';
-
-                                    const start = (page - 1) * rowsPerPage;
-                                    const end = start + rowsPerPage;
-                                    const paginatedData = data.slice(start, end);
-                                    paginatedData.forEach((row, index) => {
-                                        const tr = document.createElement('tr');
-                                        tr.innerHTML = `<td>${index + 1}</td><td>${row.type}</td><td>${row.amount}</td><td>${row.description}</td><td>${new Date(row.date).toLocaleDateString()}</td>`;
-                                        tableBody.appendChild(tr);
-                                    });
-                                }
-                                function setupPagination() {
-                                    const paginationDiv = document.getElementById('pagination');
-                                    paginationDiv.innerHTML = '';
-                                    const pageCount = Math.ceil(data.length / rowsPerPage);
-                                    for (let i = 1; i <= pageCount; i++) {
-                                        const btn = document.createElement('button');
-                                        btn.textContent = i;
-                                        btn.onclick = function () {
-                                            currentPage = i;
-                                            displayTable(currentPage);
-                                        };
-                                        paginationDiv.appendChild(btn);
-                                    }
-                                }
-                                displayTable(currentPage);
-                                setupPagination();
-                            }
-                        } catch (err) {
-                            console.error(err)
-                        }
-                    })
-                </script>
+                
             </div>
         </div>
     </div>
@@ -343,7 +291,59 @@
     </footer>
     <!--::footer_part end::-->
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async (event) => {
+            try {
+                const response = await fetch('/user/dashboard/profile/getwallet',{
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                let data;
+                if (response.ok) {
+                    console.log('this is response',response)
+                    datas=await response.json()
+                    data=datas.wallet.transactions
+                    console.log('this is data',datas)
+                    const rowsPerPage = 5;
+                    let currentPage = 1;
 
+                    function displayTable(page) {
+                        const tableBody = document.getElementById('data-table').getElementsByTagName('tbody')[0];
+                        tableBody.innerHTML = '';
+
+                        const start = (page - 1) * rowsPerPage;
+                        const end = start + rowsPerPage;
+                        const paginatedData = data.slice(start, end);
+                        paginatedData.forEach((row, index) => {
+                            const tr = document.createElement('tr');
+                            tr.innerHTML = `<td>${index + 1}</td><td>${row.type}</td><td>${row.amount}</td><td>${row.description}</td><td>${new Date(row.date).toLocaleDateString()}</td>`;
+                            tableBody.appendChild(tr);
+                        });
+                    }
+                    function setupPagination() {
+                        const paginationDiv = document.getElementById('pagination');
+                        paginationDiv.innerHTML = '';
+                        const pageCount = Math.ceil(data.length / rowsPerPage);
+                        for (let i = 1; i <= pageCount; i++) {
+                            const btn = document.createElement('button');
+                            btn.textContent = i;
+                            btn.onclick = function () {
+                                currentPage = i;
+                                displayTable(currentPage);
+                            };
+                            paginationDiv.appendChild(btn);
+                        }
+                    }
+                    displayTable(currentPage);
+                    setupPagination();
+                }
+            } catch (err) {
+                console.error(err)
+            }
+        })
+    </script>
     <script>
         async function showInput() {
             console.log('button clicked')
@@ -375,13 +375,13 @@
             })
             const order = await response.json()
             const options = {
-                "key": 'rzp_test_t6lNXNWWwp0wq6', // Replace with your Razorpay Test Key ID
-                "amount": (order.amount), // Amount is in currency subunits
+                "key": 'rzp_test_t6lNXNWWwp0wq6',
+                "amount": (order.amount), 
                 "currency": order.currency,
                 "name": "Aranoz",
                 "description": " Transaction",
                 "image": "https://yourlogo.com/logo.png",
-                "order_id": order.id, // This is the order ID created in step 2
+                "order_id": order.id, 
                 "handler": function (response) {
                     fetch('/user/dashboard/profile/wallet/add-balance/verifyrazorpay', {
                         method: 'POST',

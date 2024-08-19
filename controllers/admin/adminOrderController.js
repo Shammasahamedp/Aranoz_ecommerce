@@ -8,13 +8,33 @@ const { truncate } = require('lodash')
 const getOrder=async(req,res)=>{
     try{
         const page=parseInt(req.query.page)||1
+        const search=req.query.search || ''
+        
         const limit=5
-        const orders=await Order.find().sort({createdAt:-1}).skip((page-1)*limit).limit(limit).populate('userId')
+        const orders=await Order.aggregate([
+            {$addFields:{orderIdString:{$toString:'$orderId'}}},
+            {$match:
+                
+                {orderIdString:{$regex:new RegExp(search,"i")}}
+        
+             },
+            {$sort:{createdAt:-1}},
+            {$skip:(page-1)*limit},
+            {$limit:limit},
+            {
+                $lookup:{
+                    from:'users',
+                    localField:'userId',
+                    foreignField:'_id',
+                    as:'userId'
+                }
+            }
+        ])
         const totalCount=await Order.countDocuments()
         res.status(200).render('admin/adminOrders',{
             orders,currentPage:page,
             totalPages:Math.ceil(totalCount/limit),
-            searchterm:''
+            searchterm:search || ''
 
         })
     }catch(err){
