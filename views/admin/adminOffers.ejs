@@ -1,6 +1,8 @@
 <%-include('../partials/header') %>
 
   <link rel="stylesheet" href="/css/admindashboard.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
   <style>
     input#categoryName::placeholder {
       color: black;
@@ -152,6 +154,7 @@
                             Offer Type
                           </th>
                           
+                          
                           <!-- <th>
                             Product Name
                           </th> -->
@@ -197,7 +200,41 @@
                               <button type="button" class="btn btn-icons btn-rounded btn-success"><a
                                   href="/admin/offers/edit/<%=offer._id%>">Edit</a> </button>
                             </td>
+                            <td>
+                              <form id="form"  >
+                                <input type="hidden" value="<%=offer._id%>" id="input">
+                                <button type="submit" class="btn btn-icons btn-rounded btn-danger">Delete</button>
+                              </form>
+                            </td>
+                              <script>
+                               const form= document.getElementById('form')
+                               const input=document.getElementById('input')
+                               form.addEventListener('submit',async(event)=>{
+                                event.preventDefault()
+                                try{
+                                  const response=await fetch(`/admin/offers/delete/${input.value}`,{
+                                    method:'DELETE',
+                                    headers:{
+                                      'Content-Types':'application/json'
+                                    }
+                                  })
+                                  const result=await response.json()
+                                  if(response.ok){
 
+                                    Swal.fire({
+                                      title:'success',
+                                      text:result.message,
+                                      icon:'success',
+                                      confirmButtonText:'OK'
+                                    }).then(()=>{
+                                      window.location.reload()
+                                    })
+                                  }
+                                }catch(err){
+                                  console.error(err)
+                                }
+                               })
+                              </script>
 
                           </tr>
                           <% }); %>
@@ -254,6 +291,8 @@
 
     <!-- plugins:js -->
     <script src="node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script src="node_modules/popper.js/dist/umd/popper.min.js"></script>
     <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="node_modules/perfect-scrollbar/dist/js/perfect-scrollbar.jquery.min.js"></script>

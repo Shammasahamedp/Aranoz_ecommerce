@@ -83,10 +83,26 @@ const postEdit=async (req,res)=>{
         res.status(500).render('500/500erroradmin')
     }
 }
+const deleteCoupon=async (req,res)=>{
+    try{
+        const couponId=req.params.id 
+        const removedCoupon=await Coupon.findByIdAndDelete(couponId,{new:true})
+        if(removedCoupon){
+            return res.status(200).json({message:'Coupon has successfully deleted'})
+        }else{
+            res.status(400).json({message:'coupon not found'})
+        }
+    }catch(err){
+        console.error(err)
+        res.status(500).render('500/500erroradmin')
+
+    }
+}
 module.exports = {
     getCoupon,
     getAddCoupon,
     postAddCoupon,
     getEdit,
-    postEdit
+    postEdit,
+    deleteCoupon
 }

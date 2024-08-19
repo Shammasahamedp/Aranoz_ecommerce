@@ -10,4 +10,5 @@ adminOfferRouter.get('/addoffer/getcategories',adminMiddleware.isAuthenticated,a
 adminOfferRouter.get('/addoffer/getproducts',adminMiddleware.isAuthenticated,adminOfferController.getProducts)
 adminOfferRouter.get('/edit/:id',adminMiddleware.isAuthenticated,adminOfferController.getEditOffer)
 adminOfferRouter.post('/editproductoffer',adminMiddleware.isAuthenticated,adminOfferController.editProductOffer)
+adminOfferRouter.delete('/delete/:id',adminMiddleware.isAuthenticated,adminOfferController.deleteOffer)
 module.exports=adminOfferRouter

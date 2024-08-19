@@ -7,4 +7,5 @@ adminCouponRouter.get('/add',adminMiddleware.isAuthenticated,adminCouponControll
 adminCouponRouter.post('/add',adminMiddleware.isAuthenticated,adminCouponController.postAddCoupon)
 adminCouponRouter.get('/edit/:id',adminMiddleware.isAuthenticated,adminCouponController.getEdit)
 adminCouponRouter.post('edit/:id',adminMiddleware.isAuthenticated,adminCouponController.postEdit)
+adminCouponRouter.delete('/delete/:id',adminMiddleware.isAuthenticated,adminCouponController.deleteCoupon)
 module.exports=adminCouponRouter
