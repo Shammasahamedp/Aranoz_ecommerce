@@ -311,8 +311,8 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="#">Shipping
-                                            <span>Flat rate: ₹0.00</span>
+                                        <a href="#">Offer
+                                            <span id="offer">: ₹0.00</span>
                                         </a>
                                     </li>
                                     <li>
@@ -605,6 +605,7 @@
                 console.log('clicked')
 
                 const coupon = document.getElementById('coupon')
+                const offer=document.getElementById('offer')
                 const couponValid = document.getElementById('couponValidation')
                 const totalcouponamount = document.getElementById('totalcouponamount')
                 console.log(totalcouponamount)
@@ -628,6 +629,7 @@
                     if (response.ok) {
                         const resultantPrice = result.totalPrice
                         totalcouponamount.textContent = `${resultantPrice}`
+                        offer.textContent=totalPrice-Number(resultantPrice)
                         Swal.fire({
                             title: 'success',
                             text: 'applied your discount see the new price !',

@@ -295,79 +295,89 @@ const getInvoice = async (req, res) => {
 
       const userAddress = address[0].address[0];
 
-      const doc = new pdfDocument({
-          size: 'A4',
-          margin: 40
-      });
+      const pdfDocument = require('pdfkit');
+const fs = require('fs'); 
 
-      res.setHeader('Content-Type', 'application/pdf');
-      res.setHeader('Content-Disposition', `attachment; filename=invoice_${order.orderId}.pdf`);
-      doc.pipe(res);
+const doc = new pdfDocument({
+    size: 'A4',
+    margin: 40
+});
 
-      doc.image('C:/Users/LENOVO/OneDrive/Desktop/aranoz_ecommerce/public/images/img-01.png', 50, 45, { width: 50 })
-          .fontSize(20)
-          .fillColor('#444444')
-          .text('Aranoz', 110, 57)
-          .fontSize(10)
-          .text('Chennai', 200, 65, { align: 'right' })
-          .text('Phone: (123) 456-7890', 200, 80, { align: 'right' })
-          .moveDown();
+res.setHeader('Content-Type', 'application/pdf');
+res.setHeader('Content-Disposition', `attachment; filename=invoice_${order.orderId}.pdf`);
 
-      doc.fontSize(20).text('INVOICE', { align: 'center' })
-          .moveDown();
-      doc.fontSize(14).text(`Order Id: ${order.orderId}`, { align: 'left' });
-      doc.text(`Order Date: ${order.orderDate.toDateString()}`, { align: 'left' });
-      doc.text(`Payment Method: ${order.paymentMethod}`, { align: 'left' });
-      doc.text(`Order Status: ${order.orderStatus}`, { align: 'left' });
-      doc.moveDown();
+doc.pipe(res);
 
-      doc.fontSize(14).text('Shipping Address:', { underline: true })
-          .moveDown(0.5);
-      doc.fontSize(12).text(`${userAddress.phone}, ${userAddress.city},`, { align: 'left' })
-          .text(`${userAddress.district}, ${userAddress.pincode}, ${userAddress.state}`, { align: 'left' })
-          .moveDown();
+doc.image('C:/Users/LENOVO/OneDrive/Desktop/aranoz_ecommerce/public/images/img-01.png', 50, 45, { width: 50 })
+    .fontSize(20)
+    .fillColor('#444444')
+    .text('Aranoz', 110, 57)
+    .fontSize(10)
+    .text('Chennai', 200, 65, { align: 'right' })
+    .text('Phone: (123) 456-7890', 200, 80, { align: 'right' })
+    .moveDown();
 
-      doc.fontSize(14).text('Product Details:', { underline: true })
-          .moveDown(0.5);
+doc.fontSize(20).text('INVOICE', 250, doc.y)
+    .moveDown();
 
-      const tableTop = doc.y;
-      doc.fontSize(12)
-          .fillColor('#444444')
-          .text('Product Name', 50, tableTop)
-          .text('Quantity', 200, tableTop)
-          .text('Price', 280, tableTop)
-          .text('Total Price', 450, tableTop);
+const leftColumnX = 50;
+const rightColumnX = 300;  
+let currentY=doc.y
+doc.fontSize(14).text(`Order Id: ${order.orderId}`, leftColumnX, currentY, { align: 'left' });
+doc.text(`Order Date: ${order.orderDate.toDateString()}`, leftColumnX, doc.y, { align: 'left' });
+doc.text(`Payment Method: ${order.paymentMethod}`, leftColumnX, doc.y, { align: 'left' });
+doc.text(`Order Status: ${order.orderStatus}`, leftColumnX, doc.y, { align: 'left' });
 
-      doc.moveTo(50, tableTop + 15)
-          .lineTo(550, tableTop + 15)
-          .stroke();
+doc.fontSize(14).text('Shipping Address:', rightColumnX, currentY, { underline: true });
+doc.fontSize(12).text(`${userAddress.phone}, ${userAddress.city},`, rightColumnX, doc.y, { align: 'left' });
+doc.text(`${userAddress.district}, ${userAddress.pincode}, ${userAddress.state}`, rightColumnX, doc.y, { align: 'left' });
+doc.moveDown();
 
-      let position = tableTop + 20;
+doc.fontSize(14).text('Product Details:', leftColumnX, doc.y+50, { underline: true });
+doc.moveDown(0.5);
 
-      order.items.forEach(item => {
-          doc.fontSize(12)
-              .fillColor('#000000')
-              .text(item.productId.name, 50, position)
-              .text(item.quantity, 200, position)
-              .text(`$${item.price.toFixed(2)}`, 280, position)
-              .text(`$${item.totalPrice.toFixed(2)}`, 450, position);
+const tableTop = doc.y;
+doc.fontSize(12)
+    .fillColor('#444444')
+    .text('Product Name', 50, tableTop)
+    .text('Quantity', 200, tableTop)
+    .text('Price', 280, tableTop)
+    .text('Total Price', 450, tableTop);
 
-          position += 20;
+doc.moveTo(50, tableTop + 15)
+    .lineTo(550, tableTop + 15)
+    .stroke();
 
-          doc.moveTo(50, position)
-              .lineTo(550, position)
-              .stroke();
+let position = tableTop + 20;
 
-          position += 5;
-      });
+order.items.forEach(item => {
+    doc.fontSize(12)
+        .fillColor('#000000')
+        .text(item.productId.name, 50, position)
+        .text(item.quantity, 200, position)
+        .text(`$${item.price.toFixed(2)}`, 280, position)
+        .text(`$${item.totalPrice.toFixed(2)}`, 450, position);
 
-      doc.moveDown();
-      doc.fontSize(14).fillColor('#000000').text(`Total Amount: $${order.totalAmount.toFixed(2)}`, { align: 'right', bold: true });
-      
-      doc.fontSize(10).fillColor('#888888')
-          .text('Thank you for your purchase!', 50, 780, { align: 'center', width: 500 });
+    position += 20;
 
-      doc.end();
+    doc.moveTo(50, position)
+        .lineTo(550, position)
+        .stroke();
+
+    position += 5;
+});
+
+doc.moveDown();
+doc.fontSize(14)
+    .fillColor('#000000')
+    .text(`Total Amount: $${order.totalAmount.toFixed(2)}`, { align: 'right', bold: true });
+
+doc.fontSize(10)
+    .fillColor('#888888')
+    .text('Thank you for your purchase!', 50, 780, { align: 'center', width: 500 });
+
+doc.end();
+
   } catch (err) {
       console.error(err);
       res.status(500).render('500/500erroradmin');
