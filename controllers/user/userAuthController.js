@@ -178,7 +178,7 @@ const postLogout=async (req,res)=>{
             console.log('this is token',token)
             req.session.email=email
             req.session.token=token
-            resetPasswordLink = `http://localhost:3000/user/resetpassword?token=${encodeURIComponent(token)}`;
+            resetPasswordLink = `https://aranoz.shop/user/resetpassword?token=${encodeURIComponent(token)}`;
             await sendResetPasswordEmail(email,resetPasswordLink)
           return  res.status(200).json({message:'link has send to your email address'})
 

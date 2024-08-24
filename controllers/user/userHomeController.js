@@ -67,6 +67,9 @@ const getHome = async (req, res) => {
 const getAuthHome = async (req, res) => {
     try {
         const user = await User.findById(req.session.user)
+        if(!user){
+            res.redirect('/user/login')
+        }
         if (!user.isBlocked) {
             const products = await Product.aggregate([{
                 $lookup: {
