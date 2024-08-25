@@ -60,7 +60,7 @@ passport.use(new GoogleStrategy({
         console.log('this is passport callback')
         let user = await User.findOne({ googleId: profile.id })
         if (!user) {
-            user=await findOne({email:profile.emails[0].value})
+            user=await User.findOne({email:profile.emails[0].value})
             if (user) {
                 user.googleId = profile.id;
                 await user.save();
