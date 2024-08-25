@@ -308,7 +308,7 @@ res.setHeader('Content-Disposition', `attachment; filename=invoice_${order.order
 
 doc.pipe(res);
 
-doc.image('C:/Users/LENOVO/OneDrive/Desktop/aranoz_ecommerce/public/images/img-01.png', 50, 45, { width: 50 })
+doc.image('/images/img-01.png', 50, 45, { width: 50 })
     .fontSize(20)
     .fillColor('#444444')
     .text('Aranoz', 110, 57)

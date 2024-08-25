@@ -157,7 +157,7 @@
                     </div>
                     <div class="col-lg-5 col-xl-4">
                         <div class="s_product_text">
-                            <h5>previous <span>|</span> next</h5>
+                           
                             <h3>
                                 <%=product.name%>
                             </h3>
@@ -190,7 +190,9 @@
 
                                 <%if(!product.stock==0 && user){%>
                                     <a  onclick="addToCart('<%=product._id%>')" class="btn_3">add to cart</a>
-                                    
+                                    <a  onclick="addToWishlist('<%=product._id%>')" class="like_us d-flex justify-content-center align-items-center">
+                                        <i class="bi bi-heart-fill"></i>
+                                    </a>
                                     <%}else if(!user){%>
                                         <a href="/user/login" class="btn_3">add to cart</a>  
                                         <%}else if(user){%>

@@ -131,10 +131,11 @@
                                    
                                     <a href="/user/dashboard/profile/orders/<%=order._id%>">
                                         <div class="single_product_text" >
-                                            <h4>Order : <%=index+1%></h4>
+                                            
+                                            <h4>Order ID : <%=order.orderId%></h4>
                                 
                                             <h4>Order Status : <%=order.orderStatus%></h4>
-                                            <h3>Order ID : <%=order.orderId%></h3>
+                                            
                                             <h3>Ordered On <%=order.orderDate.toLocaleDateString()%></h3>
                                             <h3><b>Items : </b></h3>
                                             <%order.items.forEach(item=>{%>

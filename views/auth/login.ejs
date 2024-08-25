@@ -22,7 +22,7 @@
     <title>aranoz|login</title>
     <header class="main_menu home_menu">
         <div>
-            <% if (errorMessage!=="null") {%>
+            <% if (typeof errorMessage !== 'undefined' && errorMessage) {%>
                 <script>
                     Swal.fire({
                         title:'failed',

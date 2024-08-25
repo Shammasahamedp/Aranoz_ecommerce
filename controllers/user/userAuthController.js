@@ -13,6 +13,9 @@ async function hashPassword(password){
 }
 const getLogin= (req,res)=>{
     try{
+        if(req.query){
+            console.log('this is errormessage',req.query.errorMessage)
+        }
         res.status(200).render('auth/login',{errorMessage:req.query.errorMessage})
     }catch(err){
         res.status(500).send('Error got login')
@@ -45,13 +48,11 @@ const postLogin=async(req,res)=>{
             throw new Error('something went wrong')
         }
     }catch(err){
-        console.log(err)
         res.status(500).json({message:'error in login user'})
     }
 }
 const getSignup=(req,res)=>{
     try{
-        console.log('hello')
         res.status(200).render('auth/signup')
     }catch(err){
         res.status(500).send('Error get signup')
@@ -74,7 +75,6 @@ const postSignup=async(req,res,next)=>{
     req.session.otp=otp
     next()
     }catch(err){
-        console.error(err)
         res.status(500).json({message:'error in singup'})
     }
 }
@@ -96,7 +96,6 @@ const verifyOTP=async (req,res)=>{
         await user.save()
         res.status(201).json({message:'successfully signup'})
     }catch(err){
-        console.error('Error in verify otp:',err)
         res.status(500).json({message:'Error in verify otp'})
     }
 }
@@ -126,7 +125,7 @@ const postLogout=async (req,res)=>{
 }
     const googleSignFail=async (req,res)=>{
         try{
-              
+              console.log('this is google sign failure page ')
             
         res.redirect('/user/login?errorMessage=User%20is%20blocked%20by%20admin')
                 
@@ -144,7 +143,6 @@ const postLogout=async (req,res)=>{
         }else if(user&&user.isBlocked===true){
         req.logout(function (err){
             if(err){
-                console.error('error in login',err)
                 return res.status(500).redirect('/user/login')
             }else{
                 res.redirect('/user/login?errorMessage=User%20is%20blocked%20by%20admin')

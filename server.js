@@ -28,6 +28,7 @@ const Admin = require('./models/adminModel')
 const Category = require('./models/categoriesModel')
 const User = require('./models/usersModel')
 const passport = require('passport')
+const { findOne } = require('./models/ordersModel')
 const GoogleStrategy = require('passport-google-oauth20').Strategy
 connectDB().then(async () => {
 
@@ -59,6 +60,11 @@ passport.use(new GoogleStrategy({
         console.log('this is passport callback')
         let user = await User.findOne({ googleId: profile.id })
         if (!user) {
+            user=await findOne({email:profile.emails[0].value})
+            if (user) {
+                user.googleId = profile.id;
+                await user.save();
+            }else{
             user = new User({
                 googleId: profile.id,
                 name: profile.displayName,
@@ -68,6 +74,7 @@ passport.use(new GoogleStrategy({
             await user.save()
             console.log(user)
             console.log('this is passport callback')
+        }
         }
 
         return done(null, user)
