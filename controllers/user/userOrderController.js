@@ -308,8 +308,8 @@ res.setHeader('Content-Disposition', `attachment; filename=invoice_${order.order
 
 doc.pipe(res);
 
-doc.image('/images/img-01.png', 50, 45, { width: 50 })
-    .fontSize(20)
+
+doc.fontSize(20)
     .fillColor('#444444')
     .text('Aranoz', 110, 57)
     .fontSize(10)
