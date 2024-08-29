@@ -19,7 +19,7 @@ const adminLogin= async function (req,res){
         }
         const isMatch=await bcrypt.compare(password,admin.password)
         if(!isMatch){
-            return res.status(401).json({message:'Invalid creadentials'})
+            return res.redirect('/admin/login?error=Invalid credentials')
         }
         req.session.admin=admin._id
         res.redirect('/admin/dashboard')
