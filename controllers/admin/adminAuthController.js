@@ -15,7 +15,7 @@ const adminLogin= async function (req,res){
     try{
         const admin=await Admin.findOne({email})
         if(!admin){
-            return res.status(401).json({message:'Invalid credentials'})
+            return res.redirect('/admin/login?error=Invalid credentials')
         }
         const isMatch=await bcrypt.compare(password,admin.password)
         if(!isMatch){
